@@ -44,6 +44,7 @@ set ruler               " show cursor position, 'statusline' overrides this
 set number              " show line numbers
 set showmatch           " have your matching brackets wink at you
 set showcmd             " display incomplete commands in status line
+set scrolloff=2
 set incsearch           " do incremental searching
 set linebreak           " break screen lines at whitespace
 set display=lastline    " fit as much as possible of a long line on screen
@@ -85,7 +86,7 @@ if has("autocmd")
     au!
     autocmd FileType text setlocal textwidth=78
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 expandtab
-    autocmd FileType python,perl setlocal ts=8 sw=4 sts=4 expandtab
+    autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType sh setlocal ts=4 sts=4 sw=4 noexpandtab
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noexpandtab
     autocmd FileType javascript setlocal ts=8 sw=2 sts=2 expandtab
@@ -105,6 +106,11 @@ if has("autocmd")
     au!
     autocmd FileType sh inoreabbrev <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
     autocmd FileType sh inoreabbrev <buffer> while while; do<CR>done<Up><Right>
+  augroup END
+
+  augroup filetype_php
+    au!
+    autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
   augroup END
 
   augroup filetype_c
@@ -151,10 +157,22 @@ endif
 
 let mapleader = "\\"
 
-inoremap <S-Enter> <C-O>o
+inoremap <S-Enter> <Esc>o
+inoremap <S-M-Enter> <Esc>O
+
+" emulate command-line CTRL-K
+" no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
+"inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
+
+" if (len(getline(".")) != col(".")) | normal! Da | endif
+"inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
 
 " use aesthetic middle of screen for "zz"
-nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
+if has('float')
+  nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
+endif
+nnoremap n nzz
+nnoremap N Nzz
 
 inoreabbrev @@ 676c7473@gmail.com
 inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
