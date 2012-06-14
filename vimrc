@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-05-28
+" Modified: 2012-06-14
 
 " Init
 
@@ -26,6 +26,7 @@ set history=200         " keep 200 lines of command line history
 set backspace=indent,eol,start  " more intuitive backspace behaviour
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
+set shiftround          " round to next virtual "tabstop" when indenting
 
 set modeline            " always look for 2 modelines
 set modelines=2
@@ -66,7 +67,7 @@ set statusline+=%r              "read only flag
 set statusline+=%=              "left/right separator
 set statusline+=col\ %v         "virtual cursor column
 set statusline+=(%c)            "cursor column
-set statusline+=\ line\ %l\ of\ %L   "cursor line/total lines
+set statusline+=\ ln\ %l\ of\ %L   "cursor line/total lines
 set statusline+=\ %P            "percent through file
 
 " Switch syntax highlighting on, when the terminal has colors
@@ -84,6 +85,9 @@ if has("autocmd")
 
   augroup ft_settings
     au!
+    " TODO I have never actually seen a file type text used by Vim -- fix this
+    " Perhaps like so autocmd BufNewFile,BufRead *.txt setfiletype text
+    " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
     autocmd FileType text setlocal textwidth=78
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
@@ -91,7 +95,7 @@ if has("autocmd")
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noexpandtab
     autocmd FileType javascript setlocal ts=8 sw=2 sts=2 expandtab
     autocmd FileType css setlocal ts=8 sw=2 sts=2 expandtab
-    autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 expandtab
+    autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 expandtab tw=72
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 expandtab tw=72
     autocmd FileType vim setlocal ts=8 sw=2 sts=2 expandtab
   augroup END
@@ -111,6 +115,13 @@ if has("autocmd")
   augroup filetype_php
     au!
     autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
+  augroup END
+
+  augroup filetype_ruby
+    au!
+    autocmd FileType ruby inoreabbrev <buffer> class class<CR>end<Up><End>
+    autocmd FileType ruby inoreabbrev <buffer> module module<CR>end<Up><End>
+    autocmd FileType ruby inoreabbrev <buffer> def def()<CR>end<Up>
   augroup END
 
   augroup filetype_c
@@ -157,12 +168,13 @@ endif
 
 let mapleader = "\\"
 
+nnoremap <CR> o<Esc>
 inoremap <S-Enter> <Esc>o
 inoremap <S-M-Enter> <Esc>O
 
 " emulate command-line CTRL-K
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
-"inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
+inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
 
 " if (len(getline(".")) != col(".")) | normal! Da | endif
 "inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
@@ -171,14 +183,16 @@ inoremap <S-M-Enter> <Esc>O
 if has('float')
   nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
 endif
-nnoremap n nzz
-nnoremap N Nzz
+"nnoremap n nzz
+"nnoremap N Nzz
 
 inoreabbrev @@ 676c7473@gmail.com
 inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
 
 nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
+
+nnoremap <Leader>s :source %<CR>
 
 " prettify XML fragments; NOTE depends on the surround plugin
 nnoremap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
@@ -205,6 +219,20 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 noremap <F1> :tab help<CR>
 
 noremap <leader>ve :tabedit $MYVIMRC<CR>
+
+" toggle relative number
+if v:version >= 703
+  function! s:ToggleRelativeNumber()
+    if &relativenumber
+      set norelativenumber
+      let &number = b:togglernu_number
+    else
+      let b:togglernu_number = &number
+      set relativenumber
+    endif
+  endfunction
+  nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
+endif
 
 " Plugins and scripts
 
