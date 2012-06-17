@@ -197,6 +197,9 @@ nnoremap <C-L> <C-W>l
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
 inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
 
+" Counterpart to the existing <C-E>
+cnoremap <C-A> <Home>
+
 " if (len(getline(".")) != col(".")) | normal! Da | endif
 "inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
 
