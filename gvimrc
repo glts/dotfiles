@@ -6,5 +6,6 @@
 set cursorline          " highlight cursor line
 
 set guifont=Menlo:h12
+set guioptions-=T       " do not show the toolbar
 
 colorscheme blackboard

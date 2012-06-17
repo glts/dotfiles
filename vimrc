@@ -1,9 +1,11 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-06-14
+" Modified: 2012-06-17
 
+"
 " Init
+"
 
 set nocompatible
 
@@ -11,9 +13,12 @@ if has('mouse')
   set mouse=a
 endif
 
+" Pathogen is our plugin manager
 call pathogen#infect()
 
+"
 " Various settings
+"
 
 set directory=~/tmp,.   " directory for swap files
 set nobackup            " keep no backup file
@@ -34,8 +39,7 @@ set modelines=2
 " TODO read up on this, am I doing this right?
 set encoding=utf-8 fileencodings=
 
-" TODO deal with CR, LF, CRLF correctly
-set fileformats+=mac            " also detect mac-style EOL
+set fileformats=unix,dos,mac    " also detect mac-style EOL
 
 set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
 
@@ -50,6 +54,7 @@ set incsearch           " do incremental searching
 set linebreak           " break screen lines at whitespace
 set display=lastline    " fit as much as possible of a long line on screen
 set shortmess+=I        " don't show intro screen at startup
+"set wildmenu           " show tab-completion candidates in status line
 
 set laststatus=2        " always display statusline
 
@@ -77,7 +82,9 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 
+"
 " Autocommands
+"
 
 if has("autocmd")
 
@@ -124,10 +131,14 @@ if has("autocmd")
     autocmd FileType ruby inoreabbrev <buffer> def def()<CR>end<Up>
   augroup END
 
+  augroup filetype_c_cpp
+    au!
+    autocmd FileType c,cpp inoreabbrev <buffer> while while () {<CR>}<Up><End><Left><Left><Left>
+    autocmd FileType c,cpp inoreabbrev <buffer> main( int main(int argc, char *argv[])<CR>{<CR>return 0;<CR>}<Up><Up>
+  augroup END
+
   augroup filetype_c
     au!
-    autocmd FileType c inoreabbrev <buffer> while while () {<CR>}<Up><End><Left><Left><Left>
-    autocmd FileType c inoreabbrev <buffer> main( int main(int argc, char *argv[])<CR>{<CR>return 0;<CR>}<Up><Up>
     autocmd FileType c inoreabbrev <buffer> printf( printf("");<Left><Left><Left>
   augroup END
 
@@ -164,13 +175,23 @@ endif
 "highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 "match OverLength /\%79v.\+/
 
+"
 " Mappings and abbreviations
+"
 
 let mapleader = "\\"
 
-nnoremap <CR> o<Esc>
-inoremap <S-Enter> <Esc>o
-inoremap <S-M-Enter> <Esc>O
+" TODO these break the command line window behaviour!
+"nnoremap <CR> o<Esc>
+"nnoremap <S-CR> O<Esc>
+inoremap <S-CR> <Esc>o
+inoremap <S-M-CR> <Esc>O
+
+" TODO there might be a conflict with the NERDtree here
+nnoremap <C-H> <C-W>h
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-L> <C-W>l
 
 " emulate command-line CTRL-K
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
@@ -194,14 +215,21 @@ nnoremap <silent> <Leader>n :nohls<CR>
 
 nnoremap <Leader>s :source %<CR>
 
+" change directory to where current file is
+nnoremap <Leader>d :lcd %:p:h<CR>
+
 " prettify XML fragments; NOTE depends on the surround plugin
 nnoremap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
 nnoremap <Leader>ct :!ctags -R<CR>
 
+" Write file as super user
 cnoreabbrev w!! w !sudo tee % >/dev/null
 
-" TODO this needs to be improved
-inoreabbrev 2012 <C-O>:.r !date +\%F<CR><End>
+" Expand dirname for current file
+cnoreabbrev <expr> %% expand('%:h')
+
+" Put current date at the end of the line
+inoreabbrev 2012- <Esc>:.r !date +\%F<CR>kgJA
 
 " insert some "Lorem ipsum" text
 inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -221,7 +249,7 @@ noremap <F1> :tab help<CR>
 noremap <leader>ve :tabedit $MYVIMRC<CR>
 
 " toggle relative number
-if v:version >= 703
+if exists('&relativenumber')
   function! s:ToggleRelativeNumber()
     if &relativenumber
       set norelativenumber
@@ -231,10 +259,51 @@ if v:version >= 703
       set relativenumber
     endif
   endfunction
-  nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
+  noremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
 endif
 
+" TODO don't forget to integrate these sooner or later!
+nnoremap <Leader>CC :set operatorfunc=<SID>CamelcaseOperator<CR>g@
+vnoremap <Leader>CC :<C-U>call <SID>CamelcaseOperator(visualmode())<CR>
+nnoremap <Leader>cc :set operatorfunc=<SID>UncamelcaseOperator<CR>g@
+vnoremap <Leader>cc :<C-U>call <SID>UncamelcaseOperator(visualmode())<CR>
+
+function! s:CamelcaseOperator(type)
+  let saved_unnamed_reg = @"
+
+  if a:type ==# 'v'
+    exec "normal! `<v`>c"
+  elseif a:type ==# 'char'
+    exec "normal! `[v`]c"
+  else
+    return
+  endif
+  let @" = substitute(@", '\v_([a-z])', '\u\1', 'g')
+  normal! p
+
+  let @" = saved_unnamed_reg
+endfunction
+
+function! s:UncamelcaseOperator(type)
+  let saved_unnamed_reg = @"
+
+  if a:type ==# 'v'
+    exec "normal! `<v`>c"
+  elseif a:type ==# 'char'
+    exec "normal! `[v`]c"
+  else
+    return
+  endif
+  let @" = substitute(@", '\v([a-z])([A-Z])', '\1_\l\2', 'g')
+  let @" = substitute(@", '\v([A-Z])', '\l\1', 'g')
+  normal! p
+
+  let @" = saved_unnamed_reg
+endfunction
+
+"
 " Plugins and scripts
+"
 
 noremap <F2> :NERDTreeToggle<CR>
 let NERDTreeIgnore=[ '^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', ]
