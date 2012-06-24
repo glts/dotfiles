@@ -1,17 +1,14 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-06-17
+" Modified: 2012-06-24
 
 "
 " Init
 "
 
+" Sine qua non setting
 set nocompatible
-
-if has('mouse')
-  set mouse=a
-endif
 
 " Pathogen is our plugin manager
 call pathogen#infect()
@@ -20,15 +17,19 @@ call pathogen#infect()
 " Various settings
 "
 
+" Behaviour
+
 set directory=~/tmp,.   " directory for swap files
-set nobackup            " keep no backup file
+set nobackup            " do not keep backup files
 set writebackup         " keep a temporary backup while writing a file
 
 set hidden
 
-set history=200         " keep 200 lines of command line history
+set history=200         " keep 200 lines of command-line history
 
-set backspace=indent,eol,start  " more intuitive backspace behaviour
+" more intuitive backspace behaviour
+set backspace=indent,eol,start
+
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
 set shiftround          " round to next virtual "tabstop" when indenting
@@ -39,9 +40,19 @@ set modelines=2
 " TODO read up on this, am I doing this right?
 set encoding=utf-8 fileencodings=
 
-set fileformats=unix,dos,mac    " also detect mac-style EOL
+" also detect mac-style EOL
+set fileformats=unix,dos,mac
 
-set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
+" Enable mouse when available
+if has('mouse')
+  set mouse=a
+endif
+
+" Format options
+" default is tcq but for some filetypes they are reset, eg. [vim] has "croql"
+"set formatoptions=croql
+"set formatlistpat=... " Using this I can have autoformat recognize lists
+" TODO create a nice mapping to enter "text editing" mode: fo+=a, flp=\([*-]\|\d\+...\), etc.
 
 " Appearance
 
@@ -49,12 +60,14 @@ set ruler               " show cursor position, 'statusline' overrides this
 set number              " show line numbers
 set showmatch           " have your matching brackets wink at you
 set showcmd             " display incomplete commands in status line
-set scrolloff=2
+set scrolloff=2         " always keep two lines above/below cursor visible
 set incsearch           " do incremental searching
 set linebreak           " break screen lines at whitespace
 set display=lastline    " fit as much as possible of a long line on screen
 set shortmess+=I        " don't show intro screen at startup
-"set wildmenu           " show tab-completion candidates in status line
+set wildmenu            " show tab-completion candidates in status line
+
+set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
 
 set laststatus=2        " always display statusline
 
@@ -77,6 +90,7 @@ set statusline+=\ %P            "percent through file
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
+" TODO read up on this, this is from the example vimrc
 if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
@@ -187,21 +201,25 @@ let mapleader = "\\"
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
-" TODO there might be a conflict with the NERDtree here
+" TODO there might be a conflict with the NERDtree mappings here
 nnoremap <C-H> <C-W>h
 nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
 
+" Formatting shortcut
+nnoremap Q gwip
+
+" TODO make a mapping for show current syntax item
+
 " emulate command-line CTRL-K
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
 inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
+" if (len(getline(".")) != col(".")) | normal! Da | endif
+"inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
 
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
-
-" if (len(getline(".")) != col(".")) | normal! Da | endif
-"inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
 
 " use aesthetic middle of screen for "zz"
 if has('float')
@@ -223,6 +241,8 @@ nnoremap <Leader>d :lcd %:p:h<CR>
 
 " prettify XML fragments; NOTE depends on the surround plugin
 nnoremap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
+
+" Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
 
 " Write file as super user
@@ -234,7 +254,7 @@ cnoreabbrev <expr> %% expand('%:h')
 " Put current date at the end of the line
 inoreabbrev 2012- <Esc>:.r !date +\%F<CR>kgJA
 
-" insert some "Lorem ipsum" text
+" Insert some "Lorem ipsum" text
 inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
   \ Integer sagittis risus quis lacus volutpat congue. Aenean porttitor
@@ -247,9 +267,10 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ amet felis aliquam dictum. Integer tempor tincidunt interdum.
 
 " open help in a separate tab with <F1>
-noremap <F1> :tab help<CR>
+noremap <F1> :<C-U>tab help<CR>
 
-noremap <leader>ve :tabedit $MYVIMRC<CR>
+" Edit $MYVIMRC
+nnoremap <leader>ve :tabedit $MYVIMRC<CR>
 
 " toggle relative number
 if exists('&relativenumber')
@@ -262,7 +283,7 @@ if exists('&relativenumber')
       set relativenumber
     endif
   endfunction
-  noremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
+  noremap <silent> <Leader>m :<C-U>call <SID>ToggleRelativeNumber()<CR>
 endif
 
 " TODO don't forget to integrate these sooner or later!
@@ -308,15 +329,15 @@ endfunction
 " Plugins and scripts
 "
 
-noremap <F2> :NERDTreeToggle<CR>
-let NERDTreeIgnore=[ '^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', ]
+noremap <F2> :<C-U>NERDTreeToggle<CR>
+let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
 let NERDTreeShowHidden = 1
 
-noremap <F3> :TagbarToggle<CR>
+noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
-noremap <F5> :GundoToggle<CR>
+noremap <F5> :<C-U>GundoToggle<CR>
 
 " Use :Man or S-k to display the man page for the word under the cursor
 runtime! ftplugin/man.vim
@@ -327,7 +348,7 @@ nnoremap <Leader>e :SpaceBoxInline<CR>
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
 " Only define it when not defined already.
-" TODO make a "reverse" command that gets you out of diff mode
+" TODO make a "reverse" command that gets you out of diff mode; also: clean up!
 if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
           \ | wincmd p | diffthis
