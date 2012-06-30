@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-06-24
+" Modified: 2012-06-30
 
 "
 " Init
@@ -37,10 +37,13 @@ set shiftround          " round to next virtual "tabstop" when indenting
 set modeline            " always look for 2 modelines
 set modelines=2
 
-" TODO read up on this, am I doing this right?
-set encoding=utf-8 fileencodings=
+set encoding=utf-8      " default encoding is UTF-8 always
+set fileencoding=       " use the same encoding for a file as for the buffer
 
-" also detect mac-style EOL
+" File encodings to try; keep "ucs-bom" for Windows compatibility
+set fileencodings=ucs-bom,utf-8,default,latin1
+
+" Also detect mac-style EOL
 set fileformats=unix,dos,mac
 
 " Enable mouse when available
@@ -119,6 +122,7 @@ if has("autocmd")
     autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 expandtab tw=72
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 expandtab tw=72
     autocmd FileType vim setlocal ts=8 sw=2 sts=2 expandtab
+    autocmd FileType haskell setlocal ts=8 sw=4 sts=4 expandtab
   augroup END
 
   augroup filetype_vim
@@ -164,19 +168,12 @@ if has("autocmd")
 
   augroup other
     au!
-    " When editing a file, always jump to the last known cursor position.
-    " Don't do it when the position is invalid or when inside an event handler
-    " (happens when dropping a file on gvim).
-    " Also don't do it when the mark is in the first line, that is the default
-    " position when opening a file.
-    autocmd BufReadPost *
-      \ if line("'\"") > 1 && line("'\"") <= line("$") |
-      \   exe "normal! g`\"" |
-      \ endif
+
+    " Start at last known cursor position in file (validity checks removed)
+    autocmd BufReadPost * exec 'normal! g`"'
 
     " I don't like the 'conceal' feature
     if has("conceal")
-      set conceallevel=0
       autocmd FileType * setlocal conceallevel=0
     endif
   augroup END
@@ -210,7 +207,8 @@ nnoremap <C-L> <C-W>l
 " Formatting shortcut
 nnoremap Q gwip
 
-" TODO make a mapping for show current syntax item
+" Show stack of syntax items at cursor position
+nnoremap <Leader>y :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
 
 " emulate command-line CTRL-K
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
@@ -221,7 +219,7 @@ inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
 
-" use aesthetic middle of screen for "zz"
+" Use aesthetic middle of screen for "zz"
 if has('float')
   nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
 endif
@@ -270,14 +268,14 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 noremap <F1> :<C-U>tab help<CR>
 
 " Edit $MYVIMRC
-nnoremap <leader>ve :tabedit $MYVIMRC<CR>
+nnoremap <Leader>ve :tabedit $MYVIMRC<CR>
 
-" toggle relative number
+" Toggle relative line numbers
 if exists('&relativenumber')
   function! s:ToggleRelativeNumber()
     if &relativenumber
       set norelativenumber
-      let &number = b:togglernu_number
+      let &number = exists("b:togglernu_number") ? b:togglernu_number : 1
     else
       let b:togglernu_number = &number
       set relativenumber
@@ -347,9 +345,6 @@ nnoremap <Leader>e :SpaceBoxInline<CR>
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
-" Only define it when not defined already.
 " TODO make a "reverse" command that gets you out of diff mode; also: clean up!
-if !exists(":DiffOrig")
-  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
           \ | wincmd p | diffthis
-endif
