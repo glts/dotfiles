@@ -52,10 +52,8 @@ if has('mouse')
 endif
 
 " Format options
-" default is tcq but for some filetypes they are reset, eg. [vim] has "croql"
-"set formatoptions=croql
-"set formatlistpat=... " Using this I can have autoformat recognize lists
-" TODO create a nice mapping to enter "text editing" mode: fo+=a, flp=\([*-]\|\d\+...\), etc.
+"set formatoptions=...
+"set formatlistpat=...
 
 " Appearance
 
@@ -91,9 +89,7 @@ set statusline+=(%c)            "cursor column
 set statusline+=\ ln\ %l\ of\ %L   "cursor line/total lines
 set statusline+=\ %P            "percent through file
 
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
-" TODO read up on this, this is from the example vimrc
+" Switch syntax and search highlighting on whenever colour is available
 if &t_Co > 2 || has("gui_running")
   syntax on
   set hlsearch
@@ -109,10 +105,7 @@ if has("autocmd")
 
   augroup ft_settings
     au!
-    " TODO I have never actually seen a file type text used by Vim -- fix this
-    " Perhaps like so autocmd BufNewFile,BufRead *.txt setfiletype text
     " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
-    autocmd FileType text setlocal textwidth=78
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType sh setlocal ts=4 sts=4 sw=4 noexpandtab
@@ -123,6 +116,13 @@ if has("autocmd")
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 expandtab tw=72
     autocmd FileType vim setlocal ts=8 sw=2 sts=2 expandtab
     autocmd FileType haskell setlocal ts=8 sw=4 sts=4 expandtab
+  augroup END
+
+  augroup ft_text
+    au!
+    " TODO this doesn't work yet
+    autocmd BufNew *.txt setfiletype text
+    autocmd FileType text setlocal textwidth=72 formatoptions+=n autoindent
   augroup END
 
   augroup filetype_vim
@@ -164,6 +164,8 @@ if has("autocmd")
     au!
     autocmd FileType java inoreabbrev <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
     autocmd FileType java inoreabbrev <buffer> class public class {<CR>}<Up><End><Left><Left>
+    autocmd FileType java inoreabbrev <buffer> /* /*<CR>/<Up>
+    autocmd FileType java inoreabbrev <buffer> /** /**<CR>/<Up>
   augroup END
 
   augroup other
@@ -192,9 +194,6 @@ endif
 
 let mapleader = "\\"
 
-" TODO these break the command line window behaviour!
-"nnoremap <CR> o<Esc>
-"nnoremap <S-CR> O<Esc>
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
