@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-06-30
+" Modified: 2012-07-05
 
 "
 " Init
@@ -206,8 +206,11 @@ nnoremap <C-L> <C-W>l
 " Formatting shortcut
 nnoremap Q gwip
 
+" Yank Visual selection as a single line to system clipboard
+vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
+
 " Show stack of syntax items at cursor position
-nnoremap <Leader>y :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
+nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
 
 " emulate command-line CTRL-K
 " no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
@@ -231,7 +234,7 @@ inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
 nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 
-nnoremap <Leader>s :source %<CR>
+nnoremap <Leader>so :source %<CR>
 
 " change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
@@ -248,8 +251,8 @@ cnoreabbrev w!! w !sudo tee % >/dev/null
 " Expand dirname for current file
 cnoreabbrev <expr> %% expand('%:h')
 
-" Put current date at the end of the line
-inoreabbrev 2012- <Esc>:.r !date +\%F<CR>kgJA
+" Insert current date
+inoreabbrev 2012- <C-R>=strftime("%Y-%m-%d")<CR>
 
 " Insert some "Lorem ipsum" text
 inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
