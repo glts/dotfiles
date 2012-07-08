@@ -234,6 +234,11 @@ inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
 nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 
+" Highlight overlong lines, ie. characters at col 79+
+" TODO use 'tw', put /../ in history
+nnoremap <Leader>ol :highlight link OverLength ErrorMsg <Bar> match OverLength /\%79v.\+/<CR>
+nnoremap <Leader>oL :match none<CR>
+
 nnoremap <Leader>so :source %<CR>
 
 " change directory to where current file is
