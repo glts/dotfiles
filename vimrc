@@ -118,10 +118,17 @@ if has("autocmd")
     autocmd FileType haskell setlocal ts=8 sw=4 sts=4 expandtab
   augroup END
 
+  augroup ft_vimhelp
+    au!
+    if exists("&colorcolumn")
+      autocmd FileType help setlocal colorcolumn=
+    endif
+  augroup END
+
   augroup ft_text
     au!
-    " TODO this doesn't work yet
-    autocmd BufNew *.txt setfiletype text
+    " TODO if it's a Vim help file or markdown etc. don't apply this
+    autocmd BufNewFile *.txt setfiletype text
     autocmd FileType text setlocal textwidth=72 formatoptions+=n autoindent
   augroup END
 
@@ -172,7 +179,7 @@ if has("autocmd")
     au!
 
     " Start at last known cursor position in file (validity checks removed)
-    autocmd BufReadPost * exec 'normal! g`"'
+    autocmd BufReadPost * silent! normal! g`"
 
     " I don't like the 'conceal' feature
     if has("conceal")
@@ -184,10 +191,6 @@ else
   set autoindent
 endif
 
-" TODO highlight overlong lines, ie. characters at col 79+
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%79v.\+/
-
 "
 " Mappings and abbreviations
 "
@@ -197,7 +200,6 @@ let mapleader = "\\"
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
-" TODO there might be a conflict with the NERDtree mappings here
 nnoremap <C-H> <C-W>h
 nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
@@ -225,8 +227,6 @@ cnoremap <C-A> <Home>
 if has('float')
   nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
 endif
-"nnoremap n nzz
-"nnoremap N Nzz
 
 inoreabbrev @@ 676c7473@gmail.com
 inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
