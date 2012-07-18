@@ -149,6 +149,11 @@ if has("autocmd")
     autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
   augroup END
 
+  augroup filetype_python
+    au!
+    autocmd FileType python setlocal foldmethod=indent foldlevel=100
+  augroup END
+
   augroup filetype_ruby
     au!
     autocmd FileType ruby inoreabbrev <buffer> class class<CR>end<Up><End>
@@ -235,7 +240,7 @@ nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <Leader>n :nohls<CR>
 
 " Highlight overlong lines, ie. characters at col 79+
-" TODO use 'tw', put /../ in history
+" TODO use 'tw' and only when not empty, put /../ in history
 nnoremap <Leader>ol :highlight link OverLength ErrorMsg <Bar> match OverLength /\%79v.\+/<CR>
 nnoremap <Leader>oL :match none<CR>
 
