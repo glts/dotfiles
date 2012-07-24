@@ -156,17 +156,6 @@ if has("autocmd")
     autocmd FileType ruby inoreabbrev <buffer> def def()<CR>end<Up>
   augroup END
 
-  augroup filetype_c_cpp
-    au!
-    autocmd FileType c,cpp inoreabbrev <buffer> while while () {<CR>}<Up><End><Left><Left><Left>
-    autocmd FileType c,cpp inoreabbrev <buffer> main( int main(int argc, char *argv[])<CR>{<CR>return 0;<CR>}<Up><Up>
-  augroup END
-
-  augroup filetype_c
-    au!
-    autocmd FileType c inoreabbrev <buffer> printf( printf("");<Left><Left><Left>
-  augroup END
-
   augroup filetype_java
     au!
     autocmd FileType java inoreabbrev <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
@@ -204,6 +193,9 @@ nnoremap <C-H> <C-W>h
 nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
+"Think about sth like this:
+"nnoremap <C-Left> <C-W>-
+"nnoremap <C-Right> <C-W>+
 
 " Formatting shortcut
 nnoremap Q gwip
@@ -244,8 +236,8 @@ nnoremap <Leader>so :source %<CR>
 " change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
 
-" prettify XML fragments; NOTE depends on the surround plugin
-nnoremap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
+" prettify XML fragments, remaps to surround plugin map
+nmap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
 
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
@@ -329,6 +321,19 @@ function! s:UncamelcaseOperator(type)
 
   let @" = saved_unnamed_reg
 endfunction
+
+" TODO work in progress
+" Read template for the current filetype
+" Templates are stored as ~/.vim/templates/[<variant>.]<filetype>.tpl,
+" eg. "~/.vim/templates/strict.html.tpl"
+function! s:ReadTemplate(...)
+  if exists("a:1") " TODO not exists
+    exec 'read ~/.vim/templates/' . a:1 . '.' . &filetype . '.tpl' | 0d_
+  else
+    exec 'read ~/.vim/templates/'. &filetype . '.tpl' | 0d_
+  endif
+endfunction
+command! -nargs=? Template call s:ReadTemplate(<f-args>)
 
 "
 " Plugins and scripts
