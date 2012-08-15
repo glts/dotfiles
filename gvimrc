@@ -13,5 +13,6 @@ set columns=100
 
 "set guifont=Menlo:h12
 set guioptions-=T       " do not show the toolbar
+set guioptions-=m       " do not show the menu bar
 
 colorscheme blackboard
