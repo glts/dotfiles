@@ -2,9 +2,8 @@ echo "Sourcing .bashrc ..."
 
 HISTSIZE=1000
 HISTCONTROL=erasedups
-CDPATH="$HOME:$HOME/code"
+CDPATH=".:$HOME:$HOME/code"
 
-CDPATH=.:~/code
 shopt -s cdspell
 
 export LC_CTYPE=en_US.UTF-8
