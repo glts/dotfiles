@@ -108,7 +108,7 @@ if has("autocmd")
     " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
-    autocmd FileType sh setlocal ts=4 sts=4 sw=4 noexpandtab
+    autocmd FileType sh,tcl setlocal ts=4 sts=4 sw=4 noexpandtab
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noexpandtab
     autocmd FileType javascript setlocal ts=8 sw=2 sts=2 expandtab
     autocmd FileType css setlocal ts=8 sw=2 sts=2 expandtab
@@ -229,7 +229,7 @@ inoreabbrev @@ 676c7473@gmail.com
 inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
 
 nnoremap <silent> <Leader>l :set list!<CR>
-nnoremap <silent> <Leader>n :nohls<CR>
+nnoremap <silent> <BS> :nohls<CR>
 
 " Highlight overlong lines, ie. characters at col 79+
 " TODO use 'tw' and only when not empty, put /../ in history
@@ -242,7 +242,7 @@ nnoremap <Leader>so :source %<CR>
 nnoremap <Leader>d :lcd %:p:h<CR>
 
 " prettify XML fragments, remaps to surround plugin map
-nmap <Leader>x ggVGstroot>:%!xmllint --format -<CR>
+nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
 
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
