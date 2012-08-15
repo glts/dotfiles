@@ -110,8 +110,8 @@ if has("autocmd")
     autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
     autocmd FileType sh setlocal ts=4 sts=4 sw=4 noexpandtab
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noexpandtab
-    autocmd FileType javascript setlocal ts=8 sw=2 sts=2 expandtab
-    autocmd FileType css setlocal ts=8 sw=2 sts=2 expandtab
+    autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noexpandtab
+    autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
     autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 expandtab tw=72
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 expandtab tw=72
     autocmd FileType vim setlocal ts=8 sw=2 sts=2 expandtab
@@ -159,6 +159,16 @@ if has("autocmd")
     autocmd FileType ruby inoreabbrev <buffer> class class<CR>end<Up><End>
     autocmd FileType ruby inoreabbrev <buffer> module module<CR>end<Up><End>
     autocmd FileType ruby inoreabbrev <buffer> def def()<CR>end<Up>
+  augroup END
+
+  augroup filetype_c
+    au!
+    autocmd FileType c inoreabbrev <buffer> /* /**/<Left><Left>
+  augroup END
+
+  augroup filetype_javascript
+    au!
+    autocmd FileType javascript inoreabbrev <buffer> /* /**/<Left><Left>
   augroup END
 
   augroup filetype_java
@@ -285,7 +295,8 @@ if exists('&relativenumber')
       set relativenumber
     endif
   endfunction
-  noremap <silent> <Leader>m :<C-U>call <SID>ToggleRelativeNumber()<CR>
+  nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
+  vnoremap <silent> <Leader>m :<C-U>call <SID>ToggleRelativeNumber()<CR>gv
 endif
 
 " TODO don't forget to integrate these sooner or later!
