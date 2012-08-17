@@ -69,6 +69,7 @@ set shortmess+=I        " don't show intro screen at startup
 set wildmenu            " show tab-completion candidates in status line
 
 set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
+set fillchars=vert:│    " nicer separator for vertical splits
 
 set laststatus=2        " always display statusline
 
