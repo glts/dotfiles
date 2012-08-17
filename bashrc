@@ -2,8 +2,8 @@ echo "Sourcing .bashrc ..."
 
 HISTSIZE=1000
 HISTCONTROL=erasedups
+CDPATH=".:$HOME:$HOME/code"
 
-CDPATH=.:~/code
 shopt -s cdspell
 
 export LC_CTYPE=en_US.UTF-8
@@ -20,6 +20,11 @@ export EDITOR="${editor}"
 export PS1="\u@\h:\[\e[1m\]\w\[\e[0m\]\$ "
 export PS2="… "
 export PS3="Which # ? "
+
+export PERL_UNICODE=SAD
+# alternatively:
+export PERL5OPTS=-Mopen=:utf8,:std
+# But look these up first!
 
 alias la="ls -al"
 alias mvimr='mvim --remote-tab'
