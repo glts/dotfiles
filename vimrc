@@ -144,6 +144,12 @@ if has("autocmd")
     autocmd FileType sh inoreabbrev <buffer> while while; do<CR>done<Up><Right>
   augroup END
 
+  augroup filetype_perl
+    au!
+    autocmd FileType perl inoreabbrev <buffer> sub sub <C-G>u{<CR>}<Up><End><Left><Left>
+    autocmd FileType perl inoreabbrev <buffer> foreach foreach {<CR>}<Up><End><Left><Left>
+  augroup END
+
   augroup filetype_php
     au!
     autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
@@ -209,14 +215,22 @@ nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
 "Think about sth like this:
-"nnoremap <C-Left> <C-W>-
-"nnoremap <C-Right> <C-W>+
+nnoremap <C-Up> <C-W>+
+nnoremap <C-Down> <C-W>-
+nnoremap <C-Left> <C-W><
+nnoremap <C-Right> <C-W>>
 
 " Formatting shortcut
 nnoremap Q gwip
 
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
+
+" Search for Visual selection; TODO use another reg; which chars to escape?
+" should use \v to preserve symmetry (\?); else / ? history won't work
+" together well
+vnoremap * y/<C-R>=escape(@", '.*\/')<CR><CR>
+vnoremap # y?<C-R>=escape(@", '.*\/?')<CR><CR>
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
@@ -354,6 +368,21 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 "
 " Plugins and scripts
 "
+
+" My essential plugins; might use Vundle at some point
+" blackboard
+" commentary
+" gundo
+" matchit
+" nerdtree
+" python
+" ragtag
+" repeat
+" spacebox
+" surround
+" tabular
+" tagbar
+" unimpaired
 
 noremap <F2> :<C-U>NERDTreeToggle<CR>
 let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
