@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-07-05
+" Modified: 2012-10-23
 
 "
 " Init
@@ -220,6 +220,25 @@ nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
 nnoremap <C-Left> <C-W><
 nnoremap <C-Right> <C-W>>
+
+" Simple a/i text objects
+" TODO Perhaps create real text objects for these?
+nnoremap di<Bar> T<Bar>d,
+nnoremap da<Bar> F<Bar>d,
+nnoremap ci<Bar> T<Bar>c,
+nnoremap ca<Bar> F<Bar>c,
+nnoremap yi<Bar> T<Bar>y,
+nnoremap ya<Bar> F<Bar>y,
+nnoremap vi<Bar> T<Bar>v,
+nnoremap va<Bar> F<Bar>v,
+nnoremap di/ T/d,
+nnoremap da/ F/d,
+nnoremap ci/ T/c,
+nnoremap ca/ F/c,
+nnoremap yi/ T/y,
+nnoremap ya/ F/y,
+nnoremap vi/ T/v,
+nnoremap va/ F/v,
 
 " Formatting shortcut
 nnoremap Q gwip
