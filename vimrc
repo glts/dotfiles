@@ -107,16 +107,16 @@ if has("autocmd")
   augroup ft_settings
     au!
     " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
-    autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 expandtab
-    autocmd FileType python,perl,ruby,php setlocal ts=8 sw=4 sts=4 expandtab
-    autocmd FileType sh,tcl setlocal ts=4 sts=4 sw=4 noexpandtab
-    autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noexpandtab
-    autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noexpandtab
+    autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 et
+    autocmd FileType python,perl,php setlocal ts=8 sw=4 sts=4 et
+    autocmd FileType sh,tcl setlocal ts=4 sts=4 sw=4 noet
+    autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noet
+    autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noet
     autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
-    autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 expandtab tw=72
-    autocmd FileType markdown setlocal ts=8 sw=4 sts=4 expandtab tw=72
-    autocmd FileType vim setlocal ts=8 sw=2 sts=2 expandtab
-    autocmd FileType haskell setlocal ts=8 sw=4 sts=4 expandtab
+    autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 et tw=72
+    autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
+    autocmd FileType ruby,vim setlocal ts=8 sw=2 sts=2 et
+    autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
   augroup END
 
   augroup ft_vimhelp
@@ -145,6 +145,12 @@ if has("autocmd")
     autocmd FileType sh inoreabbrev <buffer> while while; do<CR>done<Up><Right>
   augroup END
 
+  augroup filetype_perl
+    au!
+    autocmd FileType perl inoreabbrev sub sub<C-G>u {<CR>}<Up><End><Left><Left>
+    autocmd FileType perl inoreabbrev foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
+  augroup END
+
   augroup filetype_php
     au!
     autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
@@ -157,9 +163,9 @@ if has("autocmd")
 
   augroup filetype_ruby
     au!
-    autocmd FileType ruby inoreabbrev <buffer> class class<CR>end<Up><End>
-    autocmd FileType ruby inoreabbrev <buffer> module module<CR>end<Up><End>
-    autocmd FileType ruby inoreabbrev <buffer> def def()<CR>end<Up>
+    autocmd FileType ruby inoreabbrev <buffer> class class<C-G>u<CR>end<Up><End>
+    autocmd FileType ruby inoreabbrev <buffer> module module<C-G>u<CR>end<Up><End>
+    autocmd FileType ruby inoreabbrev <buffer> def def<C-G>u()<CR>end<Up>
   augroup END
 
   augroup filetype_c
@@ -301,6 +307,7 @@ if exists('&relativenumber')
 endif
 
 " TODO don't forget to integrate these sooner or later!
+" TODO there is a bug when you call these on a word at the beginning of a line
 nnoremap <Leader>CC :set operatorfunc=<SID>CamelcaseOperator<CR>g@
 vnoremap <Leader>CC :<C-U>call <SID>CamelcaseOperator(visualmode())<CR>
 nnoremap <Leader>cc :set operatorfunc=<SID>UncamelcaseOperator<CR>g@
