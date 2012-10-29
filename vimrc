@@ -282,6 +282,9 @@ nnoremap <Leader>oL :match none<CR>
 
 nnoremap <Leader>so :source %<CR>
 
+" Toggle 'virtualedit' mode
+nnoremap <Leader>vv :set ve=<C-R>=&ve=='' ? 'all' : ''<CR><CR>
+
 " change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
 
