@@ -136,7 +136,7 @@ if has("autocmd")
   augroup filetype_vim
     au!
     autocmd FileType vim inoreabbrev <buffer> augroup augroup<CR>au!<CR>augroup END<Up><Up><End>
-    autocmd FileType vim inoreabbrev <buffer> func function! s:Function()<CR>endfunction<Up><End><Left>
+    autocmd FileType vim inoreabbrev <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left>
   augroup END
 
   augroup filetype_shell
