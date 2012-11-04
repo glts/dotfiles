@@ -67,6 +67,7 @@ set linebreak           " break screen lines at whitespace
 set display=lastline    " fit as much as possible of a long line on screen
 set shortmess+=I        " don't show intro screen at startup
 set wildmenu            " show tab-completion candidates in status line
+set wildmode=longest,list,full
 
 set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
 set fillchars=vert:│    " nicer separator for vertical splits
@@ -135,7 +136,7 @@ if has("autocmd")
 
   augroup filetype_vim
     au!
-    autocmd FileType vim inoreabbrev <buffer> augroup augroup<CR>au!<CR>augroup END<Up><Up><End>
+    autocmd FileType vim inoreabbrev <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
     autocmd FileType vim inoreabbrev <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left>
   augroup END
 
@@ -196,6 +197,13 @@ if has("autocmd")
     if has("conceal")
       autocmd FileType * setlocal conceallevel=0
     endif
+
+    " Highlight end of line spaces in normal mode
+    highlight default link EndOfLineSpace ErrorMsg
+    match EndOfLineSpace /\s\+$/
+
+    autocmd InsertEnter * hi link EndOfLineSpace Normal
+    autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
   augroup END
 
 else
