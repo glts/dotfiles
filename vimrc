@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-10-23
+" Modified: 2012-11-10
 
 "
 " Init
@@ -118,6 +118,7 @@ if has("autocmd")
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
     autocmd FileType ruby,vim setlocal ts=8 sw=2 sts=2 et
     autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
+    autocmd FileType tex setlocal tw=78
   augroup END
 
   augroup ft_vimhelp
@@ -272,6 +273,10 @@ inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
 
+" Easy use of filtered command-line history
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
 " Use aesthetic middle of screen for "zz"
 if has('float')
   nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
@@ -406,19 +411,20 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " commentary
 " gundo
 " matchit
-" nerdtree
+" nerdtree " on hiatus
 " python
 " ragtag
 " repeat
+" solarized
 " spacebox
 " surround
 " tabular
 " tagbar
 " unimpaired
 
-noremap <F2> :<C-U>NERDTreeToggle<CR>
-let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
-let NERDTreeShowHidden = 1
+" noremap <F2> :<C-U>NERDTreeToggle<CR>
+" let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
+" let NERDTreeShowHidden = 1
 
 noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
