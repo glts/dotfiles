@@ -436,6 +436,7 @@ noremap <F5> :<C-U>GundoToggle<CR>
 runtime! ftplugin/man.vim
 
 nnoremap <Leader>w :SpaceBox<CR>
+vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
 nnoremap <Leader>e :SpaceBoxInline<CR>
 
 " Convenient command to see the difference between the current buffer and the
