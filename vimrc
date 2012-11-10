@@ -217,6 +217,10 @@ endif
 
 let mapleader = "\\"
 
+" Trying something revolutionary here
+noremap : ;
+noremap ; :
+
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
