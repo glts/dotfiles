@@ -101,6 +101,12 @@ endif
 " Autocommands
 "
 
+" Helper function, see ":helpg Eatchar"
+function! EatTrigger()
+  let c = nr2char(getchar(0))
+  return c =~ '\s\|\r' ? '' : c
+endfunction
+
 if has("autocmd")
 
   filetype plugin indent on
@@ -138,7 +144,7 @@ if has("autocmd")
   augroup filetype_vim
     au!
     autocmd FileType vim inoreabbrev <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
-    autocmd FileType vim inoreabbrev <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left>
+    autocmd FileType vim inoreabbrev <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
   augroup END
 
   augroup filetype_shell
