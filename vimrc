@@ -51,6 +51,10 @@ if has('mouse')
   set mouse=a
 endif
 
+" TODO This raises an error E763 for some reason
+set spelllang=en_gb,de_ch
+set spellfile=~/.vim/spell/mine.utf-8.add
+
 " Format options
 "set formatoptions=...
 "set formatlistpat=...
@@ -143,55 +147,56 @@ if has("autocmd")
 
   augroup filetype_vim
     au!
-    autocmd FileType vim inoreabbrev <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
-    autocmd FileType vim inoreabbrev <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
+    autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
+    autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
   augroup END
 
   augroup filetype_shell
     au!
-    autocmd FileType sh inoreabbrev <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
-    autocmd FileType sh inoreabbrev <buffer> while while; do<CR>done<Up><Right>
+    autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
+    autocmd FileType sh inoreab <buffer> while while; do<CR>done<Up><Right>
   augroup END
 
   augroup filetype_perl
     au!
-    autocmd FileType perl inoreabbrev <buffer> sub sub<C-G>u {<CR>}<Up><End><Left><Left>
-    autocmd FileType perl inoreabbrev <buffer> foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
+    autocmd FileType perl inoreab <buffer> sub sub<C-G>u {<CR>}<Up><End><Left><Left>
+    autocmd FileType perl inoreab <buffer> foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
   augroup END
 
   augroup filetype_php
     au!
-    autocmd FileType php inoreabbrev <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
+    autocmd FileType php inoreab <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
   augroup END
 
   augroup filetype_python
     au!
     autocmd FileType python setlocal foldmethod=indent foldlevel=100
+    autocmd FileType python inoreab <buffer> def def<C-G>u(self):<Left><Left><Left><Left><Left><Left><Left>
   augroup END
 
   augroup filetype_ruby
     au!
-    autocmd FileType ruby inoreabbrev <buffer> class class<C-G>u<CR>end<Up><End>
-    autocmd FileType ruby inoreabbrev <buffer> module module<C-G>u<CR>end<Up><End>
-    autocmd FileType ruby inoreabbrev <buffer> def def<C-G>u()<CR>end<Up>
+    autocmd FileType ruby inoreab <buffer> class class<C-G>u<CR>end<Up><End>
+    autocmd FileType ruby inoreab <buffer> module module<C-G>u<CR>end<Up><End>
+    autocmd FileType ruby inoreab <buffer> def def<C-G>u()<CR>end<Up>
   augroup END
 
   augroup filetype_c
     au!
-    autocmd FileType c inoreabbrev <buffer> /* /**/<Left><Left>
+    autocmd FileType c inoreab <buffer> /* /**/<Left><Left>
   augroup END
 
   augroup filetype_javascript
     au!
-    autocmd FileType javascript inoreabbrev <buffer> /* /**/<Left><Left>
+    autocmd FileType javascript inoreab <buffer> /* /**/<Left><Left>
   augroup END
 
   augroup filetype_java
     au!
-    autocmd FileType java inoreabbrev <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
-    autocmd FileType java inoreabbrev <buffer> class public class {<CR>}<Up><End><Left><Left>
-    autocmd FileType java inoreabbrev <buffer> /* /*<CR>/<Up>
-    autocmd FileType java inoreabbrev <buffer> /** /**<CR>/<Up>
+    autocmd FileType java inoreab <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
+    autocmd FileType java inoreab <buffer> class public class {<CR>}<Up><End><Left><Left>
+    autocmd FileType java inoreab <buffer> /* /*<CR>/<Up>
+    autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
   augroup END
 
   augroup other
@@ -223,9 +228,9 @@ endif
 
 let mapleader = "\\"
 
-" Trying something revolutionary here
-noremap : ;
-noremap ; :
+" Trying something revolutionary here; edit: or rather not
+" noremap : ;
+" noremap ; :
 
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
@@ -267,9 +272,10 @@ vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v
 
 " Search for Visual selection; TODO use another reg; which chars to escape?
 " should use \v to preserve symmetry (\?); else / ? history won't work
+" no actually I should use the literal \V switch
 " together well
-vnoremap * y/<C-R>=escape(@", '.*\/')<CR><CR>
-vnoremap # y?<C-R>=escape(@", '.*\/?')<CR><CR>
+xnoremap * y/<C-R>=escape(@", '.*\/')<CR><CR>
+xnoremap # y?<C-R>=escape(@", '.*\/?')<CR><CR>
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
@@ -287,13 +293,17 @@ cnoremap <C-A> <Home>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
+" 'Fix' the & command as recommended in "Practical Vim"
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
+
 " Use aesthetic middle of screen for "zz"
 if has('float')
   nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
 endif
 
-inoreabbrev @@ 676c7473@gmail.com
-inoreabbrev <@@ glts <Lt>676c7473@gmail.com>
+inoreab @@ 676c7473@gmail.com
+inoreab <@@ glts <Lt>676c7473@gmail.com>
 
 nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <BS> :nohls<CR>
@@ -304,6 +314,12 @@ nnoremap <Leader>ol :highlight link OverLength ErrorMsg <Bar> match OverLength /
 nnoremap <Leader>oL :match none<CR>
 
 nnoremap <Leader>so :source %<CR>
+
+" Remove all trailing whitespace
+nnoremap <Leader>sd :%s/\s\+$<CR>
+
+" Toggle spell-checking
+nnoremap <Leader>sp :set spell!<CR>
 
 " Toggle 'virtualedit' mode
 nnoremap <Leader>vv :set ve=<C-R>=&ve=='' ? 'all' : ''<CR><CR>
@@ -324,10 +340,10 @@ cnoreabbrev w!! w !sudo tee % >/dev/null
 cnoreabbrev <expr> %% expand('%:h')
 
 " Insert current date
-inoreabbrev 2012- <C-R>=strftime("%Y-%m-%d")<CR>
+inoreab 2012- <C-R>=strftime("%Y-%m-%d")<CR>
 
 " Insert some "Lorem ipsum" text
-inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
   \ Integer sagittis risus quis lacus volutpat congue. Aenean porttitor
   \ facilisis risus, a varius purus vestibulum non. In porttitor molestie
@@ -431,10 +447,15 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " tabular
 " tagbar
 " unimpaired
+" vim-textobj-indent
+" vim-textobj-user
 
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
 " let NERDTreeShowHidden = 1
+
+" Enable Perl POD highlighting and spell-checking
+let perl_include_pod = 1
 
 noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
