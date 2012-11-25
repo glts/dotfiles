@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-11-10
+" Modified: 2012-11-25
 
 "
 " Init
@@ -216,6 +216,9 @@ if has("autocmd")
 
     autocmd InsertEnter * hi link EndOfLineSpace Normal
     autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
+
+    " TODO This works only if you have ch=2!
+    " autocmd VimEnter * CottidieTip!
   augroup END
 
 else
@@ -299,7 +302,7 @@ xnoremap & :&&<CR>
 
 " Use aesthetic middle of screen for "zz"
 if has('float')
-  nnoremap <silent> zz :exec "normal! zz" . float2nr(winheight(0)*0.1) . "\<Lt>C-E>"<CR>
+  nnoremap <expr> zz 'zz'.float2nr(winheight(0)*0.1).'<C-E>'
 endif
 
 inoreab @@ 676c7473@gmail.com
@@ -375,46 +378,6 @@ if exists('&relativenumber')
   vnoremap <silent> <Leader>m :<C-U>call <SID>ToggleRelativeNumber()<CR>gv
 endif
 
-" TODO don't forget to integrate these sooner or later!
-" TODO there is a bug when you call these on a word at the beginning of a line
-nnoremap <Leader>CC :set operatorfunc=<SID>CamelcaseOperator<CR>g@
-vnoremap <Leader>CC :<C-U>call <SID>CamelcaseOperator(visualmode())<CR>
-nnoremap <Leader>cc :set operatorfunc=<SID>UncamelcaseOperator<CR>g@
-vnoremap <Leader>cc :<C-U>call <SID>UncamelcaseOperator(visualmode())<CR>
-
-function! s:CamelcaseOperator(type)
-  let saved_unnamed_reg = @"
-
-  if a:type ==# 'v'
-    exec "normal! `<v`>c"
-  elseif a:type ==# 'char'
-    exec "normal! `[v`]c"
-  else
-    return
-  endif
-  let @" = substitute(@", '\v_([a-z])', '\u\1', 'g')
-  normal! p
-
-  let @" = saved_unnamed_reg
-endfunction
-
-function! s:UncamelcaseOperator(type)
-  let saved_unnamed_reg = @"
-
-  if a:type ==# 'v'
-    exec "normal! `<v`>c"
-  elseif a:type ==# 'char'
-    exec "normal! `[v`]c"
-  else
-    return
-  endif
-  let @" = substitute(@", '\v([a-z])([A-Z])', '\1_\l\2', 'g')
-  let @" = substitute(@", '\v([A-Z])', '\l\1', 'g')
-  normal! p
-
-  let @" = saved_unnamed_reg
-endfunction
-
 " TODO work in progress
 " Read template for the current filetype
 " Templates are stored as ~/.vim/templates/[<variant>.]<filetype>.tpl,
@@ -433,6 +396,7 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 "
 
 " My essential plugins; might use Vundle at some point
+" abolish
 " blackboard
 " commentary
 " gundo
