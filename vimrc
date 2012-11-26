@@ -395,24 +395,14 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " Plugins and scripts
 "
 
-" My essential plugins; might use Vundle at some point
+" TODO Putting plugins inside glts/dotfiles ...
 " abolish
-" blackboard
-" commentary
 " gundo
-" matchit
 " nerdtree " on hiatus
-" python
 " ragtag
-" repeat
-" solarized
 " spacebox
-" surround
 " tabular
 " tagbar
-" unimpaired
-" vim-textobj-indent
-" vim-textobj-user
 
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
@@ -433,6 +423,8 @@ runtime! ftplugin/man.vim
 nnoremap <Leader>w :SpaceBox<CR>
 vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
 nnoremap <Leader>e :SpaceBoxInline<CR>
+
+let g:cottidie_tips_files = ['~/mytips.txt']
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
