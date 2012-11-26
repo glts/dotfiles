@@ -108,7 +108,7 @@ endif
 " Helper function, see ":helpg Eatchar"
 function! EatTrigger()
   let c = nr2char(getchar(0))
-  return c =~ '\s\|\r' ? '' : c
+  return c =~# '\s\|\r' ? '' : c
 endfunction
 
 if has("autocmd")
@@ -373,9 +373,12 @@ if exists('&relativenumber')
       let b:togglernu_number = &number
       set relativenumber
     endif
+    redraw! " these two lines required for omap
+    return ''
   endfunction
   nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
-  vnoremap <silent> <Leader>m :<C-U>call <SID>ToggleRelativeNumber()<CR>gv
+  vnoremap <silent> m :<C-U>call <SID>ToggleRelativeNumber()<CR>gv
+  onoremap <expr> m <SID>ToggleRelativeNumber()
 endif
 
 " TODO work in progress
