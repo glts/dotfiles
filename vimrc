@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-11-25
+" Modified: 2012-11-27
 
 "
 " Init
@@ -398,15 +398,7 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " Plugins and scripts
 "
 
-" TODO Putting plugins inside glts/dotfiles ...
-" abolish
-" gundo
-" nerdtree " on hiatus
-" ragtag
-" spacebox
-" tabular
-" tagbar
-
+" NERDTree is on hiatus
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
 " let NERDTreeShowHidden = 1
@@ -428,6 +420,7 @@ vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
 nnoremap <Leader>e :SpaceBoxInline<CR>
 
 let g:cottidie_tips_files = ['~/mytips.txt']
+" let g:cottidie_no_default_tips = 1
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
