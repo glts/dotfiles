@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-11-25
+" Modified: 2012-12-02
 
 "
 " Init
@@ -267,6 +267,12 @@ nnoremap ya/ F/y,
 nnoremap vi/ T/v,
 nnoremap va/ F/v,
 
+" Screen line movement as default
+nnoremap j gj
+nnoremap k gk
+nnoremap gj j
+nnoremap gk k
+
 " Formatting shortcut
 nnoremap Q gwip
 
@@ -295,6 +301,9 @@ cnoremap <C-A> <Home>
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
+
+" Folding
+nnoremap <Space> za
 
 " 'Fix' the & command as recommended in "Practical Vim"
 nnoremap & :&&<CR>
