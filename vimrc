@@ -273,12 +273,15 @@ nnoremap Q gwip
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
 
-" Search for Visual selection; TODO use another reg; which chars to escape?
-" should use \v to preserve symmetry (\?); else / ? history won't work
-" no actually I should use the literal \V switch
-" together well
-xnoremap * y/<C-R>=escape(@", '.*\/')<CR><CR>
-xnoremap # y?<C-R>=escape(@", '.*\/?')<CR><CR>
+" Search for Visual selection from "Practical Vim"
+function! s:VSetSearch()
+  let reg_save = @s
+  normal! gv"sy
+  let @/ = '\V' . substitute(escape(@s, '/\'),'\n','\\n','g')
+  let @s = reg_save
+endfunction
+xnoremap * :<C-U>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-U>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
