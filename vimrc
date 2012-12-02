@@ -279,12 +279,15 @@ nnoremap Q gwip
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
 
-" Search for Visual selection; TODO use another reg; which chars to escape?
-" should use \v to preserve symmetry (\?); else / ? history won't work
-" no actually I should use the literal \V switch
-" together well
-xnoremap * y/<C-R>=escape(@", '.*\/')<CR><CR>
-xnoremap # y?<C-R>=escape(@", '.*\/?')<CR><CR>
+" Search for Visual selection from "Practical Vim"
+function! s:VSetSearch()
+  let reg_save = @s
+  normal! gv"sy
+  let @/ = '\V' . substitute(escape(@s, '/\'),'\n','\\n','g')
+  let @s = reg_save
+endfunction
+xnoremap * :<C-U>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-U>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
@@ -407,15 +410,7 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " Plugins and scripts
 "
 
-" TODO Putting plugins inside glts/dotfiles ...
-" abolish
-" gundo
-" nerdtree " on hiatus
-" ragtag
-" spacebox
-" tabular
-" tagbar
-
+" NERDTree is on hiatus
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
 " let NERDTreeShowHidden = 1
@@ -437,6 +432,7 @@ vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
 nnoremap <Leader>e :SpaceBoxInline<CR>
 
 let g:cottidie_tips_files = ['~/mytips.txt']
+" let g:cottidie_no_default_tips = 1
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
