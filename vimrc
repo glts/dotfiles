@@ -10,6 +10,10 @@
 " Sine qua non setting
 set nocompatible
 
+" Source Vim plugins; don't use :runtime after pathogen has been loaded
+" Use :Man or K to display the man page for the word under the cursor
+runtime ftplugin/man.vim
+
 " Pathogen is our plugin manager
 call pathogen#infect()
 
@@ -414,9 +418,6 @@ let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
 noremap <F5> :<C-U>GundoToggle<CR>
-
-" Use :Man or S-k to display the man page for the word under the cursor
-runtime! ftplugin/man.vim
 
 nnoremap <Leader>w :SpaceBox<CR>
 vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
