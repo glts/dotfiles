@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-11-27
+" Modified: 2012-12-04
 
 "
 " Init
@@ -220,6 +220,9 @@ if has("autocmd")
 
     autocmd InsertEnter * hi link EndOfLineSpace Normal
     autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
+
+    " Update date before writing vimrc
+    autocmd BufWritePre .{g,}vimrc 1,/^$/s/201\d-\d\d-\d\d/\=strftime('%Y-%m-%d')/ | normal! ``
 
     " TODO This works only if you have ch=2!
     " autocmd VimEnter * CottidieTip!
