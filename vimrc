@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-04
+" Modified: 2012-12-05
 
 "
 " Init
@@ -430,10 +430,6 @@ let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
 noremap <F5> :<C-U>GundoToggle<CR>
-
-nnoremap <Leader>w :SpaceBox<CR>
-vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
-nnoremap <Leader>e :SpaceBoxInline<CR>
 
 let g:cottidie_tips_files = ['~/mytips.txt']
 " let g:cottidie_no_default_tips = 1

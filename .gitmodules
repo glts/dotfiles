@@ -1,6 +1,3 @@
-[submodule "vim/bundle/spacebox"]
-	path = vim/bundle/spacebox
-	url = git://github.com/glts/vim-spacebox.git
 [submodule "vim/bundle/texlog"]
 	path = vim/bundle/texlog
 	url = git://github.com/glts/vim-texlog.git
