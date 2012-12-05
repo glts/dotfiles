@@ -436,10 +436,6 @@ let g:tagbar_autofocus = 1
 
 noremap <F5> :<C-U>GundoToggle<CR>
 
-nnoremap <Leader>w :SpaceBox<CR>
-vnoremap <Leader>w <Esc>:<C-U>SpaceBox<CR>
-nnoremap <Leader>e :SpaceBoxInline<CR>
-
 let g:cottidie_tips_files = ['~/mytips.txt']
 " let g:cottidie_no_default_tips = 1
 
