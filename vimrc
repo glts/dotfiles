@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-04
+" Modified: 2012-12-05
 
 "
 " Init
@@ -223,6 +223,11 @@ if has("autocmd")
 
     " Update date before writing vimrc
     autocmd BufWritePre .{g,}vimrc 1,/^$/s/201\d-\d\d-\d\d/\=strftime('%Y-%m-%d')/ | normal! ``
+
+    " Make colour column into colour gutter
+    if exists('&colorcolumn') && has('gui_running')
+      autocmd FileType * if &tw != 0 | let &cc=join(range(&tw+1,199),',') | endif
+    endif
 
     " TODO This works only if you have ch=2!
     " autocmd VimEnter * CottidieTip!
