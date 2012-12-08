@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-05
+" Modified: 2012-12-08
 
 "
 " Init
@@ -436,8 +436,8 @@ let g:tagbar_autofocus = 1
 
 noremap <F5> :<C-U>GundoToggle<CR>
 
-let g:cottidie_tips_files = ['~/mytips.txt']
-" let g:cottidie_no_default_tips = 1
+" let g:cottidie_default_tips_file = ''
+let g:cottidie_extra_tips_files = ['~/mytips.txt'] ", 'http://glts.github.com/vim-cottidie/tips']
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
