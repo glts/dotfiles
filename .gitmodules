@@ -1,3 +1,6 @@
 [submodule "vim/bundle/texlog"]
 	path = vim/bundle/texlog
 	url = git://github.com/glts/vim-texlog.git
+[submodule "vim/bundle/textobj-indblock"]
+	path = vim/bundle/textobj-indblock
+	url = git://github.com/glts/vim-textobj-indblock.git
