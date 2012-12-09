@@ -421,8 +421,8 @@ let g:tagbar_autofocus = 1
 
 noremap <F5> :<C-U>GundoToggle<CR>
 
-" let g:cottidie_default_tips_file = ''
-let g:cottidie_extra_tips_files = ['~/mytips.txt'] ", 'http://glts.github.com/vim-cottidie/tips']
+" let g:cottidie_default_tips = ''
+let g:cottidie_extra_tips = ['~/mytips.txt'] ", 'http://glts.github.com/vim-cottidie/tips']
 
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
