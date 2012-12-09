@@ -1,7 +1,6 @@
-" Settings I only want in gvim/mvim
-"
+" My GVim/MacVim settings.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-02
+" Modified: 2012-12-09
 
 set cursorline          " highlight cursor line
 if exists('&colorcolumn')

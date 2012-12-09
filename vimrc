@@ -1,28 +1,19 @@
-" My .vimrc settings, adapted from the example.
-"
+" My vimrc.
 " Author: glts <676c7473@gmail.com>
 " Modified: 2012-12-09
 
-"
-" Init
-"
-
+" Init {{{1
 " Sine qua non setting
 set nocompatible
 
-" Source Vim plugins; don't use :runtime after pathogen has been loaded
-" Use :Man or K to display the man page for the word under the cursor
+" Source Vim plugins before pathogen modifies the runtime path
 runtime ftplugin/man.vim
 
 " Pathogen is our plugin manager
 call pathogen#infect()
 
-"
-" Various settings
-"
-
-" Behaviour
-
+" Settings {{{1
+" Behaviour {{{2
 set directory=~/tmp,.   " directory for swap files
 set nobackup            " do not keep backup files
 set writebackup         " keep a temporary backup while writing a file
@@ -63,8 +54,7 @@ set spellfile=~/.vim/spell/mine.utf-8.add
 "set formatoptions=...
 "set formatlistpat=...
 
-" Appearance
-
+" Appearance {{{2
 set ruler               " show cursor position, 'statusline' overrides this
 set number              " show line numbers
 set showmatch           " have your matching brackets wink at you
@@ -105,10 +95,7 @@ if &t_Co > 2 || has("gui_running")
   set hlsearch
 endif
 
-"
-" Autocommands
-"
-
+" Autocommands {{{1
 " Helper function, see ":helpg Eatchar"
 function! EatTrigger()
   let c = nr2char(getchar(0))
@@ -151,6 +138,7 @@ if has("autocmd")
 
   augroup filetype_vim
     au!
+    autocmd FileType vim setlocal nowrap foldmethod=marker
     autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
     autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
   augroup END
@@ -237,10 +225,7 @@ else
   set autoindent
 endif
 
-"
-" Mappings and abbreviations
-"
-
+" Mappings and abbreviations {{{1
 let mapleader = "\\"
 
 " Trying something revolutionary here; edit: or rather not
@@ -371,7 +356,7 @@ cnoreabbrev <expr> %% expand('%:h')
 " Insert current date
 inoreab 2012- <C-R>=strftime("%Y-%m-%d")<CR>
 
-" Insert some "Lorem ipsum" text
+" Insert some "Lorem ipsum" text {{{3
 inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
   \ Integer sagittis risus quis lacus volutpat congue. Aenean porttitor
@@ -382,6 +367,7 @@ inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ convallis malesuada. Duis congue ligula quis orci tincidunt dignissim.
   \ Ut pellentesque risus ut lectus porta porttitor. Donec dictum lectus sit
   \ amet felis aliquam dictum. Integer tempor tincidunt interdum.
+" }}}
 
 " open help in a separate tab with <F1>
 noremap <F1> :<C-U>tab help<CR>
@@ -420,10 +406,7 @@ function! s:ReadTemplate(...)
 endfunction
 command! -nargs=? Template call s:ReadTemplate(<f-args>)
 
-"
-" Plugins and scripts
-"
-
+" Plugins and scripts {{{1
 " NERDTree is on hiatus
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
