@@ -1,7 +1,7 @@
 " My .vimrc settings, adapted from the example.
 "
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-08
+" Modified: 2012-12-09
 
 "
 " Init
@@ -292,14 +292,16 @@ nnoremap Q gwip
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
 
 " Search for Visual selection from "Practical Vim"
-function! s:VSetSearch()
+function! s:VSetSearch(cmdtype)
   let reg_save = @s
   normal! gv"sy
-  let @/ = '\V' . substitute(escape(@s, '/\'),'\n','\\n','g')
+  let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'),'\n','\\n','g')
   let @s = reg_save
 endfunction
-xnoremap * :<C-U>call <SID>VSetSearch()<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-U>call <SID>VSetSearch()<CR>?<C-R>=@/<CR><CR>
+xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
+xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+xnoremap g* *
+xnoremap g# #
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
