@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-09
+" Modified: 2012-12-10
 
 " Init {{{1
 " Sine qua non setting
@@ -46,7 +46,10 @@ if has('mouse')
   set mouse=a
 endif
 
-" TODO This raises an error E763 for some reason
+" Don't open folds when moving with } {
+set foldopen-=block
+
+" Spellcheck setup
 set spelllang=en_gb,de_ch
 set spellfile=~/.vim/spell/mine.utf-8.add
 

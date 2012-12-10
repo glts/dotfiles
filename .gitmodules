@@ -4,6 +4,3 @@
 [submodule "vim/bundle/textobj-indblock"]
 	path = vim/bundle/textobj-indblock
 	url = git://github.com/glts/vim-textobj-indblock.git
-[submodule "vim/bundle/bracejumper"]
-	path = vim/bundle/bracejumper
-	url = git://github.com/glts/vim-bracejumper.git
