@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-10
+" Modified: 2012-12-17
 
 " Init {{{1
 " Sine qua non setting
@@ -31,6 +31,8 @@ set shiftround          " round to next virtual "tabstop" when indenting
 
 set modeline            " always look for 2 modelines
 set modelines=2
+
+set report=1            " report changes that affect more than one line
 
 set encoding=utf-8      " default encoding is UTF-8 always
 set fileencoding=       " use the same encoding for a file as for the buffer
