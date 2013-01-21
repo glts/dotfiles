@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2012-12-17
+" Modified: 2013-01-21
 
 " Init {{{1
 " Sine qua non setting
@@ -359,7 +359,7 @@ cnoreabbrev w!! w !sudo tee % >/dev/null
 cnoreabbrev <expr> %% expand('%:h')
 
 " Insert current date
-inoreab 2012- <C-R>=strftime("%Y-%m-%d")<CR>
+inoreab 2013- <C-R>=strftime("%Y-%m-%d")<CR>
 
 " Insert some "Lorem ipsum" text {{{3
 inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
