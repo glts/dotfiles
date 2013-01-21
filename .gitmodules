@@ -4,3 +4,6 @@
 [submodule "vim/bundle/textobj-indblock"]
 	path = vim/bundle/textobj-indblock
 	url = git://github.com/glts/vim-textobj-indblock.git
+[submodule "vim/bundle/cottidie"]
+	path = vim/bundle/cottidie
+	url = git://github.com/glts/vim-cottidie.git
