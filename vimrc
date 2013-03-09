@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-01-21
+" Modified: 2013-03-09
 
 " Init {{{1
 " Sine qua non setting
@@ -186,6 +186,7 @@ if has("autocmd")
   augroup filetype_javascript
     au!
     autocmd FileType javascript inoreab <buffer> /* /**/<Left><Left>
+    autocmd BufNewFile,BufRead *.json setfiletype javascript
   augroup END
 
   augroup filetype_java
@@ -297,10 +298,7 @@ xnoremap g# #
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
 
 " emulate command-line CTRL-K
-" no this doesn't work because of Vims strange <C-O> behaviour (wrong col)
-inoremap <C-K> <C-O>:exec ':s/\%' . col(".") . 'c.*//'<CR><End><C-O>:nohls<CR>
-" if (len(getline(".")) != col(".")) | normal! Da | endif
-"inoremap <C-K> <C-O>:if (len(getline(".")) != col(".")) | normal! Da | endif
+inoremap <C-K> <C-\><C-O>D
 
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
@@ -416,6 +414,9 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 " noremap <F2> :<C-U>NERDTreeToggle<CR>
 " let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
 " let NERDTreeShowHidden = 1
+
+" Use bash as default .sh filetype, see ":h ft-sh-syntax"
+let g:is_bash = 1
 
 " Enable Perl POD highlighting and spell-checking
 let perl_include_pod = 1
