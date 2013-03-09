@@ -1,3 +1,10 @@
 " Minimal vimrc for testing purposes
 set nocompatible
 filetype plugin indent on
+
+set nobackup
+set hidden
+set backspace=indent,eol,start
+
+set showcmd
+set ruler
