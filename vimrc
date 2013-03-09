@@ -18,10 +18,14 @@ set directory=~/tmp,.   " directory for swap files
 set nobackup            " do not keep backup files
 set writebackup         " keep a temporary backup while writing a file
 
-set undofile            " remember undo histories inside 'undodir'
-set undodir=~/tmp/vim/undo
-if !isdirectory(expand(&undodir))
-  call mkdir(expand(&undodir), "p")
+if exists('+undofile')
+  set undofile          " remember undo histories inside 'undodir'
+endif
+if exists('+undodir')
+  set undodir=~/tmp/vim/undo
+  if !isdirectory(expand(&undodir))
+    call mkdir(expand(&undodir), "p")
+  endif
 endif
 
 set hidden
