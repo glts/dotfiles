@@ -18,6 +18,12 @@ set directory=~/tmp,.   " directory for swap files
 set nobackup            " do not keep backup files
 set writebackup         " keep a temporary backup while writing a file
 
+set undofile            " remember undo histories inside 'undodir'
+set undodir=~/tmp/vim/undo
+if !isdirectory(expand(&undodir))
+  call mkdir(expand(&undodir), "p")
+endif
+
 set hidden
 
 set history=200         " keep 200 lines of command-line history
@@ -93,6 +99,8 @@ set statusline+=col\ %v         "virtual cursor column
 set statusline+=(%c)            "cursor column
 set statusline+=\ ln\ %l\ of\ %L   "cursor line/total lines
 set statusline+=\ %P            "percent through file
+
+" set t_Co=256
 
 " Switch syntax and search highlighting on whenever colour is available
 if &t_Co > 2 || has("gui_running")
@@ -269,12 +277,6 @@ nnoremap yi/ T/y,
 nnoremap ya/ F/y,
 nnoremap vi/ T/v,
 nnoremap va/ F/v,
-
-" Screen line movement as default
-nnoremap j gj
-nnoremap k gk
-nnoremap gj j
-nnoremap gk k
 
 " Formatting shortcut
 nnoremap Q gwip
