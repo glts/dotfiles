@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-01-21
+" Modified: 2013-03-09
 
 " Init {{{1
 " Sine qua non setting
@@ -17,6 +17,12 @@ call pathogen#infect()
 set directory=~/tmp,.   " directory for swap files
 set nobackup            " do not keep backup files
 set writebackup         " keep a temporary backup while writing a file
+
+set undofile            " remember undo histories inside 'undodir'
+set undodir=~/tmp/vim/undo
+if !isdirectory(expand(&undodir))
+  call mkdir(expand(&undodir), "p")
+endif
 
 set hidden
 
@@ -93,6 +99,8 @@ set statusline+=col\ %v         "virtual cursor column
 set statusline+=(%c)            "cursor column
 set statusline+=\ ln\ %l\ of\ %L   "cursor line/total lines
 set statusline+=\ %P            "percent through file
+
+" set t_Co=256
 
 " Switch syntax and search highlighting on whenever colour is available
 if &t_Co > 2 || has("gui_running")
@@ -268,12 +276,6 @@ nnoremap yi/ T/y,
 nnoremap ya/ F/y,
 nnoremap vi/ T/v,
 nnoremap va/ F/v,
-
-" Screen line movement as default
-nnoremap j gj
-nnoremap k gk
-nnoremap gj j
-nnoremap gk k
 
 " Formatting shortcut
 nnoremap Q gwip
