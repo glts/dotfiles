@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-03-09
+" Modified: 2013-03-13
 
 " Init {{{1
 " Sine qua non setting
@@ -30,7 +30,7 @@ endif
 
 set hidden
 
-set history=200         " keep 200 lines of command-line history
+set history=1000         " keep 1000 lines of command-line history
 
 " more intuitive backspace behaviour
 set backspace=indent,eol,start
@@ -150,7 +150,8 @@ if has("autocmd")
     au!
     " TODO if it's a Vim help file or markdown etc. don't apply this
     autocmd BufNewFile *.txt setfiletype text
-    autocmd FileType text setlocal textwidth=72 formatoptions+=n autoindent
+    autocmd FileType text setlocal textwidth=72 ts=8 sw=4 sts=4 et ai
+          \ formatoptions+=n comments=n:>,fb:-,fb:*
   augroup END
 
   augroup filetype_vim
@@ -357,10 +358,10 @@ nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
 nnoremap <Leader>ct :!ctags -R<CR>
 
 " Write file as super user
-cnoreabbrev w!! w !sudo tee % >/dev/null
+cnoreab w!! w !sudo tee % >/dev/null
 
 " Expand dirname for current file
-cnoreabbrev <expr> %% expand('%:h')
+cnoreab <expr> %% expand('%:h')
 
 " Insert current date
 inoreab 2013- <C-R>=strftime("%Y-%m-%d")<CR>
