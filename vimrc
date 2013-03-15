@@ -247,10 +247,6 @@ endif
 " Mappings and abbreviations {{{1
 let mapleader = "\\"
 
-" Trying something revolutionary here; edit: or rather not
-" noremap : ;
-" noremap ; :
-
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
@@ -258,14 +254,12 @@ nnoremap <C-H> <C-W>h
 nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-L> <C-W>l
-"Think about sth like this:
 nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
 nnoremap <C-Left> <C-W><
 nnoremap <C-Right> <C-W>>
 
 " Simple a/i text objects
-" TODO Perhaps create real text objects for these?
 nnoremap di<Bar> T<Bar>d,
 nnoremap da<Bar> F<Bar>d,
 nnoremap ci<Bar> T<Bar>c,
@@ -304,7 +298,7 @@ xnoremap g# #
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
 
-" emulate command-line CTRL-K
+" Emulate Readline's CTRL-K (kill-line)
 inoremap <C-K> <C-\><C-O>D
 
 " Counterpart to the existing <C-E>
