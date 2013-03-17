@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-03-13
+" Modified: 2013-03-17
 
 " Init {{{1
 " Sine qua non setting
@@ -300,6 +300,9 @@ nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "
 
 " Emulate Readline's CTRL-K (kill-line)
 inoremap <C-K> <C-\><C-O>D
+
+" Insert mode CTRL-W counterpart for WORDs
+inoremap <C-Q> <C-\><C-O>dB
 
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
