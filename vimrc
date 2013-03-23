@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-03-13
+" Modified: 2013-03-23
 
 " Init {{{1
 " Sine qua non setting
@@ -294,6 +294,10 @@ xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 xnoremap g* *
 xnoremap g# #
+
+" Search but don't move
+nnoremap <silent> g* :keepjumps normal! mxHmy`x*'yzt`x<CR>
+nnoremap <silent> g# :keepjumps normal! mxHmy`x#'yzt`x<CR>
 
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
