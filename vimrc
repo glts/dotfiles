@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-03-17
+" Modified: 2013-03-23
 
 " Init {{{1
 " Sine qua non setting
@@ -82,7 +82,8 @@ set shortmess+=I        " don't show intro screen at startup
 set wildmenu            " show tab-completion candidates in status line
 set wildmode=longest,list,full
 
-set listchars=tab:▸\ ,eol:¬     " unprintable chars for 'list' mode
+" unprintable chars for 'list' mode
+set listchars=tab:▸\ ,eol:¬,trail:·
 set fillchars=vert:│    " nicer separator for vertical splits
 
 set laststatus=2        " always display statusline
@@ -222,11 +223,10 @@ if has("autocmd")
     endif
 
     " Highlight end of line spaces in normal mode
-    highlight default link EndOfLineSpace ErrorMsg
-    match EndOfLineSpace /\s\+$/
-
-    autocmd InsertEnter * hi link EndOfLineSpace Normal
-    autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
+    " highlight default link EndOfLineSpace ErrorMsg
+    " match EndOfLineSpace /\s\+$/
+    " autocmd InsertEnter * hi link EndOfLineSpace Normal
+    " autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 
     " Update date before writing vimrc
     autocmd BufWritePre .{g,}vimrc 1,/^$/s/201\d-\d\d-\d\d/\=strftime('%Y-%m-%d')/ | normal! ``
