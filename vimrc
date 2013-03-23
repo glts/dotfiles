@@ -295,6 +295,10 @@ xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 xnoremap g* *
 xnoremap g# #
 
+" Search but don't move
+nnoremap <silent> g* :keepjumps normal! mxHmy`x*'yzt`x<CR>
+nnoremap <silent> g# :keepjumps normal! mxHmy`x#'yzt`x<CR>
+
 " Show stack of syntax items at cursor position
 nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
 
