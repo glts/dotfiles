@@ -305,6 +305,9 @@ nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "
 " Emulate Readline's CTRL-K (kill-line)
 inoremap <C-K> <C-\><C-O>D
 
+" Insert mode CTRL-W counterpart for WORDs
+inoremap <C-Q> <C-\><C-O>dB
+
 " Counterpart to the existing <C-E>
 cnoremap <C-A> <Home>
 
