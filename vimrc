@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-03-25
+" Modified: 2013-04-12
 
 " Init {{{1
 " Sine qua non setting
@@ -10,7 +10,7 @@ set nocompatible
 runtime ftplugin/man.vim
 
 " Pathogen is our plugin manager
-call pathogen#infect()
+execute pathogen#infect()
 
 " Settings {{{1
 " Behaviour {{{2
@@ -367,7 +367,7 @@ cnoreab <expr> %% expand('%:h')
 " Insert current date
 inoreab 2013- <C-R>=strftime("%Y-%m-%d")<CR>
 
-" Insert some "Lorem ipsum" text {{{3
+" Insert some "Lorem ipsum" text {{{2
 inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
   \ Integer sagittis risus quis lacus volutpat congue. Aenean porttitor
@@ -378,7 +378,7 @@ inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ convallis malesuada. Duis congue ligula quis orci tincidunt dignissim.
   \ Ut pellentesque risus ut lectus porta porttitor. Donec dictum lectus sit
   \ amet felis aliquam dictum. Integer tempor tincidunt interdum.
-" }}}
+" }}}2
 
 " open help in a separate tab with <F1>
 noremap <F1> :<C-U>tab help<CR>
