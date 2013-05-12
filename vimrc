@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-04-12
+" Modified: 2013-05-12
 
 " Init {{{1
 " Sine qua non setting
@@ -65,9 +65,9 @@ set foldopen-=block
 set spelllang=en_gb,de_ch
 set spellfile=~/.vim/spell/mine.utf-8.add
 
-" Format options
-"set formatoptions=...
-"set formatlistpat=...
+" Strip comment leaders when joining lines
+silent! set formatoptions+=j
+" TODO set formatlistpat=...
 
 " Appearance {{{2
 set ruler               " show cursor position, 'statusline' overrides this
@@ -93,9 +93,9 @@ set laststatus=2        " always display statusline
 " TODO %c do not display if == %v
 set statusline=%f               "tail of the filename
 " TODO check 'fileencoding' and 'encoding' option
-set statusline+=\ ▶\ %{&enc}    "file format
-set statusline+=\ ▶\ %{&ff}     "file format
-set statusline+=\ ▶\ %{&ft}     "filetype
+set statusline+=\ \|\ %{&enc}   "file format
+set statusline+=\ \|\ %{&ff}    "file format
+set statusline+=\ \|\ %{&ft}    "filetype
 set statusline+=\ %h            "help file flag
 set statusline+=%m              "modified flag
 set statusline+=%r              "read only flag
@@ -326,6 +326,9 @@ xnoremap & :&&<CR>
 if has('float')
   nnoremap <expr> zz 'zz'.float2nr(winheight(0)*0.1).'<C-E>'
 endif
+
+" Indent current line exactly like previous line
+inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',matchstr(getline(line(".")-1),'^\s*'),''))<CR>I
 
 inoreab @@ 676c7473@gmail.com
 inoreab <@@ glts <Lt>676c7473@gmail.com>
