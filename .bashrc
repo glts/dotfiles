@@ -1,5 +1,7 @@
 echo "Sourcing .bashrc ..."
 
+export TERM=xterm-256color
+
 HISTSIZE=1000
 HISTCONTROL=erasedups
 CDPATH=".:$HOME:$HOME/code"
