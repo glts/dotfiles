@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-05-12
+" Modified: 2013-05-20
 
 " Init {{{1
 " Sine qua non setting
@@ -31,6 +31,11 @@ endif
 set hidden
 
 set history=1000         " keep 1000 lines of command-line history
+
+" Get rid of the delay after <Esc>O in terminal Vim
+set timeout
+set timeoutlen=1200
+set ttimeoutlen=100
 
 " more intuitive backspace behaviour
 set backspace=indent,eol,start
