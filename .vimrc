@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-05-20
+" Modified: 2013-06-01
 
 " Init {{{1
 " Sine qua non setting
@@ -158,6 +158,11 @@ if has("autocmd")
     autocmd BufNewFile *.txt setfiletype text
     autocmd FileType text setlocal textwidth=72 ts=8 sw=4 sts=4 et ai
           \ formatoptions+=n comments=n:>,fb:-,fb:*
+  augroup END
+
+  augroup filetype_liquid
+    au!
+    autocmd FileType markdown if expand('%:p:t') =~# '\d\d\d\d-\d\d-\d\d-.*\.markdown' | set ft=liquid | endif
   augroup END
 
   augroup filetype_vim
