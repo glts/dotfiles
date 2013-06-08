@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-06-01
+" Modified: 2013-06-08
 
 " Init {{{1
 " Sine qua non setting
@@ -36,6 +36,11 @@ set history=1000         " keep 1000 lines of command-line history
 set timeout
 set timeoutlen=1200
 set ttimeoutlen=100
+
+" Always use the "old" (but safer and faster!) regexp engine
+if exists('&regexpengine')
+  set regexpengine=1
+endif
 
 " more intuitive backspace behaviour
 set backspace=indent,eol,start
