@@ -179,9 +179,7 @@ if has("autocmd")
 
   augroup filetype_vspec
     au!
-    autocmd BufRead *.t if search('^\s*describe\s\+\([''"]\).*\1\s*$', 'cnw') |
-                      \   set ft=vim |
-                      \ endif
+    autocmd BufRead *.t if search('^\s*describe\s\+\([''"]\).*\1\s*$', 'cnw') | set ft=vim | endif
   augroup END
 
   augroup filetype_shell
