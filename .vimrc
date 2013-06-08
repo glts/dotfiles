@@ -177,6 +177,13 @@ if has("autocmd")
     autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
   augroup END
 
+  augroup filetype_vspec
+    au!
+    autocmd BufRead *.t if search('^\s*describe\s\+\([''"]\).*\1\s*$', 'cnw') |
+                      \   set ft=vim |
+                      \ endif
+  augroup END
+
   augroup filetype_shell
     au!
     autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
@@ -398,7 +405,7 @@ inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ amet felis aliquam dictum. Integer tempor tincidunt interdum.
 " }}}2
 
-" open help in a separate tab with <F1>
+" Open help in a separate tab with <F1>
 noremap <F1> :<C-U>tab help<CR>
 
 " Edit $MYVIMRC
