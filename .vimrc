@@ -139,7 +139,7 @@ if has("autocmd")
     " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 et
     autocmd FileType python,perl,php,tcl setlocal ts=8 sw=4 sts=4 et
-    autocmd FileType sh setlocal ts=4 sts=4 sw=4 noet
+    autocmd FileType sh,go setlocal ts=4 sts=4 sw=4 noet
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noet
     autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noet
     autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
