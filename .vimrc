@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-06-08
+" Modified: 2013-06-14
 
 " Init {{{1
 " Sine qua non setting
@@ -30,17 +30,16 @@ endif
 
 set hidden
 
+" Use smart case in searches, override with \C
+set ignorecase
+set smartcase
+
 set history=1000         " keep 1000 lines of command-line history
 
 " Get rid of the delay after <Esc>O in terminal Vim
 set timeout
 set timeoutlen=1200
 set ttimeoutlen=100
-
-" Always use the "old" (but safer and faster!) regexp engine
-if exists('&regexpengine')
-  set regexpengine=1
-endif
 
 " more intuitive backspace behaviour
 set backspace=indent,eol,start
