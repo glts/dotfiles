@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-06-14
+" Modified: 2013-06-23
 
 " Init {{{1
 " Sine qua non setting
@@ -29,10 +29,6 @@ if exists('+undodir')
 endif
 
 set hidden
-
-" Use smart case in searches, override with \C
-set ignorecase
-set smartcase
 
 set history=1000         " keep 1000 lines of command-line history
 
@@ -185,6 +181,11 @@ if has("autocmd")
     au!
     autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
     autocmd FileType sh inoreab <buffer> while while; do<CR>done<Up><Right>
+  augroup END
+
+  augroup filetype_go
+    au!
+    autocmd FileType go silent! compiler go
   augroup END
 
   augroup filetype_perl
