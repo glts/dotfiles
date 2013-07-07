@@ -1,9 +1,9 @@
 *vspec.txt*	Testing framework for Vim script
 
-Version @@VERSION@@
+Version 1.1.2
 Script ID: 3012
-Copyright (C) 2009-2012 Kana Natsuno <http://whileimautomaton.net/>
-License: So-called MIT/X license  {{{
+Copyright (C) 2009-2013 Kana Natsuno <http://whileimautomaton.net/>
+License: MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
     a copy of this software and associated documentation files (the
     "Software"), to deal in the Software without restriction, including
@@ -41,7 +41,15 @@ Changelog               |vspec-changelog|
 ==============================================================================
 INTRODUCTION					*vspec-introduction*
 
-*vspec* is a Vim library plugin to test Vim script.
+*vspec* is a testing framework for Vim script.  It consists of:
+
+* A driver script to run a test suite,
+* A Vim plugin to write tests in a format which resembles RSpec,
+* Additional syntax/indent files for Vim script to write tests.
+
+Since vspec is a part of a system to automated tests for Vim script,
+it requires several steps to set up an environment to easily run tests.
+See the following article: http://whileimautomaton.net/2013/02/13211500
 
 
 Requirements:
@@ -51,7 +59,7 @@ Latest version:
 http://github.com/kana/vim-vspec
 
 Document in HTML format:
-http://kana.github.com/config/vim/vspec.html
+http://vim-doc.heroku.com/view?https://raw.github.com/kana/vim-vspec/master/doc/vspec.txt
 
 
 
@@ -139,25 +147,9 @@ COMMANDS					*vspec-commands*
 			The custom matcher will be called with {actual} and
 			{arg}s.  It must return true if {actual} value is
 			valid, otherwise it must return false.
-			See also |vspec#customize_matcher()|.
+			See also |vspec-custom-matcher-examples| and
+			|vspec#customize_matcher()|.
 
-			Examples:
->
-				function! ToBeTrue(actual_value)
-				  return (type(a:actual_value) == type(0)
-				  \       ? a:actual_value
-				  \       : !!0)
-				endfunction
-				call vspec#customize_matcher(
-				\   'to_be_true',
-				\   function('ToBeTrue')
-				\ )
-
-				:Expect 123 to_be_true
-				" ===> good
-				:Expect [123] to_be_true
-				" ===> bad
-<
 					    *vspec-predefined-custom-matchers*
 			The following custom matcheres are predefined:
 
@@ -214,9 +206,14 @@ COMMANDS					*vspec-commands*
 			Represent that the current example is not written yet.
 			The current example will be always failed.
 
-:SKIP						*:SKIP*
+:SKIP {message}					*:SKIP*
 			Skip the current example.
 			The current example will be always succeeded.
+
+			{message} is a string which will be displayed as an
+			additional message to provide a hint about the skipped
+			example.  Note that single-quoted strings are only
+			supported at the moment.
 
 
 ------------------------------------------------------------------------------
@@ -249,6 +246,7 @@ vspec#call({funcname}, [{arg}, ...])		*vspec#call()*
 vspec#customize_matcher({alias}, {matcher})	*vspec#customize_matcher()*
 			Register {matcher} as a |vspec-custom-matcher| with
 			a given {alias}.  {alias} should be snake_case.
+			See also |vspec-custom-matcher-examples|.
 
 			{matcher} is a dictionary with the following items:
 
@@ -326,8 +324,45 @@ vspec#test({specfile-path})			*vspec#test()*
 ==============================================================================
 EXAMPLES					*vspec-examples*
 
-See files in the "t" directory in a source tree of this plugin:
+See also files in the "t" directory in a source tree of this plugin:
 https://github.com/kana/vim-vspec/tree/master/t
+
+
+CUSTOM MATCHERS				       *vspec-custom-matcher-examples*
+
+(a) A simple matcher which checks only an actual value:
+>
+	function! ToBeTrue(actual_value)
+	  return (type(a:actual_value) == type(0)
+	  \       ? a:actual_value
+	  \       : !!0)
+	endfunction
+	call vspec#customize_matcher(
+	\   'to_be_true',
+	\   function('ToBeTrue')
+	\ )
+
+	:Expect 123 to_be_true
+	" ===> good
+	:Expect [123] to_be_true
+	" ===> bad
+<
+
+(b) A matcher which takes arguments about an expected value:
+>
+	function! ToBeBetween(actual, expected_min, expected_max)
+	  return a:expected_min <= a:actual && a:actual <= a:expected_max
+	endfunction
+	call vspec#customize_matcher(
+	\   'to_be_between',
+	\   function('ToBeBetween')
+	\ )
+
+	:Expect 15 to_be_between 10, 20
+	" ===> good
+	:Expect 42 to_be_between 10, 20
+	" ===> bad
+<
 
 
 
@@ -354,6 +389,15 @@ ETC ~
 
 ==============================================================================
 CHANGELOG					*vspec-changelog*
+
+1.1.2	2013-06-11T22:30:06+09:00		*vspec-changelog-1.1.2*
+	- Fix |bin/vspec| to output lines with LF, not CR LF.
+	- Add |vspec-custom-matcher-examples|.
+
+1.1.1	2013-06-10T22:30:31+09:00		*vspec-changelog-1.1.1*
+	- Fix |bin/vspec| to work properly when
+	  - No {non-standard-runtimepath} is given.
+	  - Any {non-standard-runtimepath} contains spaces.
 
 1.1.0	2012-10-29T22:19:45+09:00		*vspec-changelog-1.1.0*
 	- |:Expect-not|:

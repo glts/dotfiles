@@ -1,7 +1,7 @@
 " vspec - Testing framework for Vim script
-" Version: @@VERSION@@
-" Copyright (C) 2009-2012 Kana Natsuno <http://whileimautomaton.net/>
-" License: So-called MIT/X license  {{{
+" Version: 1.1.2
+" Copyright (C) 2009-2013 Kana Natsuno <http://whileimautomaton.net/>
+" License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
 "     "Software"), to deal in the Software without restriction, including
@@ -428,7 +428,7 @@ function! s:translate_script(slines)  "{{{2
   let stack = []
 
   for sline in a:slines
-    let tokens = matchlist(sline, '^\s*describe\s*\(''.*''\)\s*$')
+    let tokens = matchlist(sline, '^\s*describe\s*\(\(["'']\).*\2\)\s*$')
     if !empty(tokens)
       call insert(stack, 'describe', 0)
       call extend(rlines, [
@@ -438,7 +438,7 @@ function! s:translate_script(slines)  "{{{2
       continue
     endif
 
-    let tokens = matchlist(sline, '^\s*it\s*\(''.*''\)\s*$')
+    let tokens = matchlist(sline, '^\s*it\s*\(\(["'']\).*\2\)\s*$')
     if !empty(tokens)
       call insert(stack, 'it', 0)
       call extend(rlines, [

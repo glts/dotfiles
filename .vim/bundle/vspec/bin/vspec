@@ -1,8 +1,8 @@
 #!/bin/bash
 # bin/vspec - Driver script to test Vim script
-# Version: @@VERSION@@
-# Copyright (C) 2009-2012 Kana Natsuno <http://whileimautomaton.net/>
-# License: So-called MIT/X license  {{{
+# Version: 1.1.2
+# Copyright (C) 2009-2013 Kana Natsuno <http://whileimautomaton.net/>
+# License: MIT license  {{{
 #     Permission is hereby granted, free of charge, to any person obtaining
 #     a copy of this software and associated documentation files (the
 #     "Software"), to deal in the Software without restriction, including
@@ -40,8 +40,10 @@ unset args[$((${#args[@]}- 1))]  # Now holds all {non-standard-runtimepath}s.
 cat <<END >"$driver_script"
   function s:main()
     let standard_paths = split(&runtimepath, ',')[1:-2]
-    let non_standard_paths = reverse(['$(echo "${args[@]}" |
-                                         sed "s/  */', '/g")'])
+    let non_standard_paths = reverse([$(for a in "${args[@]}"
+                                        do
+                                          echo -n "'$a',"
+                                        done)])
     let all_paths = copy(standard_paths)
     for i in non_standard_paths
       let all_paths = [i] + all_paths + [i . '/after']
@@ -54,7 +56,7 @@ cat <<END >"$driver_script"
   call s:main()
 END
 
-vim -u NONE -i NONE -N -e -s -S "$driver_script" 2>&1
+vim -u NONE -i NONE -N -e -s -S "$driver_script" 2>&1 | sed 's/\r$//'
 
 
 
