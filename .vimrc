@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-02
+" Modified: 2013-07-11
 
 " Init {{{1
 " Sine qua non setting
@@ -102,6 +102,7 @@ set statusline+=\ \|\ %{&enc}   "file format
 set statusline+=\ \|\ %{&ff}    "file format
 set statusline+=\ \|\ %{&ft}    "filetype
 set statusline+=\ %h            "help file flag
+set statusline+=%w              "preview window flag
 set statusline+=%m              "modified flag
 set statusline+=%r              "read only flag
 set statusline+=%=              "left/right separator
@@ -354,7 +355,7 @@ inoreab @@ 676c7473@gmail.com
 inoreab <@@ glts <Lt>676c7473@gmail.com>
 
 nnoremap <silent> <Leader>l :set list!<CR>
-nnoremap <silent> <BS> :nohls<CR>
+nnoremap <silent> <BS> :nohlsearch<CR>
 
 " Highlight overlong lines, ie. characters at col 79+
 " TODO use 'tw' and only when not empty, put /../ in history
