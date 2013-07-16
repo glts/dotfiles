@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-11
+" Modified: 2013-07-17
 
 " Init {{{1
 " Sine qua non setting
@@ -79,7 +79,6 @@ set ruler               " show cursor position, 'statusline' overrides this
 set number              " show line numbers
 set showmatch           " have your matching brackets wink at you
 set showcmd             " display incomplete commands in status line
-set scrolloff=2         " always keep two lines above/below cursor visible
 set incsearch           " do incremental searching
 set linebreak           " break screen lines at whitespace
 set display=lastline    " fit as much as possible of a long line on screen
@@ -373,10 +372,10 @@ nnoremap <Leader>sp :set spell!<CR>
 " Toggle 'virtualedit' mode
 nnoremap <Leader>vv :set ve=<C-R>=&ve=='' ? 'all' : ''<CR><CR>
 
-" change directory to where current file is
+" Change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
 
-" prettify XML fragments, remaps to surround plugin map
+" Prettify XML fragments, remaps to surround plugin map
 nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
 
 " Generate tags with exuberant ctags
