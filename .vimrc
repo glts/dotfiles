@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-17
+" Modified: 2013-07-27
 
 " Init {{{1
 " Sine qua non setting
@@ -327,9 +327,6 @@ inoremap <C-K> <C-\><C-O>D
 
 " Insert mode CTRL-W counterpart for WORDs
 inoremap <C-Q> <C-\><C-O>dB
-
-" Counterpart to the existing <C-E>
-cnoremap <C-A> <Home>
 
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>
