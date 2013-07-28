@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-27
+" Modified: 2013-07-28
 
 " Init {{{1
 " Sine qua non setting
@@ -37,8 +37,11 @@ set timeout
 set timeoutlen=1200
 set ttimeoutlen=100
 
-" more intuitive backspace behaviour
+" More intuitive backspace behaviour
 set backspace=indent,eol,start
+
+" Toggle 'paste'
+set pastetoggle=<F6>
 
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
