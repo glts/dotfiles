@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-28
+" Modified: 2013-08-10
 
 " Init {{{1
 " Sine qua non setting
@@ -27,6 +27,12 @@ if exists('+undodir')
     call mkdir(expand(&undodir), "p")
   endif
 endif
+
+" Search all directories inside the current directory
+set path+=**
+
+" File patterns to ignore
+set wildignore+=*.class
 
 set hidden
 
