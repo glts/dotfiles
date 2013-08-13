@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-07-17
+" Modified: 2013-08-13
 
 " Init {{{1
 " Sine qua non setting
@@ -362,6 +362,9 @@ nnoremap <Leader>ol :highlight link OverLength ErrorMsg <Bar> match OverLength /
 nnoremap <Leader>oL :match none<CR>
 
 nnoremap <Leader>so :source %<CR>
+
+" Search for current search in the Vim C source code
+nnoremap <Leader>vg :<C-U>vim /<C-R>// src/*.[ch]<CR>
 
 " Remove all trailing whitespace
 nnoremap <Leader>sd :%s/\s\+$<CR>
