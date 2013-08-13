@@ -28,6 +28,12 @@ if exists('+undodir')
   endif
 endif
 
+" Search all directories inside the current directory
+set path+=**
+
+" File patterns to ignore
+set wildignore+=*.class
+
 set hidden
 
 set history=1000         " keep 1000 lines of command-line history
@@ -37,8 +43,11 @@ set timeout
 set timeoutlen=1200
 set ttimeoutlen=100
 
-" more intuitive backspace behaviour
+" More intuitive backspace behaviour
 set backspace=indent,eol,start
+
+" Toggle 'paste'
+set pastetoggle=<F6>
 
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
@@ -327,9 +336,6 @@ inoremap <C-K> <C-\><C-O>D
 
 " Insert mode CTRL-W counterpart for WORDs
 inoremap <C-Q> <C-\><C-O>dB
-
-" Counterpart to the existing <C-E>
-cnoremap <C-A> <Home>
 
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>

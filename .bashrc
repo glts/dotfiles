@@ -20,6 +20,8 @@ elif [ -x "$(which gvim)" ]; then
 fi
 export EDITOR="${editor}"
 
+export CTAGS='--langmap=Lisp:+.clj'
+
 # Prompts
 export PS1="\u@\h:\[\e[1m\]\w\[\e[0m\]\$ "
 export PS2="… "
