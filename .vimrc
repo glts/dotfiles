@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-08-13
+" Modified: 2013-08-17
 
 " Init {{{1
 " Sine qua non setting
@@ -123,7 +123,7 @@ set statusline+=\ %P            "percent through file
 
 " Switch syntax and search highlighting on whenever colour is available
 if &t_Co > 2 || has("gui_running")
-  syntax on
+  syntax enable
   set hlsearch
 endif
 

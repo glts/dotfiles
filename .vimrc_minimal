@@ -1,6 +1,7 @@
 " Minimal vimrc for testing purposes
 set nocompatible
 filetype plugin indent on
+syntax enable
 
 set nobackup
 set hidden
