@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-08-17
+" Modified: 2013-09-03
 
 " Init {{{1
 " Sine qua non setting
@@ -151,6 +151,7 @@ if has("autocmd")
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
     autocmd FileType ruby,vim setlocal ts=8 sw=2 sts=2 et
     autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
+    autocmd FileType scheme setlocal ts=8 sw=2 sts=2 et
     autocmd FileType tex setlocal tw=78
   augroup END
 
@@ -340,6 +341,11 @@ inoremap <C-Q> <C-\><C-O>dB
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
+
+" Enable undoing a( a) ab in Visual mode with gv
+xnoremap a( <Esc>gva(
+xnoremap a) <Esc>gva)
+xnoremap ab <Esc>gvab
 
 " Folding
 nnoremap <Space> za
