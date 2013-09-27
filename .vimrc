@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-09-03
+" Modified: 2013-09-27
 
 " Init {{{1
 " Sine qua non setting
@@ -265,6 +265,8 @@ if has("autocmd")
     if exists('&colorcolumn') && has('gui_running')
       autocmd FileType * if &tw != 0 | let &cc=join(range(&tw+1,199),',') | endif
     endif
+
+    autocmd BufNewFile,BufRead *.ijs setfiletype j
 
     " TODO This works only if you have ch=2!
     " autocmd VimEnter * CottidieTip!
