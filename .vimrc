@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-09-27
+" Modified: 2013-10-04
 
 " Init {{{1
 " Sine qua non setting
@@ -75,9 +75,12 @@ endif
 " Don't open folds when moving with } {
 set foldopen-=block
 
-" Spellcheck setup
+" Spell-checking setup
 set spelllang=en_gb,de_ch
 set spellfile=~/.vim/spell/mine.utf-8.add
+
+" Don't insert line break when line was already longer than 'textwidth'
+set formatoptions+=l
 
 " Strip comment leaders when joining lines
 silent! set formatoptions+=j
@@ -465,6 +468,9 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 
 " Use bash as default .sh filetype, see ":h ft-sh-syntax"
 let g:is_bash = 1
+
+" Indentation for multiline strings begins after the initial opening quote
+let g:clojure_align_multiline_strings = 1
 
 " Enable Perl POD highlighting and spell-checking
 let perl_include_pod = 1
