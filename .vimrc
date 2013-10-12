@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-09-27
+" Modified: 2013-10-07
 
 " Init {{{1
 " Sine qua non setting
@@ -75,9 +75,12 @@ endif
 " Don't open folds when moving with } {
 set foldopen-=block
 
-" Spellcheck setup
+" Spell-checking setup
 set spelllang=en_gb,de_ch
 set spellfile=~/.vim/spell/mine.utf-8.add
+
+" Insert comment leader on <Enter>, no line breaking on overlong lines
+set formatoptions+=rl
 
 " Strip comment leaders when joining lines
 silent! set formatoptions+=j
@@ -143,6 +146,7 @@ if has("autocmd")
     " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
     autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 et
     autocmd FileType python,perl,php,tcl setlocal ts=8 sw=4 sts=4 et
+    autocmd FileType prolog setlocal ts=8 sw=4 sts=4 et
     autocmd FileType sh,go setlocal ts=4 sts=4 sw=4 noet
     autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noet
     autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noet
@@ -465,6 +469,9 @@ command! -nargs=? Template call s:ReadTemplate(<f-args>)
 
 " Use bash as default .sh filetype, see ":h ft-sh-syntax"
 let g:is_bash = 1
+
+" Indentation for multiline strings begins after the initial opening quote
+let g:clojure_align_multiline_strings = 1
 
 " Enable Perl POD highlighting and spell-checking
 let perl_include_pod = 1
