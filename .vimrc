@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-10-07
+" Modified: 2013-10-13
 
 " Init {{{1
 " Sine qua non setting
@@ -429,6 +429,9 @@ noremap <F1> :<C-U>tab help<CR>
 
 " Edit $MYVIMRC
 nnoremap <Leader>ve :tabedit $MYVIMRC<CR>
+
+" Insert quick tab ruler for over-the-top perfectionist alignment
+command! Ruler put! =' '.repeat('   .   \|', 10)
 
 " Toggle relative line numbers
 if exists('&relativenumber')
