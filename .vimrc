@@ -1,6 +1,6 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-10-13
+" Modified: 2013-10-19
 
 " Init {{{1
 " Sine qua non setting
@@ -478,6 +478,9 @@ let g:clojure_align_multiline_strings = 1
 
 " Enable Perl POD highlighting and spell-checking
 let perl_include_pod = 1
+
+" Only one level of indent after open parentheses in Python
+let g:pyindent_open_paren = '&shiftwidth'
 
 noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
