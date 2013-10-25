@@ -1,6 +1,5 @@
 " My vimrc.
 " Author: glts <676c7473@gmail.com>
-" Modified: 2013-10-19
 
 " Init {{{1
 " Sine qua non setting
@@ -262,9 +261,6 @@ if has("autocmd")
     " autocmd InsertEnter * hi link EndOfLineSpace Normal
     " autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 
-    " Update date before writing vimrc
-    autocmd BufWritePre .{g,}vimrc 1,/^$/s/201\d-\d\d-\d\d/\=strftime('%Y-%m-%d')/ | normal! ``
-
     " Make colour column into colour gutter
     if exists('&colorcolumn') && has('gui_running')
       autocmd FileType * if &tw != 0 | let &cc=join(range(&tw+1,199),',') | endif
@@ -315,6 +311,9 @@ nnoremap va/ F/v,
 
 " Formatting shortcut
 nnoremap Q gwip
+
+" Easy buffer switching
+nnoremap <Leader>b :<C-U>ls<CR>:b
 
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
