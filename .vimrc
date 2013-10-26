@@ -282,10 +282,6 @@ let mapleader = "\\"
 inoremap <S-CR> <Esc>o
 inoremap <S-M-CR> <Esc>O
 
-nnoremap <C-H> <C-W>h
-nnoremap <C-J> <C-W>j
-nnoremap <C-K> <C-W>k
-nnoremap <C-L> <C-W>l
 nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
 nnoremap <C-Left> <C-W><
@@ -484,6 +480,9 @@ let g:pyindent_open_paren = '&shiftwidth'
 noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
+
+" Indent HTML elements as expected
+let g:html_indent_inctags = 'html,body,head,tbody'
 
 noremap <F5> :<C-U>GundoToggle<CR>
 
