@@ -85,6 +85,9 @@ set formatoptions+=rl
 silent! set formatoptions+=j
 " TODO set formatlistpat=...
 
+" Do not respect octal numbers with CTRL-A/CTRL-X
+set nrformats-=octal
+
 " Appearance {{{2
 set ruler               " show cursor position, 'statusline' overrides this
 set number              " show line numbers
