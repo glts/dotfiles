@@ -308,8 +308,9 @@ nnoremap ya/ F/y,
 nnoremap vi/ T/v,
 nnoremap va/ F/v,
 
-" Formatting shortcut
-nnoremap Q gwip
+" Formatting shortcuts, for widths 'textwidth' and 72 columns
+nnoremap <silent> Q gwip
+nnoremap <silent> <Leader>Q :<C-U>let _tw=&l:tw<Bar>setl tw=72<Bar>exe 'norm! gwip'<Bar>let &l:tw=_tw<Bar>unlet _tw<CR>
 
 " Easy buffer switching
 nnoremap <Leader>b :<C-U>ls<CR>:b
