@@ -275,8 +275,6 @@ if has("autocmd")
     " autocmd VimEnter * CottidieTip!
   augroup END
 
-else
-  set autoindent
 endif
 
 " Mappings and abbreviations {{{1
