@@ -1,0 +1,13 @@
+" Minimal vimrc to use with vim-plug
+set nocompatible
+
+call plug#begin()
+Plug 'tpope/vim-surround'
+call plug#end()
+
+set nobackup
+set hidden
+set backspace=indent,eol,start
+
+set showcmd
+set ruler
