@@ -71,6 +71,13 @@ if has('mouse')
   set mouse=a
 endif
 
+" Always yank and delete into system clipboard too
+if has('unnamedplus')
+  set clipboard+=unnamedplus
+else
+  set clipboard+=unnamed
+endif
+
 " Don't open folds when moving with } {
 set foldopen-=block
 
