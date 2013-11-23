@@ -483,9 +483,6 @@ noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
-" Indent HTML elements as expected
-let g:html_indent_inctags = 'html,body,head,tbody'
-
 noremap <F5> :<C-U>GundoToggle<CR>
 
 let g:cottidie_no_default_tips = 0
