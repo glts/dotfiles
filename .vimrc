@@ -11,6 +11,20 @@ runtime ftplugin/man.vim
 " Pathogen is our plugin manager
 execute pathogen#infect()
 
+" Maktaba playground below
+let $MAKTABA_HOME = fnamemodify('~/.vim/maktaba', ':p:h')
+source $MAKTABA_HOME/maktaba/bootstrap.vim
+function! LocalLibInstaller(library) abort
+  let l:libpath = maktaba#path#Join([$MAKTABA_HOME, a:library])
+  if isdirectory(l:libpath)
+    return maktaba#plugin#GetOrInstall(l:libpath)
+  endif
+  throw maktaba#error#NotFound(a:library)
+endfunction
+call maktaba#library#AddInstaller('locallibs', 'LocalLibInstaller')
+
+call maktaba#plugin#GetOrInstall('~/.vim/maktaba/glaive')
+
 " Settings {{{1
 " Behaviour {{{2
 set directory=~/tmp,.   " directory for swap files
