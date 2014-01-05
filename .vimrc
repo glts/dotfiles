@@ -24,6 +24,7 @@ endfunction
 call maktaba#library#AddInstaller('locallibs', 'LocalLibInstaller')
 
 call maktaba#plugin#GetOrInstall('~/.vim/maktaba/glaive')
+call maktaba#plugin#GetOrInstall('~/.vim/maktaba/radical').Flag('plugin[mappings]', 1)
 
 " Settings {{{1
 " Behaviour {{{2
