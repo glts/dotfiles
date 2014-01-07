@@ -45,6 +45,11 @@ endif
 " Search all directories inside the current directory
 set path+=**
 
+" The new regexp engine isn't ready yet
+if exists('&regexpengine')
+  set regexpengine=1
+endif
+
 " File patterns to ignore
 set wildignore+=*.class
 
