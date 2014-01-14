@@ -23,8 +23,8 @@ function! s:Glaive(args) abort
   try
     let [l:name, l:operations] = glaive#SplitPluginNameFromOperations(a:args)
     let l:plugin = glaive#GetPlugin(l:name)
-  catch ERROR(\(BadValue\|NotFound\))/
-    call matkaba#error#Shout(v:exception)
+  catch /ERROR(\(BadValue\|NotFound\)):/
+    call maktaba#error#Shout(v:exception)
     return
   endtry
   try
@@ -129,4 +129,5 @@ endfunction
 " The return value of the function will become the new value of the flag.
 "
 " For more detail, see |maktaba.Setting|.
-command -nargs=+ Glaive call s:Glaive(<q-args>)
+command -nargs=+ -complete=customlist,glaive#Complete Glaive
+    \ call s:Glaive(<q-args>)
