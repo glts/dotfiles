@@ -3,6 +3,14 @@ if !exists('s:plugins')
   let s:plugins = {}
 endif
 
+" Mapping from normalized locations to the corresponding plugin object.
+" Used to look up plugins by location in maktaba#plugin#Install and
+" maktaba#plugin#GetOrInstall.
+" May have multiple locations mapped to the same plugin in the case of symlinks.
+if !exists('s:plugins_by_location')
+  let s:plugins_by_location = {}
+endif
+
 " Recognized special directories are as follows:
 "
 " autoload/*: Files containing functions made available upon request.
@@ -32,7 +40,8 @@ function! s:CannotEnter(file) abort
       \ 'CannotEnter',
       \ 'maktaba#plugin#Enter must be called from ' .
       \ 'a file in an autoload/, plugin/, ftplugin/, or instant/ directory. ' .
-      \ 'It was called from %s.')
+      \ 'It was called from %s.',
+      \ a:file)
 endfunction
 
 
@@ -65,14 +74,30 @@ function! s:ApplySettings(plugin, settings) abort
 endfunction
 
 
-" Splits a path into a canonical plugin name and a parent directory.
+""
+" Splits {dir} into canonical plugin name and parent directory, returning name.
+" If {dir} is in s:plugins_by_location, gets the name of the plugin there
+" instead.
 function! s:PluginNameFromDir(dir) abort
+  let l:fullpath = s:Fullpath(a:dir)
+  if has_key(s:plugins_by_location, l:fullpath)
+    return s:plugins_by_location[l:fullpath].name
+  endif
+
   let l:splitpath = maktaba#path#Split(a:dir)
   if len(l:splitpath) == 0
     throw maktaba#error#BadValue('Found empty path.')
   endif
   let l:name = maktaba#plugin#CanonicalName(l:splitpath[-1])
   return l:name
+endfunction
+
+
+""
+" Gets a version of {plugin} with special characters converted to underscores.
+" Doesn't apply sophisticated heuristics like stripping 'vim-' prefix.
+function! s:SanitizedName(plugin) abort
+  return substitute(a:plugin, '[^_a-zA-Z0-9]', '_', 'g')
 endfunction
 
 
@@ -114,6 +139,40 @@ function! s:FileHandleToFlagHandle(handle) abort
     return 'after/' . a:handle[:-2]
   endif
   return a:handle[:-2]
+endfunction
+
+
+""
+" Determines whether {json} is valid JSON. Allows single-quoted strings for
+" compatibility with VAM.
+" Based on vam#VerifyIsJSON.
+function! s:VerifyIsJSON(json) abort
+  " Allows single-quoted strings because VAM does.
+  let l:json_scalar = '\v\"%(\\.|[^"\\])*\"|\''%(\''{2}|[^''])*\''|' .
+      \ 'true|false|null|[+-]?\d+%(\.\d+%([Ee][+-]?\d+)?)?'
+
+  let l:scalarless_body = substitute(a:json, l:json_scalar, '', 'g')
+  return l:scalarless_body !~# "[^,:{}[\\] \t]"
+endfunction
+
+
+""
+" Safely deserializes {json} string into a vim value.
+" Based on vam#ReadAddonInfo.
+" @throws WrongType
+" @throws BadValue
+function! s:EvalJSON(json) abort
+  call maktaba#ensure#IsString(a:json)
+
+  if s:VerifyIsJSON(a:json)
+    let l:true = 1
+    let l:false = 0
+    let l:null = ''
+    " Using eval is now safe!
+    return eval(a:json)
+  endif
+
+  throw maktaba#error#BadValue('Not a valid JSON string: %s', a:json)
 endfunction
 
 
@@ -164,11 +223,11 @@ function! maktaba#plugin#Enter(file) abort
   let l:controller = l:plugin._entered[l:filedir]
 
   if l:filedir ==# 'ftplugin'
-    call extend(l:controller, {l:handle: []}, 'keep')
-    if index(l:controller[l:handle], bufnr()) >= 0
+    call extend(l:controller, {l:handle : []}, 'keep')
+    if index(l:controller[l:handle], bufnr('.')) >= 0
       return [l:plugin, 0]
     endif
-    call add(l:controller[l:handle], bufnr())
+    call add(l:controller[l:handle], bufnr('.'))
     return [l:plugin, 1]
   endif
 
@@ -197,8 +256,20 @@ endfunction
 
 
 ""
+" Scans 'runtimepath' for any unregistered plugins and registers them with
+" maktaba. May trigger instant/ hooks for newly-registered plugins.
+function! maktaba#plugin#Detect() abort
+  for [l:name, l:location] in items(maktaba#rtp#LeafDirs())
+    call maktaba#plugin#GetOrInstall(l:location)
+  endfor
+endfunction
+
+
+""
 " A list of all installed plugins in alphabetical order.
+" Automatically detects unregistered plugins using @function(#Detect).
 function! maktaba#plugin#RegisteredPlugins() abort
+  call maktaba#plugin#Detect()
   return sort(keys(s:plugins))
 endfunction
 
@@ -208,8 +279,15 @@ endfunction
 " This is more reliable for determining if a Maktaba compatible plugin by
 " the name of {plugin} was registered, but can not be used to dependency check
 " non-Maktaba plugins.
+" Detects plugins added to 'runtimepath' even if they haven't been explicitly
+" registered with maktaba.
 function! maktaba#plugin#IsRegistered(plugin) abort
-  return has_key(s:plugins, maktaba#plugin#CanonicalName(a:plugin))
+  try
+    let l:plugin = maktaba#plugin#Get(a:plugin)
+  catch /ERROR(NotFound):/
+    return 0
+  endtry
+  return 1
 endfunction
 
 
@@ -235,7 +313,7 @@ function! maktaba#plugin#CanonicalName(plugin) abort
   if maktaba#string#EndsWith(l:plugin, '.vim')
     let l:plugin = l:plugin[:-5]
   endif
-  return substitute(l:plugin, '[^_a-zA-Z0-9]', '_', 'g')
+  return s:SanitizedName(l:plugin)
 endfunction
 
 
@@ -305,12 +383,27 @@ endfunction
 " Gets the plugin object associated with {plugin}. {plugin} may either be the
 " name of the plugin directory, or the canonicalized plugin name (with invalid
 " characters converted to underscores). See @function(#CanonicalName).
+" Detects plugins added to 'runtimepath' even if they haven't been explicitly
+" registered with maktaba.
 " @throws NotFound if the plugin object does not exist.
 function! maktaba#plugin#Get(name) abort
+  let l:name = s:SanitizedName(a:name)
+  if has_key(s:plugins, l:name)
+    return s:plugins[l:name]
+  endif
+
+  " If sanitized name didn't match, fall back to heavily canonicalized name.
   let l:name = maktaba#plugin#CanonicalName(a:name)
   if has_key(s:plugins, l:name)
     return s:plugins[l:name]
   endif
+
+  " Check if any dir on runtimepath is a plugin that hasn't been detected yet.
+  let l:leafdirs = maktaba#rtp#LeafDirs()
+  if has_key(l:leafdirs, a:name)
+    return maktaba#plugin#GetOrInstall(l:leafdirs[a:name])
+  endif
+
   throw maktaba#error#NotFound('Plugin %s', a:name)
 endfunction
 
@@ -371,6 +464,7 @@ function! s:CreatePluginObject(name, location, settings) abort
       \ 'logger': maktaba#log#Logger(a:name),
       \ 'Source': function('maktaba#plugin#Source'),
       \ 'Load': function('maktaba#plugin#Load'),
+      \ 'AddonInfo': function('maktaba#plugin#AddonInfo'),
       \ 'Flag': function('maktaba#plugin#Flag'),
       \ 'HasFlag': function('maktaba#plugin#HasFlag'),
       \ 'HasDir': function('maktaba#plugin#HasDir'),
@@ -380,7 +474,26 @@ function! s:CreatePluginObject(name, location, settings) abort
       \ 'IsLibrary': function('maktaba#plugin#IsLibrary'),
       \ '_entered': l:entrycontroller,
       \ }
-  let s:plugins[a:name] = l:plugin
+  " If plugin has an addon-info.json file with a "name" declared, overwrite the
+  " default name with the custom one.
+  " Do this after creating the plugin dict so we can call AddonInfo and have
+  " caching work.
+  try
+    let l:plugin.name = s:SanitizedName(l:plugin.AddonInfo().name)
+  catch /ERROR(BadValue):/
+    " Couldn't deserialize JSON.
+  catch /E716:/
+    " No 'name' defined.
+  endtry
+  let s:plugins[l:plugin.name] = l:plugin
+  let s:plugins_by_location[l:plugin.location] = l:plugin
+
+  " If plugin is symlinked, register resolved path as custom location to avoid
+  " conflicts.
+  let l:resolved_location = s:Fullpath(resolve(l:plugin.location))
+  if l:resolved_location !=# l:plugin.location
+    let s:plugins_by_location[l:resolved_location] = l:plugin
+  endif
 
   " Maktaba adds the expanded (absolute) plugin path to the runtimepath. It's
   " possible that the user has given us a {location} which is already on the
@@ -418,6 +531,37 @@ function! s:CreatePluginObject(name, location, settings) abort
 endfunction
 
 
+" @dict Plugin
+" Gets a list of all subdirectories in the root plugin directory.
+" Caches the list for performance, so new paths will not be discovered after the
+" initial scan.
+function! s:GetSubdirs() dict abort
+  if !has_key(self, '_dirs')
+    " Glob includes trailing slash, which makes glob() only detect directories.
+    let l:direct_glob = maktaba#path#Join([self.location, '*', ''])
+    let l:direct_dirs = split(glob(l:direct_glob, 1), "\n")
+    let self._dirs = map(l:direct_dirs, 'maktaba#path#Split(v:val)[-1]')
+  endif
+  return self._dirs
+endfunction
+
+
+" @dict Plugin
+" Gets a list of all subdirectories in the plugin after/ directory.
+" Caches the list for performance, so new paths will not be discovered after the
+" initial scan.
+function! s:GetAfterSubdirs() dict abort
+  if !has_key(self, '_after_dirs')
+    " Glob includes trailing slash, which makes glob() only detect directories.
+    let l:after_glob = maktaba#path#Join([self.location, 'after', '*', ''])
+    let l:after_dirs = split(glob(l:after_glob, 1), "\n")
+    let self._after_dirs = map(l:after_dirs, 'maktaba#path#Split(v:val)[-1]')
+  endif
+  return self._after_dirs
+endfunction
+
+
+" @dict Plugin
 " Sources all files in {dir} and after/{dir}.
 " Does not source files that have been marked as entered. (Note that this is, in
 " theory, an efficiency gain only: functions using #Enter properly wouldn't be
@@ -556,10 +700,12 @@ endfunction
 " @dict Plugin
 " Tests whether the plugin has {dir}, either as a direct subdirectory or as
 " a subirectory of the after/ directory.
+" Cached for performance, so new paths will not be discovered if they're added
+" to the plugin after the first check.
 function! maktaba#plugin#HasDir(dir) dict abort
-  let l:dir = maktaba#path#Join([self.location, a:dir])
-  let l:after = maktaba#path#Join([self.location, 'after', a:dir])
-  return isdirectory(l:dir) || isdirectory(l:after)
+  let l:dirs = call('s:GetSubdirs', [], self)
+  let l:after_dirs = call('s:GetAfterSubdirs', [], self)
+  return index(l:dirs, a:dir) > -1 || index(l:after_dirs, a:dir) > -1
 endfunction
 
 
@@ -569,6 +715,30 @@ endfunction
 " indent, or syntax).
 function! maktaba#plugin#HasFiletypeData() dict abort
   return maktaba#rtp#DirDefinesFiletypes(self.location)
+endfunction
+
+
+""
+" @dict Plugin
+" Gets plugin metadata from plugin's addon-info.json file, if present.
+" Otherwise, returns an empty dict.
+" @throws BadValue if addon-info.json isn't valid JSON.
+function! maktaba#plugin#AddonInfo() dict abort
+  if !has_key(self, '_addon_info')
+    let l:addon_info_path =
+        \ maktaba#path#Join([self.location, 'addon-info.json'])
+    try
+      " Don't add "b" because it'll read DOS files as "\r\n" which will fail the
+      " check and evaluate in eval. \r\n is checked out by some msys git
+      " versions with strange settings.
+      let self._addon_info = s:EvalJSON(join(readfile(l:addon_info_path), ''))
+    catch /E48[45]:/
+      " File missing or unreadable. Assume no dependencies.
+      let self._addon_info = {}
+    endtry
+  endif
+
+  return self._addon_info
 endfunction
 
 

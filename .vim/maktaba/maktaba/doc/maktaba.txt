@@ -190,11 +190,17 @@ Plugin.GenerateHelpTags()                            *Plugin.GenerateHelpTags*
 
 Plugin.HasDir({dir})                                           *Plugin.HasDir*
   Tests whether the plugin has {dir}, either as a direct subdirectory or as a
-  subirectory of the after/ directory.
+  subirectory of the after/ directory. Cached for performance, so new paths
+  will not be discovered if they're added to the plugin after the first check.
 
 Plugin.HasFiletypeData()                              *Plugin.HasFiletypeData*
   Tests wheter a plugin has a filetype-active directory (ftdetect, ftplugin,
   indent, or syntax).
+
+Plugin.AddonInfo()                                          *Plugin.AddonInfo*
+  Gets plugin metadata from plugin's addon-info.json file, if present.
+  Otherwise, returns an empty dict.
+  Throws ERROR(BadValue) if addon-info.json isn't valid JSON.
 
 Plugin.Flag({flag}, [value])                                     *Plugin.Flag*
   Gets or sets {flag}. If [value] is given, {flag} is set to [value].
@@ -979,24 +985,34 @@ maktaba#plugin#Enter({file})                            *maktaba#plugin#Enter*
   "loaded". If you feel you must adhere to this convention, be sure to set the
   appropriate g:loaded_* variable when appropriate.
 
+maktaba#plugin#Detect()                                *maktaba#plugin#Detect*
+  Scans 'runtimepath' for any unregistered plugins and registers them with
+  maktaba. May trigger instant/ hooks for newly-registered plugins.
+
 maktaba#plugin#RegisteredPlugins()          *maktaba#plugin#RegisteredPlugins*
-  A list of all installed plugins in alphabetical order.
+  A list of all installed plugins in alphabetical order. Automatically detects
+  unregistered plugins using |maktaba#plugin#Detect|.
 
 maktaba#plugin#IsRegistered({plugin})            *maktaba#plugin#IsRegistered*
   1 if {plugin} was registered with maktaba#plugin#Register. This is more
   reliable for determining if a Maktaba compatible plugin by the name of
   {plugin} was registered, but can not be used to dependency check non-Maktaba
-  plugins.
+  plugins. Detects plugins added to 'runtimepath' even if they haven't been
+  explicitly registered with maktaba.
 
 maktaba#plugin#CanonicalName({plugin})          *maktaba#plugin#CanonicalName*
   The canonical name of {plugin}. This is the name of the plugin directory
   with all invalid characters replaced with underscores. Valid characters
   include _, [a-z], [A-Z], and [0-9]. For example, the canonical name of
-  "my-plugin" is "my_plugin". Note that plugins with different names in the
-  filesystem can conflict in maktaba. If you've loaded a plugin in the
-  directory "plugins/my-plugin" then maktaba can't handle a plugin named
-  "plugins/my_plugin". Make sure your plugins have sufficiently different
-  names!
+  "my-plugin" is "my_plugin".  Certain conventions which are common for github
+  vim projects are also recognized. Specifically, either a "vim-" prefix and a
+  ".vim" suffix would be disregarded: both "vim-unimpaired" and
+  "unimpaired.vim" would become simply "unimpaired".
+
+  Note that plugins with different names in the filesystem can conflict in
+  maktaba. If you've loaded a plugin in the directory "plugins/my-plugin" then
+  maktaba can't handle a plugin named "plugins/my_plugin". Make sure your
+  plugins have sufficiently different names!
 
 maktaba#plugin#Install({dir}, [settings])             *maktaba#plugin#Install*
   Installs the plugin located at {dir}. Installation entails adding the plugin
@@ -1054,7 +1070,9 @@ maktaba#plugin#Install({dir}, [settings])             *maktaba#plugin#Install*
 maktaba#plugin#Get({plugin})                              *maktaba#plugin#Get*
   Gets the plugin object associated with {plugin}. {plugin} may either be the
   name of the plugin directory, or the canonicalized plugin name (with invalid
-  characters converted to whitespace.) See |maktaba#plugin#CanonicalName|.
+  characters converted to underscores). See |maktaba#plugin#CanonicalName|.
+  Detects plugins added to 'runtimepath' even if they haven't been explicitly
+  registered with maktaba.
   Throws ERROR(NotFound) if the plugin object does not exist.
 
 maktaba#plugin#GetOrInstall({dir}, [settings])   *maktaba#plugin#GetOrInstall*

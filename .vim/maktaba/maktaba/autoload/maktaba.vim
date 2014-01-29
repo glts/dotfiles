@@ -1,6 +1,4 @@
 " @stylized Maktaba
-" @tagline Consistent Vimscript
-" @author Google
 " @library
 " @order intro version dicts functions exceptions
 " A vimscript library that hides the worst parts of vimscript and helps you
@@ -16,6 +14,24 @@
 "
 " Also included are a univesal logging framework, error handling utilities, and
 " a number of tools that make writing vimscript both safer and easier.
+
+
+" <sfile>:p is .../maktaba/autoload/maktaba.vim
+" <sfile>:p:h is .../maktaba/autoload/
+" <sfile>:p:h:h is .../maktaba/
+let s:plugindir =  expand('<sfile>:p:h:h')
+if !exists('s:maktaba')
+  let s:maktaba = maktaba#plugin#GetOrInstall(s:plugindir)
+  let s:maktaba.globals.installers = []
+  let s:maktaba.globals.loghandlers = maktaba#reflist#Create()
+endif
+
+
+""
+" Returns a handle to the maktaba plugin object.
+function! maktaba#Maktaba() abort
+  return s:maktaba
+endfunction
 
 
 ""
@@ -38,29 +54,11 @@
 " Use |maktaba#IsAtLeastVersion| to check whether this version of maktaba has
 " passed a given version number.
 
-if !exists('s:version')
-  let s:version = [1, 1, 0]
-  let maktaba#VERSION = join(s:version, '.')
+if !exists('maktaba#VERSION')
+  let maktaba#VERSION = s:maktaba.AddonInfo().version
   lockvar maktaba#VERSION
+  let s:version = map(split(maktaba#VERSION, '\.'), 'v:val + 0')
 endif
-
-
-" <sfile>:p is .../maktaba/autoload/maktaba.vim
-" <sfile>:p:h is .../maktaba/autoload/
-" <sfile>:p:h:h is .../maktaba/
-let s:plugindir =  expand('<sfile>:p:h:h')
-if !exists('s:maktaba')
-  let s:maktaba = maktaba#plugin#GetOrInstall(s:plugindir)
-  let s:maktaba.globals.installers = []
-  let s:maktaba.globals.loghandlers = maktaba#reflist#Create()
-endif
-
-
-""
-" Returns a handle to the maktaba plugin object.
-function! maktaba#Maktaba() abort
-  return s:maktaba
-endfunction
 
 
 
@@ -75,7 +73,8 @@ endfunction
 " another requiring >=2.1.0. Enforcing a maximum version is discouraged.
 function! maktaba#IsAtLeastVersion(version) abort
   call maktaba#ensure#Matches(a:version, '\v^\d+\.\d+\.\d+')
-  let l:version = matchlist(a:version, '\v^(\d+)\.(\d+)\.(\d+)')
+  " Extract MAJOR.MINOR.PATCH, ignoring any additional labels like "rc1".
+  let l:version = matchlist(a:version, '\v^(\d+)\.(\d+)\.(\d+)')[1:3]
   for l:i in range(len(s:version))
     if s:version[l:i] > l:version[l:i]
       return 1
