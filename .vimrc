@@ -15,9 +15,13 @@ execute pathogen#infect()
 let $MAKTABA_HOME = fnamemodify('~/.vim/maktaba', ':p:h')
 source $MAKTABA_HOME/maktaba/bootstrap.vim
 function! LocalLibInstaller(library) abort
-  let l:libpath = maktaba#path#Join([$MAKTABA_HOME, a:library])
-  if isdirectory(l:libpath)
-    return maktaba#plugin#GetOrInstall(l:libpath)
+  " Fake an installer that knows how to map a library name to a location
+  let l:fakerepo = {
+      \ 'fictional.vim': maktaba#path#Join([$MAKTABA_HOME, 'i_dont_exist']),
+      \ 'bases.vim': maktaba#path#Join([$MAKTABA_HOME, 'bases']),
+      \ }
+  if has_key(l:fakerepo, a:library) && isdirectory(l:fakerepo[a:library])
+    return maktaba#plugin#GetOrInstall(l:fakerepo[a:library])
   endif
   throw maktaba#error#NotFound(a:library)
 endfunction
