@@ -459,7 +459,7 @@ if exists('&relativenumber')
       let b:togglernu_number = &number
       set relativenumber
     endif
-    redraw! " these two lines required for omap
+    redraw!  " these two lines required for omap
     return ''
   endfunction
   nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
