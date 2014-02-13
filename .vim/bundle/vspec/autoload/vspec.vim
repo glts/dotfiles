@@ -1,5 +1,5 @@
 " vspec - Testing framework for Vim script
-" Version: 1.1.3
+" Version: 1.2.0
 " Copyright (C) 2009-2014 Kana Natsuno <http://whileimautomaton.net/>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -85,10 +85,33 @@ let s:suite = {}  "{{{2
 " Interface  "{{{1
 " :Expect  "{{{2
 command! -complete=expression -nargs=+ Expect
-\ call s:cmd_Expect(
-\   s:parse_should_arguments(<q-args>, 'raw'),
-\   map(s:parse_should_arguments(<q-args>, 'eval'), 'eval(v:val)')
-\ )
+\   if <q-args> =~# '^expr\s*{'
+\ |   let s:_ = {}
+\ |   let [s:_.ae, s:_.ne, s:_.me, s:_.ee] =
+\      s:parse_should_arguments(<q-args>, 'eval')
+\ |   let s:_.nv = eval(s:_.ne)
+\ |   let s:_.mv = eval(s:_.me)
+\ |   let s:_.ev = eval(s:_.ee)
+\ |   let s:_.av = 0
+\ |   let s:_.ax = 0
+\ |   let s:_.at = 0
+\ |   try
+\ |     let s:_.av = eval(substitute(s:_.ae, '^expr\s*{\(.*\)}$', '\1', ''))
+\ |   catch
+\ |     let s:_.ax = v:exception
+\ |     let s:_.at = v:throwpoint
+\ |   endtry
+\ |   call s:cmd_Expect(
+\       s:parse_should_arguments(<q-args>, 'raw'),
+\       [{'value': s:_.av, 'exception': s:_.ax, 'throwpoint': s:_.at},
+\        s:_.nv, s:_.mv, s:_.ev]
+\     )
+\ | else
+\ |   call s:cmd_Expect(
+\       s:parse_should_arguments(<q-args>, 'raw'),
+\       map(s:parse_should_arguments(<q-args>, 'eval'), 'eval(v:val)')
+\     )
+\ | endif
 
 
 
@@ -206,14 +229,26 @@ function! vspec#test(specfile_path)  "{{{2
 
   try
     execute 'source' compiled_specfile_path
+    call s:run_suites(s:all_suites)
   catch
+    echo '#' repeat('-', 77)
     echo '#' v:throwpoint
-    echo '#' v:exception
-    let s:all_suites = []
+    for exception_line in split(v:exception, '\n')
+      echo '#' exception_line
+    endfor
+    echo 'Bail out!  Unexpected error happened while processing a test script.'
+  finally
+    " This :echo is required to terminate the whole message with a new line.
+    " Because :echo writes a message as "\n{message}", not "{message}\n".
+    echo ''
   endtry
 
+  call delete(compiled_specfile_path)
+endfunction
+
+function! s:run_suites(all_suites)
   let example_count = 0
-  for suite in s:all_suites
+  for suite in a:all_suites
     call s:push_current_suite(suite)
       for example in suite.example_list
         let example_count += 1
@@ -295,16 +330,15 @@ function! vspec#test(specfile_path)  "{{{2
           \   example
           \ )
           echo '#' v:throwpoint
-          echo '#' v:exception
+          for exception_line in split(v:exception, '\n')
+            echo '#' exception_line
+          endfor
         endtry
         call suite.after_block()
       endfor
     call s:pop_current_suite()
   endfor
   echo printf('1..%d', example_count)
-  echo ''
-
-  call delete(compiled_specfile_path)
 endfunction
 
 
@@ -326,6 +360,33 @@ function! vspec#_matcher_true(value)
 endfunction
 call vspec#customize_matcher('to_be_true', function('vspec#_matcher_true'))
 call vspec#customize_matcher('toBeTrue', function('vspec#_matcher_true'))
+
+
+
+
+
+
+
+
+" Predefined custom matchers - to_throw  "{{{2
+
+let s:to_throw = {}
+
+function! s:to_throw.match(result, ...)
+  return a:result.exception isnot 0 && (a:0 == 0 || a:result.exception =~# a:1)
+endfunction
+
+function! s:to_throw.failure_message_for_should(result, ...)
+  return printf(
+  \   'But %s was thrown',
+  \   a:result.exception is 0 ? 'nothing' : string(a:result.exception)
+  \ )
+endfunction
+
+let s:to_throw.failure_message_for_should_not =
+\ s:to_throw.failure_message_for_should
+
+call vspec#customize_matcher('to_throw', s:to_throw)
 
 
 
@@ -357,7 +418,7 @@ endfunction
 
 
 function! s:suite.generate_example_function_name(example_description)  "{{{2
-  return substitute(
+  return '_' . substitute(
   \   a:example_description,
   \   '[^[:alnum:]]',
   \   '\="_" . printf("%02x", char2nr(submatch(0)))',
