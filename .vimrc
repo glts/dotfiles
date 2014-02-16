@@ -334,7 +334,7 @@ nnoremap <silent> Q gwip
 nnoremap <silent> <Leader>Q :<C-U>let _tw=&l:tw<Bar>setl tw=72<Bar>exe 'norm! gwip'<Bar>let &l:tw=_tw<Bar>unlet _tw<CR>
 
 " Easy buffer switching
-nnoremap <Leader>b :<C-U>ls<CR>:b
+nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
 
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
