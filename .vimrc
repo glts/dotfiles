@@ -429,7 +429,7 @@ cnoreab w!! w !sudo tee % >/dev/null
 cnoreab <expr> %% expand('%:h')
 
 " Insert current date
-inoreab 2013- <C-R>=strftime("%Y-%m-%d")<CR>
+inoreab 2014- <C-R>=strftime("%Y-%m-%d")<CR>
 
 " Insert some "Lorem ipsum" text {{{2
 inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
