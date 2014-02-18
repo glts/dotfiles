@@ -19,6 +19,7 @@ function! LocalLibInstaller(library) abort
   let l:fakerepo = {
       \ 'fictional.vim': maktaba#path#Join([$MAKTABA_HOME, 'i_dont_exist']),
       \ 'bases.vim': maktaba#path#Join([$MAKTABA_HOME, 'bases']),
+      \ 'magnum.vim': maktaba#path#Join([$MAKTABA_HOME, 'magnum']),
       \ }
   if has_key(l:fakerepo, a:library) && isdirectory(l:fakerepo[a:library])
     return maktaba#plugin#GetOrInstall(l:fakerepo[a:library])
