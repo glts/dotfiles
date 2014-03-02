@@ -187,7 +187,7 @@ if has("autocmd")
     autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
     autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 et tw=72
     autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
-    autocmd FileType ruby,vim setlocal ts=8 sw=2 sts=2 et
+    autocmd FileType ruby,vim,r setlocal ts=8 sw=2 sts=2 et
     autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
     autocmd FileType scheme setlocal ts=8 sw=2 sts=2 et
     autocmd FileType tex setlocal tw=78
