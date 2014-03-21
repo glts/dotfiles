@@ -512,6 +512,9 @@ noremap <F5> :<C-U>GundoToggle<CR>
 let g:cottidie_no_default_tips = 0
 let g:cottidie_tips_files = ['~/mytips.txt'] ", 'http://glts.github.io/vim-cottidie/tips']
 
+" Replace operator mapping for operator-replace
+map gr <Plug>(operator-replace)
+
 " Convenient command to see the difference between the current buffer and the
 " file it was loaded from, thus the changes you made.
 " TODO make a "reverse" command that gets you out of diff mode; also: clean up!
