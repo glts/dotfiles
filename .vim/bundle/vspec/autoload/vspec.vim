@@ -1,5 +1,5 @@
 " vspec - Testing framework for Vim script
-" Version: 1.2.0
+" Version: 1.3.1
 " Copyright (C) 2009-2014 Kana Natsuno <http://whileimautomaton.net/>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -198,6 +198,41 @@ endfunction
 
 
 
+function! vspec#pretty_string(value)  "{{{2
+  return substitute(
+  \   string(a:value),
+  \   '''\(\%([^'']\|''''\)*\)''',
+  \   '\=s:reescape_string_content(submatch(1))',
+  \   'g'
+  \ )
+endfunction
+
+function! s:reescape_string_content(s)
+  if !exists('s:REESCAPE_TABLE')
+    let s:REESCAPE_TABLE = {}
+    for i in range(0x01, 0xFF)
+      let c = nr2char(i)
+      let s:REESCAPE_TABLE[c] = c =~# '\p' ? c : printf('\x%02X', i)
+    endfor
+    call extend(s:REESCAPE_TABLE, {
+    \   "\"": '\"',
+    \   "\\": '\\',
+    \   "\b": '\b',
+    \   "\e": '\e',
+    \   "\f": '\f',
+    \   "\n": '\n',
+    \   "\r": '\r',
+    \   "\t": '\t',
+    \ })
+  endif
+  let s = substitute(a:s, "''", "'", 'g')
+  let cs = map(split(s, '\ze.'), 'get(s:REESCAPE_TABLE, v:val, v:val)')
+  return '"' . join(cs, '') . '"'
+endfunction
+
+
+
+
 function! vspec#ref(variable_name)  "{{{2
   if a:variable_name =~# '^s:'
     return s:get_hinted_scope()[a:variable_name[2:]]
@@ -232,7 +267,7 @@ function! vspec#test(specfile_path)  "{{{2
     call s:run_suites(s:all_suites)
   catch
     echo '#' repeat('-', 77)
-    echo '#' v:throwpoint
+    echo '#' s:simplify_call_stack(v:throwpoint, expand('<sfile>'), 'unknown')
     for exception_line in split(v:exception, '\n')
       echo '#' exception_line
     endfor
@@ -247,18 +282,21 @@ function! vspec#test(specfile_path)  "{{{2
 endfunction
 
 function! s:run_suites(all_suites)
-  let example_count = 0
+  let total_count_of_examples = 0
   for suite in a:all_suites
     call s:push_current_suite(suite)
-      for example in suite.example_list
-        let example_count += 1
+      for example_index in range(len(suite.example_list))
+        let total_count_of_examples += 1
+        let example = suite.example_list[example_index]
         call suite.before_block()
         try
-          call suite.example_dict[suite.generate_example_function_name(example)]()
+          call suite.example_dict[
+          \   suite.generate_example_function_name(example_index)
+          \ ]()
           echo printf(
           \   '%s %d - %s %s',
           \   'ok',
-          \   example_count,
+          \   total_count_of_examples,
           \   suite.subject,
           \   example
           \ )
@@ -271,7 +309,7 @@ function! s:run_suites(all_suites)
               echo printf(
               \   '%s %d - %s %s',
               \   'not ok',
-              \   example_count,
+              \   total_count_of_examples,
               \   suite.subject,
               \   example
               \ )
@@ -288,7 +326,7 @@ function! s:run_suites(all_suites)
               echo printf(
               \   '%s %d - # TODO %s %s',
               \   'not ok',
-              \   example_count,
+              \   total_count_of_examples,
               \   suite.subject,
               \   example
               \ )
@@ -296,7 +334,7 @@ function! s:run_suites(all_suites)
               echo printf(
               \   '%s %d - # SKIP %s %s - %s',
               \   'ok',
-              \   example_count,
+              \   total_count_of_examples,
               \   suite.subject,
               \   example,
               \   i.message
@@ -305,7 +343,7 @@ function! s:run_suites(all_suites)
               echo printf(
               \   '%s %d - %s %s',
               \   'not ok',
-              \   example_count,
+              \   total_count_of_examples,
               \   suite.subject,
               \   example
               \ )
@@ -315,7 +353,7 @@ function! s:run_suites(all_suites)
             echo printf(
             \   '%s %d - %s %s',
             \   'not ok',
-            \   example_count,
+            \   total_count_of_examples,
             \   suite.subject,
             \   example
             \ )
@@ -325,11 +363,11 @@ function! s:run_suites(all_suites)
           echo printf(
           \   '%s %d - %s %s',
           \   'not ok',
-          \   example_count,
+          \   total_count_of_examples,
           \   suite.subject,
           \   example
           \ )
-          echo '#' v:throwpoint
+          echo '#' s:simplify_call_stack(v:throwpoint, expand('<sfile>'), 'it')
           for exception_line in split(v:exception, '\n')
             echo '#' exception_line
           endfor
@@ -338,7 +376,7 @@ function! s:run_suites(all_suites)
       endfor
     call s:pop_current_suite()
   endfor
-  echo printf('1..%d', example_count)
+  echo printf('1..%d', total_count_of_examples)
 endfunction
 
 
@@ -417,13 +455,8 @@ endfunction
 
 
 
-function! s:suite.generate_example_function_name(example_description)  "{{{2
-  return '_' . substitute(
-  \   a:example_description,
-  \   '[^[:alnum:]]',
-  \   '\="_" . printf("%02x", char2nr(submatch(0)))',
-  \   'g'
-  \ )
+function! s:suite.generate_example_function_name(example_index)  "{{{2
+  return '_' . a:example_index
 endfunction
 
 
@@ -462,7 +495,7 @@ function! vspec#new_suite(subject)  "{{{2
 
   let s.subject = a:subject  " :: SubjectString
   let s.example_list = []  " :: [DescriptionString]
-  let s.example_dict = {}  " :: DescriptionString -> ExampleFuncref
+  let s.example_dict = {}  " :: ExampleIndexAsIdentifier -> ExampleFuncref
 
   return s
 endfunction
@@ -504,7 +537,7 @@ function! s:translate_script(slines)  "{{{2
       call insert(stack, 'it', 0)
       call extend(rlines, [
       \   printf('call suite.add_example(%s)', tokens[1]),
-      \   printf('function! suite.example_dict[suite.generate_example_function_name(%s)]()', tokens[1]),
+      \   'function! suite.example_dict[suite.generate_example_function_name(len(suite.example_list) - 1)]()',
       \ ])
       continue
     endif
@@ -707,8 +740,8 @@ endfunction
 
 function! s:generate_default_failure_message(i)  "{{{2
   return [
-  \   '  Actual value: ' . string(a:i.value_actual),
-  \   'Expected value: ' . string(a:i.value_expected),
+  \   '  Actual value: ' . vspec#pretty_string(a:i.value_actual),
+  \   'Expected value: ' . vspec#pretty_string(a:i.value_expected),
   \ ]
 endfunction
 
@@ -855,6 +888,27 @@ endfunction
 
 function! s:get_hinted_sid()  "{{{2
   return eval(s:expr_hinted_sid)
+endfunction
+
+
+
+
+function! s:simplify_call_stack(throwpoint, base_call_stack, type)  "{{{2
+  if a:type ==# 'it'
+    return substitute(
+    \   a:throwpoint,
+    \   '\V' . escape(a:base_call_stack, '\') . '..\d\+',
+    \   '{example}',
+    \   ''
+    \ )
+  else
+    return substitute(
+    \   a:throwpoint,
+    \   '\V' . escape(a:base_call_stack, '\'),
+    \   '{vspec}',
+    \   ''
+    \ )
+  endif
 endfunction
 
 
