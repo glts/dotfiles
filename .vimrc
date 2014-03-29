@@ -503,6 +503,9 @@ let perl_include_pod = 1
 " Only one level of indent after open parentheses in Python
 let g:pyindent_open_paren = '&shiftwidth'
 
+" Indent multi-line definitions in J
+let g:j_indent_definitions = 1
+
 noremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
