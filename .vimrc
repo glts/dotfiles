@@ -356,9 +356,6 @@ xnoremap g# #
 nnoremap <silent> <Leader>* :keepjumps normal! mxHmy`x*'yzt`x<CR>
 nnoremap <silent> <Leader># :keepjumps normal! mxHmy`x#'yzt`x<CR>
 
-" Show stack of syntax items at cursor position
-nnoremap <Leader>sy :echo map(synstack(line("."), col(".")), 'synIDattr(v:val, "name")')<CR>
-
 " Emulate Readline's CTRL-K (kill-line)
 inoremap <C-K> <C-\><C-O>D
 
