@@ -301,8 +301,6 @@ if has("autocmd")
       autocmd FileType * if &tw != 0 | let &cc=join(range(&tw+1,199),',') | endif
     endif
 
-    autocmd BufNewFile,BufRead *.ijs setfiletype j
-
     " TODO This works only if you have ch=2!
     " autocmd VimEnter * CottidieTip!
   augroup END
