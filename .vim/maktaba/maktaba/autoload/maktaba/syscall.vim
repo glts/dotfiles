@@ -39,12 +39,11 @@ function! s:DoSyscallCommon(syscall, CallFunc, throw_errors) abort
   " Force shell to /bin/sh since vim only works properly with POSIX shells.
   " If the shell is a whitelisted wrapper, override the wrapped shell via $SHELL
   " instead.
+  let l:shell_state = maktaba#value#SaveAll(['&shell', '$SHELL'])
   if &shell !~# s:usable_shell
-    let l:save_shell = &shell
     set shell=/bin/sh
   endif
   if $SHELL !~# s:usable_shell
-    let l:save_env_shell = $SHELL
     let $SHELL = '/bin/sh'
   endif
 
@@ -52,12 +51,7 @@ function! s:DoSyscallCommon(syscall, CallFunc, throw_errors) abort
     let l:return_data = maktaba#function#Apply(a:CallFunc)
   finally
     " Restore configured shell.
-    if exists('l:save_shell')
-      let &shell = l:save_shell
-    endif
-    if exists('l:save_env_shell')
-      let $SHELL = l:save_env_shell
-    endif
+    call maktaba#value#Restore(l:shell_state)
   endtry
 
   if !a:throw_errors || !v:shell_error
@@ -83,7 +77,9 @@ function! maktaba#syscall#DoCall() abort dict
   let l:return_data = {}
   try
     let l:full_cmd = printf('%s 2> %s', self.GetCommand(), l:error_file)
-    let l:return_data.stdout = system(l:full_cmd)
+    let l:return_data.stdout = has_key(self, 'stdin') ?
+        \ system(l:full_cmd, self.stdin) :
+        \ system(l:full_cmd)
   finally
     if filereadable(l:error_file)
       let l:return_data.stderr = join(add(readfile(l:error_file), ''), "\n")
@@ -129,6 +125,7 @@ function! maktaba#syscall#Create(cmd) abort
   return {
       \ 'cmd': maktaba#ensure#TypeMatchesOneOf(a:cmd, ['', []]),
       \ 'WithCwd': function('maktaba#syscall#WithCwd'),
+      \ 'WithStdin': function('maktaba#syscall#WithStdin'),
       \ 'And': function('maktaba#syscall#And'),
       \ 'Or': function('maktaba#syscall#Or'),
       \ 'Call': function('maktaba#syscall#Call'),
@@ -156,6 +153,19 @@ function! maktaba#syscall#WithCwd(directory) abort dict
   return l:new_cmd.And(l:orig_cmd_value)
 endfunction
 
+
+""
+" @dict Syscall
+" Configures {input} to be passed via stdin to the command.
+" Only supported for @function(Syscall.Call). Calling
+" @function(Syscall.CallForeground) on a Syscall with stdin specified will
+" cause |ERROR(NotImplemented)| to be thrown.
+" @throws WrongType
+function! maktaba#syscall#WithStdin(input) abort dict
+  let l:new_cmd = copy(self)
+  let l:new_cmd.stdin = maktaba#ensure#IsString(a:input)
+  return l:new_cmd
+endfunction
 
 ""
 " @dict Syscall
@@ -217,11 +227,16 @@ endfunction
 " * stderr: the shell command's entire stderr string, if available.
 " @throws WrongType
 " @throws ShellError if the shell command returns an exit code.
+" @throws NotImplemented if stdin has been specified for this Syscall.
 function! maktaba#syscall#CallForeground(pause, ...) abort dict
   let l:throw_errors = maktaba#ensure#IsBool(get(a:, 1, 1))
-  let l:call_func = maktaba#function#Create(
-      \ 'maktaba#syscall#DoCallForeground', [a:pause], self)
-  return s:DoSyscallCommon(self, l:call_func, l:throw_errors)
+  if !has_key(self, 'stdin')
+    let l:call_func = maktaba#function#Create(
+        \ 'maktaba#syscall#DoCallForeground', [a:pause], self)
+    return s:DoSyscallCommon(self, l:call_func, l:throw_errors)
+  endif
+  throw maktaba#error#NotImplemented(
+      \ 'Stdin value cannot be used with CallForeground.')
 endfunction
 
 
