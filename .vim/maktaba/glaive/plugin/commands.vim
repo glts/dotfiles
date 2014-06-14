@@ -1,3 +1,5 @@
+""
+" @section Introduction, intro
 " @stylized Glaive
 "
 " Provides a user interface for maktaba settings. With Glaive, setting
@@ -25,6 +27,10 @@ function! s:Glaive(args) abort
     call maktaba#error#Shout(v:exception)
     return
   endtry
+  if l:operations is# ''
+    call glaive#PrintCurrentConfiguration(l:plugin)
+    return
+  endif
   try
     call glaive#Configure(l:plugin, l:operations)
   catch /ERROR(\(BadValue\|WrongType\|NotFound\)):/
@@ -51,6 +57,9 @@ endfunction
 "   " not recommended).
 "   :Glaive my!plugin flag
 " <
+"
+" If no [operation]s are given, the current value of all flags in {plugin} is
+" printed.
 "
 " Each [operation] may be in any of the following forms. They should be
 " separated by whitespace. The syntax for updating settings is as follows:
