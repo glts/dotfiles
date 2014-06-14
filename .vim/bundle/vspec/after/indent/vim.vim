@@ -1,5 +1,5 @@
 " Vim additional indent settings: vim/vspec - indent vspec commands
-" Version: 1.3.1
+" Version: 1.4.0
 " Copyright (C) 2012-2014 Kana Natsuno <http://whileimautomaton.net/>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -37,7 +37,7 @@ function GetVimVspecIndent(base_indent)
 
   let base_lnum = prevnonblank(v:lnum - 1)
   let line = getline(base_lnum)
-  if 0 <= match(line, '\(^\||\)\s*\(after\|before\|describe\|it\)\>')
+  if 0 <= match(line, '\(^\||\)\s*\(after\|before\|context\|describe\|it\)\>')
     let indent += &l:shiftwidth
   endif
 

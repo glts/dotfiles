@@ -1,5 +1,5 @@
 " Vim additional syntax: vim/vspec - highlight vspec commands
-" Version: 1.3.1
+" Version: 1.4.0
 " Copyright (C) 2010-2014 Kana Natsuno <http://whileimautomaton.net/>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -24,6 +24,7 @@
 
 syntax keyword vimVspecCommand after
 syntax keyword vimVspecCommand before
+syntax keyword vimVspecCommand context skipwhite nextgroup=vimString
 syntax keyword vimVspecCommand describe skipwhite nextgroup=vimString
 syntax keyword vimVspecCommand end
 syntax keyword vimVspecCommand Expect skipwhite
