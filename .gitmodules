@@ -13,3 +13,6 @@
 [submodule ".vim/maktaba/magnum"]
 	path = .vim/maktaba/magnum
 	url = https://github.com/glts/vim-magnum.git
+[submodule ".vim/maktaba/radical"]
+	path = .vim/maktaba/radical
+	url = https://github.com/glts/vim-radical.git
