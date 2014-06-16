@@ -12,13 +12,12 @@ runtime ftplugin/man.vim
 execute pathogen#infect()
 
 " Maktaba playground below
-let $MAKTABA_HOME = fnamemodify('~/.vim/maktaba', ':p:h')
-source $MAKTABA_HOME/maktaba/bootstrap.vim
+source $HOME/.vim/maktaba/maktaba/bootstrap.vim
+let $MAKTABA_HOME = fnamemodify(maktaba#Maktaba().location, ':p:h:h')
 function! LocalLibInstaller(library) abort
   " Fake an installer that knows how to map a library name to a location
   let l:fakerepo = {
       \ 'fictional.vim': maktaba#path#Join([$MAKTABA_HOME, 'i_dont_exist']),
-      \ 'bases.vim': maktaba#path#Join([$MAKTABA_HOME, 'bases']),
       \ 'magnum.vim': maktaba#path#Join([$MAKTABA_HOME, 'magnum']),
       \ }
   if has_key(l:fakerepo, a:library) && isdirectory(l:fakerepo[a:library])
@@ -28,8 +27,8 @@ function! LocalLibInstaller(library) abort
 endfunction
 call maktaba#library#AddInstaller('locallibs', 'LocalLibInstaller')
 
-call maktaba#plugin#GetOrInstall('~/.vim/maktaba/glaive')
-call maktaba#plugin#GetOrInstall('~/.vim/maktaba/radical').Flag('plugin[mappings]', 1)
+call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'glaive']))
+call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
 
 " Settings {{{1
 " Behaviour {{{2
