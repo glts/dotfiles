@@ -1,24 +1,24 @@
-let s:is_windows = exists('+shellslash')
-let s:use_backslash = s:is_windows && !&shellslash
+let s:is_backslash_platform = exists('+shellslash')
+let s:use_backslash = s:is_backslash_platform && !&shellslash
 let s:slash = s:use_backslash ? '\' : '/'
 
 let s:root_frontslash = '\v^/'
 let s:root_backslash = '\v^\\'
 
-" \\@<!%(\\\\)* matches any number of double-backslashes not preceded by
-" a backslash.
-let s:unescaped_backslash = '\v\\@<!%(\\\\)*\zs\\'
-let s:unescaped_frontslash = '\v\\@<!%(\\\\)*\zs/'
-
-if !s:is_windows
-  let s:unescaped_slash = s:unescaped_frontslash
-elseif s:use_backslash
-  let s:unescaped_slash = s:unescaped_backslash
+if !s:is_backslash_platform
+  " Unescaped frontslash.
+  " \\@<!%(\\\\)* matches any number of double-backslashes not preceded by
+  " a backslash.
+  let s:unescaped_slash = '\v\\@<!%(\\\\)*\zs/'
 else
-  let s:unescaped_slash = printf(
-      \ '\v%%(%s|%s)$', s:unescaped_frontslash, s:unescaped_backslash)
+  " Unescaped frontslash or backslash.
+  " Even platforms that use backslashes as separators accept forward slashes.
+  " See http://en.wikipedia.org/wiki/Path_(computing)#Representations_of_paths_by_operating_system_and_shell.
+  let s:unescaped_slash = '\v\\@<!%(\\\\)*\zs[/\\]'
 endif
+let g:unescaped_slash = s:unescaped_slash
 let s:trailing_slash = s:unescaped_slash . '$'
+let s:trailing_slashes = s:unescaped_slash . '+$'
 
 let s:drive_backslash = '\v^\a:\\\\'
 let s:drive_frontslash = '\v^\a://'
@@ -36,13 +36,25 @@ function! s:Join(left, right) abort
 endfunction
 
 
+""
+" Returns {path} with trailing slash (forward or backslash, depending on
+" platform).
+" Maktaba uses paths with trailing slashes to unambiguously denote directory
+" paths, so utilities like @function(#Dirname) don't try to interpret them as
+" file paths.
+function! maktaba#path#AsDir(path) abort
+  return substitute(a:path, s:trailing_slashes, '', 'g') . s:slash
+endfunction
+
+
+""
 " Returns the root component of {path}.
 " In unix, / is the only root.
 " In windows, the root can be \ (which vim treats as the default drive), a drive
 " like D:\\, and also / or D:// if shellslash is set.
 " The root of a relative path is empty.
 function! maktaba#path#RootComponent(path) abort
-  if !s:is_windows
+  if !s:is_backslash_platform
     " This regex matches / alone.
     return matchstr(a:path, s:root_frontslash)
   endif
@@ -162,8 +174,7 @@ function! maktaba#path#GetDirectory(path) abort
   if !isdirectory(a:path) && maktaba#path#Exists(a:path)
     let l:path = fnamemodify(l:path, ':h')
   endif
-  " Ensures a trailing slash.
-  return s:Join(l:path, '')
+  return maktaba#path#AsDir(l:path)
 endfunction
 
 
