@@ -386,7 +386,6 @@ inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',match
 inoreab @@ 676c7473@gmail.com
 inoreab <@@ glts <Lt>676c7473@gmail.com>
 
-nnoremap <silent> <Leader>l :set list!<CR>
 nnoremap <silent> <BS> :nohlsearch<CR>
 
 " Highlight overlong lines, ie. characters at col 79+
@@ -401,12 +400,6 @@ nnoremap <Leader>vg :<C-U>vim /<C-R>// src/*.[ch]<CR>
 
 " Remove all trailing whitespace
 nnoremap <Leader>sd :%s/\s\+$<CR>
-
-" Toggle spell-checking
-nnoremap <Leader>sp :set spell!<CR>
-
-" Toggle 'virtualedit' mode
-nnoremap <Leader>vv :set ve=<C-R>=&ve=='' ? 'all' : ''<CR><CR>
 
 " Change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
