@@ -426,6 +426,9 @@ cnoreab <expr> %% expand('%:h')
 " Insert current date
 inoreab 2014- <C-R>=strftime("%Y-%m-%d")<CR>
 
+" Insert random signed int64
+nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(64)).Sub(magnum#Int(2).Pow(63)).String().'L'<CR>p
+
 " Insert some "Lorem ipsum" text {{{2
 inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
