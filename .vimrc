@@ -157,12 +157,6 @@ set statusline+=\ %P            "percent through file
 
 " set t_Co=256
 
-" Switch syntax and search highlighting on whenever colour is available
-if &t_Co > 2 || has("gui_running")
-  syntax enable
-  set hlsearch
-endif
-
 " Autocommands {{{1
 " Helper function, see ":helpg Eatchar"
 function! EatTrigger()
@@ -173,6 +167,7 @@ endfunction
 if has("autocmd")
 
   filetype plugin indent on
+  syntax enable
 
   augroup ft_settings
     au!
@@ -385,8 +380,6 @@ inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',match
 
 inoreab @@ 676c7473@gmail.com
 inoreab <@@ glts <Lt>676c7473@gmail.com>
-
-nnoremap <silent> <BS> :nohlsearch<CR>
 
 " Highlight overlong lines, ie. characters at col 79+
 " TODO use 'tw' and only when not empty, put /../ in history
