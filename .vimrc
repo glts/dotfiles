@@ -304,9 +304,6 @@ endif
 " Mappings and abbreviations {{{1
 let mapleader = "\\"
 
-inoremap <S-CR> <Esc>o
-inoremap <S-M-CR> <Esc>O
-
 nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
 nnoremap <C-Left> <C-W><
