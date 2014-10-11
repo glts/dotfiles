@@ -86,8 +86,8 @@ function! s:fnameescape(file) abort
   endif
 endfunction
 
-nnoremap <silent> <Plug>unimpairedDirectoryNext     :<C-U>edit <C-R>=<SID>fnameescape(<SID>FileByOffset(v:count1))<CR><CR>
-nnoremap <silent> <Plug>unimpairedDirectoryPrevious :<C-U>edit <C-R>=<SID>fnameescape(<SID>FileByOffset(-v:count1))<CR><CR>
+nnoremap <silent> <Plug>unimpairedDirectoryNext     :<C-U>edit <C-R>=fnamemodify(<SID>fnameescape(<SID>FileByOffset(v:count1)), ':.')<CR><CR>
+nnoremap <silent> <Plug>unimpairedDirectoryPrevious :<C-U>edit <C-R>=fnamemodify(<SID>fnameescape(<SID>FileByOffset(-v:count1)), ':.')<CR><CR>
 nmap ]f <Plug>unimpairedDirectoryNext
 nmap [f <Plug>unimpairedDirectoryPrevious
 
@@ -256,24 +256,27 @@ augroup END
 " }}}1
 " Put {{{1
 
-function! s:putline(how) abort
+function! s:putline(how, map) abort
   let [body, type] = [getreg(v:register), getregtype(v:register)]
   call setreg(v:register, body, 'l')
   exe 'normal! "'.v:register.a:how
   call setreg(v:register, body, type)
+  if type !=# 'V'
+    silent! call repeat#set("\<Plug>unimpairedPut".a:map)
+  endif
 endfunction
 
-nnoremap <silent> <Plug>unimpairedPutAbove :call <SID>putline('[p')<CR>
-nnoremap <silent> <Plug>unimpairedPutBelow :call <SID>putline(']p')<CR>
+nnoremap <silent> <Plug>unimpairedPutAbove :call <SID>putline('[p', 'Above')<CR>
+nnoremap <silent> <Plug>unimpairedPutBelow :call <SID>putline(']p', 'Below')<CR>
 
 nmap [p <Plug>unimpairedPutAbove
 nmap ]p <Plug>unimpairedPutBelow
-nnoremap <silent> >P :call <SID>putline('[p')<CR>>']
-nnoremap <silent> >p :call <SID>putline(']p')<CR>>']
-nnoremap <silent> <P :call <SID>putline('[p')<CR><']
-nnoremap <silent> <p :call <SID>putline(']p')<CR><']
-nnoremap <silent> =P :call <SID>putline('[p')<CR>=']
-nnoremap <silent> =p :call <SID>putline(']p')<CR>=']
+nnoremap <silent> >P :call <SID>putline('[p', 'Above')<CR>>']
+nnoremap <silent> >p :call <SID>putline(']p', 'Below')<CR>>']
+nnoremap <silent> <P :call <SID>putline('[p', 'Above')<CR><']
+nnoremap <silent> <p :call <SID>putline(']p', 'Below')<CR><']
+nnoremap <silent> =P :call <SID>putline('[p', 'Above')<CR>=']
+nnoremap <silent> =p :call <SID>putline(']p', 'Below')<CR>=']
 
 " }}}1
 " Encoding and decoding {{{1
