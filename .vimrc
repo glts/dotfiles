@@ -378,11 +378,6 @@ inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',match
 inoreab @@ 676c7473@gmail.com
 inoreab <@@ glts <Lt>676c7473@gmail.com>
 
-" Highlight overlong lines, ie. characters at col 79+
-" TODO use 'tw' and only when not empty, put /../ in history
-nnoremap <Leader>ol :highlight link OverLength ErrorMsg <Bar> match OverLength /\%79v.\+/<CR>
-nnoremap <Leader>oL :match none<CR>
-
 nnoremap <Leader>so :source %<CR>
 
 " Search for current search in the Vim C source code
