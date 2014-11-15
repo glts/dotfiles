@@ -345,12 +345,6 @@ xnoremap g# #
 nnoremap <silent> <Leader>* :keepjumps normal! mxHmy`x*'yzt`x<CR>
 nnoremap <silent> <Leader># :keepjumps normal! mxHmy`x#'yzt`x<CR>
 
-" Emulate Readline's CTRL-K (kill-line)
-inoremap <C-K> <C-\><C-O>D
-
-" Insert mode CTRL-W counterpart for WORDs
-inoremap <C-Q> <C-\><C-O>dB
-
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
@@ -359,9 +353,6 @@ cnoremap <C-N> <Down>
 xnoremap a( <Esc>gva(
 xnoremap a) <Esc>gva)
 xnoremap ab <Esc>gvab
-
-" Folding
-nnoremap <Space> za
 
 " 'Fix' the & command as recommended in "Practical Vim"
 nnoremap & :&&<CR>
@@ -428,24 +419,6 @@ nnoremap <Leader>ve :tabedit $MYVIMRC<CR>
 
 " Insert quick tab ruler for over-the-top perfectionist alignment
 command! Ruler put! =' '.repeat('   .   \|', 10)
-
-" Toggle relative line numbers
-if exists('&relativenumber')
-  function! s:ToggleRelativeNumber()
-    if &relativenumber
-      set norelativenumber
-      let &number = exists("b:togglernu_number") ? b:togglernu_number : 1
-    else
-      let b:togglernu_number = &number
-      set relativenumber
-    endif
-    redraw!  " these two lines required for omap
-    return ''
-  endfunction
-  nnoremap <silent> <Leader>m :call <SID>ToggleRelativeNumber()<CR>
-  vnoremap <silent> m :<C-U>call <SID>ToggleRelativeNumber()<CR>gv
-  onoremap <expr> m <SID>ToggleRelativeNumber()
-endif
 
 " TODO work in progress
 " Read template for the current filetype
