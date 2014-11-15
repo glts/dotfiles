@@ -151,8 +151,8 @@ endfunction
 ""
 " The dirname of {path}. Trailing slash matters. Consider:
 " >
-"   :echomsg maktaba#path#Basename('/path/to/file')
-"   :echomsg maktaba#path#Basename('/path/to/dir/')
+"   :echomsg maktaba#path#Dirname('/path/to/file')
+"   :echomsg maktaba#path#Dirname('/path/to/dir/')
 " <
 " The first echoes '/path/to', the second echoes '/path/to/dir'
 function! maktaba#path#Dirname(path) abort
@@ -196,6 +196,10 @@ function! maktaba#path#MakeRelative(root, path) abort
     call remove(l:pathparts, 0)
     call remove(l:rootparts, 0)
   endwhile
+
+  if empty(l:rootparts) && empty(l:pathparts)
+    return '.'
+  endif
 
   " l:rootparts now contains the directories we must traverse to reach the
   " common ancestor of root and path. Replacing those with '..' takes us to the

@@ -117,17 +117,21 @@ Flag.Set({value}, [foci])                                         *Flag.Set()*
   will set value['a'][0]['b'] to 'leaf'.
   Throws ERROR(BadValue) when an invalid focus is requested.
 
-Flag.AddCallback({callback})                              *Flag.AddCallback()*
+Flag.AddCallback({callback}, [fire_immediately])          *Flag.AddCallback()*
   Registers {callback}. It must refer to a function. The function must take
-  one argument: the value of the flag. {callback} will be fired immediately
-  with the current value of the flag. It will be fired again every time the
-  flag changes.
+  one argument: the value of the flag. {callback} will (by default) be fired
+  immediately with the current value of the flag. It will be fired again every
+  time the flag changes.
 
   Callbacks are fired AFTER translation occurs. Callbacks are fired in order
   of their registration.
 
   This function returns a function which, when applied, unregisters
   {callback}. Hold on to it if you expect you'll need to remove {callback}.
+
+  If [fire_immediately] is zero, {callback} will only be fired when the
+  current value of the flag changes.
+  [fire_immediately] is 1 if omitted.
   Throws ERROR(BadValue) if there's already a callback registered under that
   name.
 
@@ -203,35 +207,50 @@ Plugin.AddonInfo()                                        *Plugin.AddonInfo()*
   Otherwise, returns an empty dict.
   Throws ERROR(BadValue) if addon-info.json isn't valid JSON.
 
-Plugin.Flag({flag}, [value])                                   *Plugin.Flag()*
-  Gets or sets {flag}. If [value] is given, {flag} is set to [value].
-  Otherwise, the value of {flag} is returned. If {flag} does not exist, the
-  plugin flags file will be sourced. The following are equivalent:
+Plugin.Flag({flag})                                            *Plugin.Flag()*
+  Returns the value of {flag}. See |maktaba#setting#Handle()| for {flag}
+  syntax.
+
+  The following are roughly equivalent:
 >
     maktaba#plugin#Get('myplugin').Flag('foo')
     maktaba#plugin#Get('myplugin').flags.foo.Get()
-<
-  As are these:
->
-    maktaba#plugin#Get('myplugin').Flag('foo', 'bar')
-    maktaba#plugin#Get('myplugin').flags.foo.Set('bar')
 <
 
   You may access a portion of a flag (a specific value in a dict flag, or a
   specific item in a list flag) using a fairly natural square bracket syntax:
 >
-    maktaba#plugin#Get('myplugin').Flag('plugin[autocmds]', 1)
+    maktaba#plugin#Get('myplugin').Flag('plugin[autocmds]')
 <
   This is equivalent to:
 >
-    maktaba#plugin#Get('myplugin').flags.plugin.Get()['autocmds'] = 1
+    maktaba#plugin#Get('myplugin').flags.plugin.Get()['autocmds']
 <
   This syntax can be chained:
 >
     maktaba#plugin#Get('myplugin').Flag('complex[key][0]')
 <
-  See |maktaba#setting#ParseHandle()| for details.
+
+  The plugin flags file will be sourced before determining if the flag exists.
+
+  Throws ERROR(BadValue) if {flag} is an invalid flag name.
   Throws ERROR(NotFound) if {flag} does not exist.
+
+
+Plugin.Flag({flag}, {value})
+  Sets {flag} to {value}. See |maktaba#setting#Handle()| for {flag} syntax.
+
+  The following are equivalent (assuming the flag "foo" already exists):
+>
+    maktaba#plugin#Get('myplugin').Flag('foo', 'bar')
+    maktaba#plugin#Get('myplugin').flags.foo.Set('bar')
+<
+
+  Also supports dict flag syntax:
+>
+    maktaba#plugin#Get('myplugin').Flag('plugin[autocmds]', 1)
+<
+
   Throws ERROR(BadValue) if {flag} is an invalid flag name.
 
 Plugin.MapPrefix({letter}, [throw])                       *Plugin.MapPrefix()*
@@ -1187,9 +1206,7 @@ maktaba#python#ImportModule({plugin}, {name})  *maktaba#python#ImportModule()*
 <
   will print something like
 
-    <module 'foo.bar' from 'repopath/foo/python/foo/bar.py'
->
-<
+    <module 'foo.bar' from 'repopath/foo/python/foo/bar.py'>
 
 maktaba#rtp#Split([paths])                               *maktaba#rtp#Split()*
   Split [paths], a string of comma-separated path entries, into a list of
@@ -1291,6 +1308,7 @@ maktaba#setting#Handle({handle})                    *maktaba#setting#Handle()*
 >
     :echomsg maktaba#setting#Handle('flag')
     ~ ['flag', []]
+
     :echomsg maktaba#setting#Handle('flag[list][3][val]')
     ~ ['flag', ['list', 3, 'val']]
 <
