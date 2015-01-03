@@ -13,7 +13,7 @@ execute pathogen#infect()
 
 " Maktaba playground below
 source $HOME/.vim/maktaba/maktaba/bootstrap.vim
-let $MAKTABA_HOME = fnamemodify(maktaba#Maktaba().location, ':p:h:h')
+let $MAKTABA_HOME = maktaba#path#Join([$HOME, '.vim', 'maktaba'])
 function! LocalLibInstaller(library) abort
   " Fake an installer that knows how to map a library name to a location
   let l:fakerepo = {
