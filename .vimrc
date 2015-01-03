@@ -433,41 +433,33 @@ function! s:ReadTemplate(...)
 endfunction
 command! -nargs=? Template call s:ReadTemplate(<f-args>)
 
-" Plugins and scripts {{{1
-" NERDTree is on hiatus
-" noremap <F2> :<C-U>NERDTreeToggle<CR>
-" let NERDTreeIgnore = ['^\.DS_Store$', '\.pyc$', '^\.svn$', '^\.git$', '\.o$',]
-" let NERDTreeShowHidden = 1
-
-" Use bash as default .sh filetype, see ":h ft-sh-syntax"
-let g:is_bash = 1
-
-" Indentation for multiline strings begins after the initial opening quote
-let g:clojure_align_multiline_strings = 1
-
-" Enable Perl POD highlighting and spell-checking
-let perl_include_pod = 1
-
-" Only one level of indent after open parentheses in Python
+" Plugins {{{1
+" Python indent file: Only one level of indent after open parentheses
 let g:pyindent_open_paren = '&shiftwidth'
 
-" Indent multi-line definitions in J
+" Clojure indent file: Align multi-line strings after initial opening quote
+let g:clojure_align_multiline_strings = 1
+
+" J indent file: Indent multi-line definitions in J
 let g:j_indent_definitions = 1
 
-noremap <F3> :<C-U>TagbarToggle<CR>
+" Perl syntax file: Enable Perl POD highlighting and spell-checking
+let g:perl_include_pod = 1
+
+" Shell syntax file: Use bash as default filetype, see ":h ft-sh-syntax"
+let g:is_bash = 1
+
+" operator-replace plugin
+map gr <Plug>(operator-replace)
+
+" Tagbar plugin
+nnoremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
-noremap <F5> :<C-U>GundoToggle<CR>
+" Gundo plugin
+nnoremap <F5> :<C-U>GundoToggle<CR>
 
+" cottidie.vim plugin
 let g:cottidie_no_default_tips = 0
 let g:cottidie_tips_files = ['~/mytips.txt'] ", 'http://glts.github.io/vim-cottidie/tips']
-
-" Replace operator mapping for operator-replace
-map gr <Plug>(operator-replace)
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
-" TODO make a "reverse" command that gets you out of diff mode; also: clean up!
-command! DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-          \ | wincmd p | diffthis
