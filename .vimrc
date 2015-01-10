@@ -164,142 +164,93 @@ function! EatTrigger()
   return c =~# '\s\|\r' ? '' : c
 endfunction
 
-if has("autocmd")
+" Enable Vim runtime files (filetype detection, ftplugin, indent, syntax)
+filetype plugin indent on
+syntax enable
 
-  filetype plugin indent on
-  syntax enable
+" Autocommands in the vimrc autocommand group
+augroup vimrc
+  autocmd!
 
-  augroup ft_settings
-    au!
-    " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
-    autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 et
-    autocmd FileType python,perl,php,tcl setlocal ts=8 sw=4 sts=4 et
-    autocmd FileType prolog setlocal ts=8 sw=4 sts=4 et
-    autocmd FileType sh,go setlocal ts=4 sts=4 sw=4 noet
-    autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noet
-    autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noet
-    autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
-    autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 et tw=72
-    autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
-    autocmd FileType ruby,vim,r setlocal ts=8 sw=2 sts=2 et
-    autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
-    autocmd FileType scheme setlocal ts=8 sw=2 sts=2 et
-    autocmd FileType tex setlocal tw=78
-  augroup END
+  " Start at last known cursor position in file
+  autocmd BufReadPost * silent! normal! g`"
 
-  augroup ft_vimhelp
-    au!
-    if exists("&colorcolumn")
-      autocmd FileType help setlocal colorcolumn=
-    endif
-  augroup END
+  " I don't like the 'conceal' feature
+  if has("conceal")
+    autocmd FileType * setlocal conceallevel=0
+  endif
 
-  augroup ft_text
-    au!
-    " TODO if it's a Vim help file or markdown etc. don't apply this
-    autocmd BufNewFile *.txt setfiletype text
-    autocmd FileType text setlocal textwidth=72 ts=8 sw=4 sts=4 et ai
-          \ formatoptions+=n comments=n:>,fb:-,fb:*
-  augroup END
+  " Use 'colorcolumn' to create a gutter
+  if exists('&colorcolumn') && has('gui_running')
+    autocmd FileType * if &textwidth != 0
+                   \ |   let &colorcolumn = join(range(&textwidth + 1, 500), ',')
+                   \ | endif
+  endif
 
-  augroup filetype_liquid
-    au!
-    autocmd FileType markdown if expand('%:p:t') =~# '\d\d\d\d-\d\d-\d\d-.*\.markdown' | set ft=liquid | endif
-  augroup END
+  " Filetype autocommands
+  " TODO move this outside?
+  " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
+  autocmd FileType cpp,c,java setlocal ts=8 sw=4 sts=4 et
+  autocmd FileType python,perl,php,tcl setlocal ts=8 sw=4 sts=4 et
+  autocmd FileType prolog setlocal ts=8 sw=4 sts=4 et
+  autocmd FileType sh,go setlocal ts=4 sts=4 sw=4 noet
+  autocmd FileType xml,html,xhtml,htmldjango setlocal ts=2 sw=2 sts=2 noet
+  autocmd FileType javascript setlocal ts=4 sw=4 sts=4 noet
+  autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
+  autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 et tw=72
+  autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
+  autocmd FileType ruby,vim,r setlocal ts=8 sw=2 sts=2 et
+  autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
+  autocmd FileType scheme setlocal ts=8 sw=2 sts=2 et
+  autocmd FileType tex setlocal tw=78
 
-  augroup filetype_vim
-    au!
-    autocmd FileType vim setlocal nowrap foldmethod=marker
-    autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
-    autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
-  augroup END
+  " Filetype for plain text
+  " TODO if it's a Vim help file or markdown etc. don't apply this
+  autocmd BufNewFile *.txt setfiletype text
+  autocmd FileType text setlocal textwidth=72 ts=8 sw=4 sts=4 et ai
+        \ formatoptions+=n comments=n:>,fb:-,fb:*
 
-  augroup filetype_vspec
-    au!
-    autocmd BufRead *.t if search('^\s*describe\s\+\([''"]\).*\1\s*$', 'cnw') | set ft=vim | endif
-  augroup END
+  " Filetype for liquid files
+  autocmd FileType markdown if expand('%:p:t') =~# '\d\d\d\d-\d\d-\d\d-.*\.markdown' | set ft=liquid | endif
 
-  augroup filetype_shell
-    au!
-    autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
-    autocmd FileType sh inoreab <buffer> while while; do<CR>done<Up><Right>
-  augroup END
+  " Filetype settings for Vim
+  autocmd FileType vim setlocal nowrap foldmethod=marker
+  autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
+  autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
 
-  augroup filetype_go
-    au!
-    autocmd FileType go silent! compiler go
-  augroup END
+  " Filetype settings for shell
+  autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
+  autocmd FileType sh inoreab <buffer> while while; do<CR>done<Up><Right>
 
-  augroup filetype_perl
-    au!
-    autocmd FileType perl inoreab <buffer> sub sub<C-G>u {<CR>}<Up><End><Left><Left>
-    autocmd FileType perl inoreab <buffer> foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
-  augroup END
+  " Filetype settings for Go
+  autocmd FileType go silent! compiler go
 
-  augroup filetype_php
-    au!
-    autocmd FileType php inoreab <buffer> try{ try {<CR>} catch (Exception $ex) {<CR>}<Up><Up><End>
-  augroup END
+  " Filetype settings for Perl
+  autocmd FileType perl inoreab <buffer> sub sub<C-G>u {<CR>}<Up><End><Left><Left>
+  autocmd FileType perl inoreab <buffer> foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
 
-  augroup filetype_python
-    au!
-    autocmd FileType python setlocal foldmethod=indent foldlevel=100
-    autocmd FileType python inoreab <buffer> def def<C-G>u(self):<Left><Left><Left><Left><Left><Left><Left>
-  augroup END
+  " Filetype settings for Python
+  autocmd FileType python setlocal foldmethod=indent foldlevel=100
+  autocmd FileType python inoreab <buffer> def def<C-G>u(self):<Left><Left><Left><Left><Left><Left><Left>
 
-  augroup filetype_ruby
-    au!
-    autocmd FileType ruby inoreab <buffer> class class<C-G>u<CR>end<Up><End>
-    autocmd FileType ruby inoreab <buffer> module module<C-G>u<CR>end<Up><End>
-    autocmd FileType ruby inoreab <buffer> def def<C-G>u()<CR>end<Up>
-  augroup END
+  " Filetype settings for Ruby
+  autocmd FileType ruby inoreab <buffer> class class<C-G>u<CR>end<Up><End>
+  autocmd FileType ruby inoreab <buffer> module module<C-G>u<CR>end<Up><End>
+  autocmd FileType ruby inoreab <buffer> def def<C-G>u()<CR>end<Up>
 
-  augroup filetype_c
-    au!
-    autocmd FileType c inoreab <buffer> /* /**/<Left><Left>
-  augroup END
+  " Filetype settings for C
+  autocmd FileType c inoreab <buffer> /* /**/<Left><Left>
 
-  augroup filetype_javascript
-    au!
-    autocmd FileType javascript inoreab <buffer> /* /**/<Left><Left>
-    autocmd BufNewFile,BufRead *.json setfiletype javascript
-  augroup END
+  " Filetype settings for JavaScript
+  autocmd FileType javascript inoreab <buffer> /* /**/<Left><Left>
+  autocmd BufNewFile,BufRead *.json setfiletype javascript
 
-  augroup filetype_java
-    au!
-    autocmd FileType java inoreab <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
-    autocmd FileType java inoreab <buffer> class public class {<CR>}<Up><End><Left><Left>
-    autocmd FileType java inoreab <buffer> /* /*<CR>/<Up>
-    autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
-  augroup END
-
-  augroup other
-    au!
-
-    " Start at last known cursor position in file (validity checks removed)
-    autocmd BufReadPost * silent! normal! g`"
-
-    " I don't like the 'conceal' feature
-    if has("conceal")
-      autocmd FileType * setlocal conceallevel=0
-    endif
-
-    " Highlight end of line spaces in normal mode
-    " highlight default link EndOfLineSpace ErrorMsg
-    " match EndOfLineSpace /\s\+$/
-    " autocmd InsertEnter * hi link EndOfLineSpace Normal
-    " autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
-
-    " Make colour column into colour gutter
-    if exists('&colorcolumn') && has('gui_running')
-      autocmd FileType * if &tw != 0 | let &cc=join(range(&tw+1,199),',') | endif
-    endif
-
-    " TODO This works only if you have ch=2!
-    " autocmd VimEnter * CottidieTip!
-  augroup END
-
-endif
+  " Filetype settings for Java
+  autocmd FileType java inoreab <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
+  autocmd FileType java inoreab <buffer> class public class {<CR>}<Up><End><Left><Left>
+  autocmd FileType java inoreab <buffer> /* /*<CR>/<Up>
+  autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
+augroup END
 
 " Mappings and abbreviations {{{1
 let mapleader = "\\"
