@@ -176,7 +176,7 @@ augroup vimrc
   autocmd BufReadPost * silent! normal! g`"
 
   " I don't like the 'conceal' feature
-  if has("conceal")
+  if has('conceal')
     autocmd FileType * setlocal conceallevel=0
   endif
 
