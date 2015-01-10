@@ -253,26 +253,16 @@ augroup vimrc
 augroup END
 
 " Mappings and abbreviations {{{1
-let mapleader = "\\"
+let g:mapleader = '\'
 
+" Quick window size manipulation
 nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
 nnoremap <C-Left> <C-W><
 nnoremap <C-Right> <C-W>>
 
-" Simple a/i text objects
-nnoremap di<Bar> T<Bar>d,
-nnoremap da<Bar> F<Bar>d,
-nnoremap ci<Bar> T<Bar>c,
-nnoremap ca<Bar> F<Bar>c,
-nnoremap yi<Bar> T<Bar>y,
-nnoremap ya<Bar> F<Bar>y,
-nnoremap vi<Bar> T<Bar>v,
-nnoremap va<Bar> F<Bar>v,
-
-" Formatting shortcuts, for widths 'textwidth' and 72 columns
+" Formatting shortcut
 nnoremap <silent> Q gwip
-nnoremap <silent> <Leader>Q :<C-U>let _tw=&l:tw<Bar>setl tw=72<Bar>exe 'norm! gwip'<Bar>let &l:tw=_tw<Bar>unlet _tw<CR>
 
 " Easy buffer switching
 nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
@@ -280,12 +270,12 @@ nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
 " Yank Visual selection as a single line to system clipboard
 vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
 
-" Search for Visual selection from "Practical Vim"
-function! s:VSetSearch(cmdtype)
-  let reg_save = @s
+" Search for Visual selection, from "Practical Vim"
+function! s:VSetSearch(cmdtype) abort
+  let l:reg_save = @s
   normal! gv"sy
-  let @/ = '\V' . substitute(escape(@s, a:cmdtype.'\'),'\n','\\n','g')
-  let @s = reg_save
+  let @/ = '\V' . substitute(escape(@s, a:cmdtype . '\'), '\n', '\\n', 'g')
+  let @s = l:reg_save
 endfunction
 xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
@@ -305,22 +295,20 @@ xnoremap a( <Esc>gva(
 xnoremap a) <Esc>gva)
 xnoremap ab <Esc>gvab
 
-" 'Fix' the & command as recommended in "Practical Vim"
+" Fix the & command as recommended in "Practical Vim"
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
 
 " Use aesthetic middle of screen for "zz"
 if has('float')
-  nnoremap <expr> zz 'zz'.float2nr(winheight(0)*0.1).'<C-E>'
+  nnoremap <expr> zz 'zz' . float2nr(winheight(0) * 0.1) . '<C-E>'
 endif
 
 " Indent current line exactly like previous line
 inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',matchstr(getline(line(".")-1),'^\s*'),''))<CR>I
 
-inoreab @@ 676c7473@gmail.com
-inoreab <@@ glts <Lt>676c7473@gmail.com>
-
-nnoremap <Leader>so :source %<CR>
+" Source current file
+nnoremap <Leader>so :<C-U>source %<CR>
 
 " Search for current search in the Vim C source code
 nnoremap <Leader>vg :<C-U>vim /<C-R>// src/*.[ch]<CR>
@@ -344,7 +332,7 @@ cnoreab w!! w !sudo tee % >/dev/null
 cnoreab <expr> %% expand('%:h')
 
 " Insert current date
-inoreab 2014- <C-R>=strftime("%Y-%m-%d")<CR>
+inoreab 2015- <C-R>=strftime('%Y-%m-%d')<CR>
 
 " Insert random signed int64
 nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(64)).Sub(magnum#Int(2).Pow(63)).String().'L'<CR>p
@@ -363,13 +351,13 @@ inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 " }}}2
 
 " Open help in a separate tab with <F1>
-noremap <F1> :<C-U>tab help<CR>
+nnoremap <F1> :<C-U>tab help<CR>
 
-" Edit $MYVIMRC
+" Edit $MYVIMRC in a separate tab
 nnoremap <Leader>ve :tabedit $MYVIMRC<CR>
 
 " Insert quick tab ruler for over-the-top perfectionist alignment
-command! Ruler put! =' '.repeat('   .   \|', 10)
+command! Ruler put! =' ' . repeat('   .   \|', 10)
 
 " TODO work in progress
 " Read template for the current filetype
