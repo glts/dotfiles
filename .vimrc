@@ -157,13 +157,7 @@ set statusline+=\ %P            "percent through file
 
 " set t_Co=256
 
-" Autocommands {{{1
-" Helper function, see ":helpg Eatchar"
-function! EatTrigger()
-  let c = nr2char(getchar(0))
-  return c =~# '\s\|\r' ? '' : c
-endfunction
-
+" File types {{{1
 " Enable Vim runtime files (filetype detection, ftplugin, indent, syntax)
 filetype plugin indent on
 syntax enable
@@ -216,7 +210,7 @@ augroup vimrc
   " Filetype settings for Vim
   autocmd FileType vim setlocal nowrap foldmethod=marker
   autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
-  autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function()<CR>endfunction<Up><End><Left><C-R>=EatTrigger()<CR>
+  autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function() abort<CR>endfunction<Up><Right><Right>
 
   " Filetype settings for shell
   autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
@@ -252,7 +246,7 @@ augroup vimrc
   autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
 augroup END
 
-" Mappings and abbreviations {{{1
+" Mappings {{{1
 let g:mapleader = '\'
 
 " Quick window size manipulation
