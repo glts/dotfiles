@@ -169,18 +169,6 @@ augroup vimrc
   " Start at last known cursor position in file
   autocmd BufReadPost * silent! normal! g`"
 
-  " I don't like the 'conceal' feature
-  if has('conceal')
-    autocmd FileType * setlocal conceallevel=0
-  endif
-
-  " Use 'colorcolumn' to create a gutter
-  if exists('&colorcolumn') && has('gui_running')
-    autocmd FileType * if &textwidth != 0
-                   \ |   let &colorcolumn = join(range(&textwidth + 1, 500), ',')
-                   \ | endif
-  endif
-
   " Filetype autocommands
   " TODO move this outside?
   " Rule of thumb: with 'et' ts = 8 and sw = sts, with 'noet' ts = sts = sw
@@ -244,6 +232,18 @@ augroup vimrc
   autocmd FileType java inoreab <buffer> class public class {<CR>}<Up><End><Left><Left>
   autocmd FileType java inoreab <buffer> /* /*<CR>/<Up>
   autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
+
+  " I don't like the 'conceal' feature
+  if has('conceal')
+    autocmd FileType * setlocal conceallevel=0
+  endif
+
+  " Use 'colorcolumn' to create a gutter
+  if exists('&colorcolumn') && has('gui_running')
+    autocmd FileType * if &textwidth != 0
+                   \ |   let &colorcolumn = join(range(&textwidth + 1, 500), ',')
+                   \ | endif
+  endif
 augroup END
 
 " Mappings {{{1
