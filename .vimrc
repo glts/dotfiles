@@ -133,7 +133,6 @@ set wildmode=longest,list,full
 
 " unprintable chars for 'list' mode
 set listchars=tab:▸\ ,eol:¬,trail:·
-set fillchars=vert:│    " nicer separator for vertical splits
 
 set laststatus=2        " always display statusline
 
