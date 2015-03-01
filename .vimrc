@@ -261,9 +261,6 @@ nnoremap <silent> Q gwip
 " Easy buffer switching
 nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
 
-" Yank Visual selection as a single line to system clipboard
-vnoremap <silent> <Leader>y "+y:let @+ = join(map(split(@+, '\n'), 'substitute(v:val, "^\\s\\+", "", "")'), " ")<CR>
-
 " Search for Visual selection, from "Practical Vim"
 function! s:VSetSearch(cmdtype) abort
   let l:reg_save = @s
@@ -275,10 +272,6 @@ xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 xnoremap g* *
 xnoremap g# #
-
-" Search but don't move
-nnoremap <silent> <Leader>* :keepjumps normal! mxHmy`x*'yzt`x<CR>
-nnoremap <silent> <Leader># :keepjumps normal! mxHmy`x#'yzt`x<CR>
 
 " Easy use of filtered command-line history
 cnoremap <C-P> <Up>
@@ -293,19 +286,11 @@ xnoremap ab <Esc>gvab
 nnoremap & :&&<CR>
 xnoremap & :&&<CR>
 
-" Use aesthetic middle of screen for "zz"
-if has('float')
-  nnoremap <expr> zz 'zz' . float2nr(winheight(0) * 0.1) . '<C-E>'
-endif
-
 " Indent current line exactly like previous line
 inoremap <C-S> <Esc>:call setline(".",substitute(getline(line(".")),'^\s*',matchstr(getline(line(".")-1),'^\s*'),''))<CR>I
 
 " Source current file
 nnoremap <Leader>so :<C-U>source %<CR>
-
-" Search for current search in the Vim C source code
-nnoremap <Leader>vg :<C-U>vim /<C-R>// src/*.[ch]<CR>
 
 " Remove all trailing whitespace
 nnoremap <Leader>sd :%s/\s\+$<CR>
