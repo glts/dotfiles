@@ -32,18 +32,19 @@ call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).
 
 " Settings {{{1
 " Behaviour {{{2
-set directory=~/tmp,.   " directory for swap files
-set nobackup            " do not keep backup files
-set writebackup         " keep a temporary backup while writing a file
+" Temporary swap and undo files and settings
+set directory=~/tmp,.
+set nobackup
+set writebackup
 
-if exists('+undofile')
-  set undofile          " remember undo histories inside 'undodir'
-endif
 if exists('+undodir')
   set undodir=~/tmp/vim/undo
   if !isdirectory(expand(&undodir))
-    call mkdir(expand(&undodir), "p")
+    call mkdir(expand(&undodir), 'p')
   endif
+endif
+if exists('+undofile')
+  set undofile
 endif
 
 " Search all directories inside the current directory
