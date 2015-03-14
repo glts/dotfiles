@@ -76,6 +76,7 @@ set pastetoggle=<F6>
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
 set shiftround          " round to next virtual "tabstop" when indenting
+set smarttab
 
 set report=1            " report changes that affect more than one line
 
