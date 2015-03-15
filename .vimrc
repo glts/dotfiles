@@ -63,9 +63,6 @@ set ttimeoutlen=100
 " More intuitive backspace behaviour
 set backspace=indent,eol,start
 
-" Toggle 'paste'
-set pastetoggle=<F6>
-
 set nostartofline       " keep cursor in same column when moving up and down
 set nojoinspaces        " don't insert two-space sentence punctuation with J
 set shiftround          " round to next virtual "tabstop" when indenting
@@ -100,9 +97,10 @@ set foldopen-=block
 " Insert comment leader on <Enter>, no line breaking on overlong lines
 set formatoptions+=rl
 
-" Strip comment leaders when joining lines
-silent! set formatoptions+=j
-" TODO set formatlistpat=...
+" Strip comment leaders when joining commented lines
+if v:version > 703 || v:version == 703 && has('patch541')
+  set formatoptions+=j
+endif
 
 " Do not respect octal numbers with CTRL-A/CTRL-X
 set nrformats-=octal
