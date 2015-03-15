@@ -1,12 +1,6 @@
-" My vimrc.
-" Author: glts <676c7473@gmail.com>
-
-" Init {{{1
-" Sine qua non setting
-set nocompatible
-
-" Source Vim plugins before pathogen modifies the runtime path
+" Source Vim plugins before pathogen.vim modifies the runtime path
 runtime ftplugin/man.vim
+runtime macros/matchit.vim
 
 " Pathogen is our plugin manager
 execute pathogen#infect()
