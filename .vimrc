@@ -173,7 +173,7 @@ augroup vimrc
   autocmd FileType css setlocal ts=4 sw=4 sts=4 noet
   autocmd FileType rst setlocal tw=78 ts=3 sw=3 sts=3 et tw=72
   autocmd FileType markdown setlocal ts=8 sw=4 sts=4 et tw=72
-  autocmd FileType ruby,vim,r setlocal ts=8 sw=2 sts=2 et
+  autocmd FileType ruby,r setlocal ts=8 sw=2 sts=2 et
   autocmd FileType haskell setlocal ts=8 sw=4 sts=4 ai et
   autocmd FileType scheme setlocal ts=8 sw=2 sts=2 et
   autocmd FileType tex setlocal tw=78
@@ -187,43 +187,9 @@ augroup vimrc
   " Filetype for liquid files
   autocmd FileType markdown if expand('%:p:t') =~# '\d\d\d\d-\d\d-\d\d-.*\.markdown' | set ft=liquid | endif
 
-  " Filetype settings for Vim
-  autocmd FileType vim setlocal nowrap foldmethod=marker
-  autocmd FileType vim inoreab <buffer> augroup augroup<C-G>u<CR>au!<CR>augroup END<Up><Up><End>
-  autocmd FileType vim inoreab <buffer> func func<C-G>ution! s:Function() abort<CR>endfunction<Up><Right><Right>
-
-  " Filetype settings for shell
-  autocmd FileType sh inoreab <buffer> if if [ ]; then<CR>fi<Up><Right><Right>
-  autocmd FileType sh inoreab <buffer> while while; do<CR>done<Up><Right>
-
-  " Filetype settings for Go
-  autocmd FileType go silent! compiler go
-
-  " Filetype settings for Perl
-  autocmd FileType perl inoreab <buffer> sub sub<C-G>u {<CR>}<Up><End><Left><Left>
-  autocmd FileType perl inoreab <buffer> foreach foreach<C-G>u my {<CR>}<Up><End><Left><Left>
-
   " Filetype settings for Python
   autocmd FileType python setlocal foldmethod=indent foldlevel=100
   autocmd FileType python inoreab <buffer> def def<C-G>u(self):<Left><Left><Left><Left><Left><Left><Left>
-
-  " Filetype settings for Ruby
-  autocmd FileType ruby inoreab <buffer> class class<C-G>u<CR>end<Up><End>
-  autocmd FileType ruby inoreab <buffer> module module<C-G>u<CR>end<Up><End>
-  autocmd FileType ruby inoreab <buffer> def def<C-G>u()<CR>end<Up>
-
-  " Filetype settings for C
-  autocmd FileType c inoreab <buffer> /* /**/<Left><Left>
-
-  " Filetype settings for JavaScript
-  autocmd FileType javascript inoreab <buffer> /* /**/<Left><Left>
-  autocmd BufNewFile,BufRead *.json setfiletype javascript
-
-  " Filetype settings for Java
-  autocmd FileType java inoreab <buffer> main( public static void main(String[] args) {<CR>}<Up><End>
-  autocmd FileType java inoreab <buffer> class public class {<CR>}<Up><End><Left><Left>
-  autocmd FileType java inoreab <buffer> /* /*<CR>/<Up>
-  autocmd FileType java inoreab <buffer> /** /**<CR>/<Up>
 
   " I don't like the 'conceal' feature
   if has('conceal')
