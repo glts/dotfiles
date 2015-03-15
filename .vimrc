@@ -224,6 +224,7 @@ function! s:VSetSearch(cmdtype) abort
   let @/ = '\V' . substitute(escape(@s, a:cmdtype . '\'), '\n', '\\n', 'g')
   let @s = l:reg_save
 endfunction
+
 xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 xnoremap g* *
@@ -261,19 +262,19 @@ nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
 nnoremap <Leader>ct :!ctags -R<CR>
 
 " Write file as super user
-cnoreab w!! w !sudo tee % >/dev/null
+cnoreabbrev w!! w !sudo tee % >/dev/null
 
 " Expand dirname for current file
-cnoreab <expr> %% expand('%:h')
+cnoreabbrev <expr> %% expand('%:h')
 
 " Insert current date
-inoreab 2015- <C-R>=strftime('%Y-%m-%d')<CR>
+inoreabbrev 2015- <C-R>=strftime('%Y-%m-%d')<CR>
 
 " Insert random signed int64
 nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(64)).Sub(magnum#Int(2).Pow(63)).String().'L'<CR>p
 
 " Insert some "Lorem ipsum" text {{{2
-inoreab Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Fusce vel orci at risus convallis bibendum eget vitae turpis.
   \ Integer sagittis risus quis lacus volutpat congue. Aenean porttitor
   \ facilisis risus, a varius purus vestibulum non. In porttitor molestie
