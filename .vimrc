@@ -31,6 +31,8 @@ set directory=~/tmp,.
 set nobackup
 set writebackup
 
+set autoread
+
 if exists('+undodir')
   set undodir=~/tmp/vim/undo
   if !isdirectory(expand(&undodir))
@@ -48,9 +50,6 @@ set path+=**
 if exists('&regexpengine')
   set regexpengine=1
 endif
-
-" File patterns to ignore
-set wildignore+=*.class
 
 set hidden
 
@@ -98,10 +97,6 @@ endif
 " Don't open folds when moving with } {
 set foldopen-=block
 
-" Spell-checking setup
-set spelllang=en_gb,de_ch
-set spellfile=~/.vim/spell/mine.utf-8.add
-
 " Insert comment leader on <Enter>, no line breaking on overlong lines
 set formatoptions+=rl
 
@@ -119,7 +114,7 @@ set showmatch           " have your matching brackets wink at you
 set showcmd             " display incomplete commands in status line
 set incsearch           " do incremental searching
 set linebreak           " break screen lines at whitespace
-set display=lastline    " fit as much as possible of a long line on screen
+set display+=lastline
 set shortmess+=I        " don't show intro screen at startup
 set wildmenu            " show tab-completion candidates in status line
 set wildmode=longest,list,full
