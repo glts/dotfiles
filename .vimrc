@@ -70,14 +70,9 @@ set smarttab
 
 set report=1            " report changes that affect more than one line
 
-set encoding=utf-8      " default encoding is UTF-8 always
-set fileencoding=       " use the same encoding for a file as for the buffer
+set encoding=utf-8
 
-" File encodings to try; keep "ucs-bom" for Windows compatibility
-set fileencodings=ucs-bom,utf-8,default,latin1
-
-" Also detect mac-style EOL
-set fileformats=unix,dos,mac
+set fileformats+=mac
 
 " Enable mouse when available
 if has('mouse')
