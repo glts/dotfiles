@@ -205,8 +205,6 @@ augroup vimrc
 augroup END
 
 " Mappings {{{1
-let g:mapleader = '\'
-
 " Quick window size manipulation
 nnoremap <C-Up> <C-W>+
 nnoremap <C-Down> <C-W>-
