@@ -142,7 +142,6 @@ set shortmess+=I
 augroup vimrc
   autocmd!
 
-  " TODO Compare with the one in .vimrc_example
   " Start at last known cursor position in file
   autocmd BufReadPost * silent! normal! g`"
 
