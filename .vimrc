@@ -218,9 +218,6 @@ nnoremap <Leader>sd :%s/\s\+$<CR>
 " Change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
 
-" Prettify XML fragments, remaps to surround plugin map
-nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
-
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
 
