@@ -142,7 +142,6 @@ set shortmess+=I
 augroup vimrc
   autocmd!
 
-  " TODO Compare with the one in .vimrc_example
   " Start at last known cursor position in file
   autocmd BufReadPost * silent! normal! g`"
 
@@ -176,6 +175,10 @@ inoremap <C-U> <C-G>u<C-U>
 
 " Formatting shortcut
 nnoremap <silent> Q gwip
+
+" Split line at cursor position, the inverse of J and gJ
+nnoremap <C-J> i<CR><Esc>k$
+nnoremap g<C-J> i<CR><C-O>d0<Esc>k$
 
 " Easy buffer switching
 nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
@@ -214,9 +217,6 @@ nnoremap <Leader>sd :%s/\s\+$<CR>
 
 " Change directory to where current file is
 nnoremap <Leader>d :lcd %:p:h<CR>
-
-" Prettify XML fragments, remaps to surround plugin map
-nmap <Leader>x ggVGStroot>:%!xmllint --format -<CR>
 
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
