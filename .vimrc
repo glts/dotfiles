@@ -126,7 +126,7 @@ set statusline+=%w              "preview window flag
 set statusline+=%m              "modified flag
 set statusline+=%r              "read only flag
 set statusline+=%=              "left/right separator
-set statusline+=col\ %v/%c\ ln\ %l\ of\ %L\ %P
+set statusline+=col\ %v/%c\ ln\ %l\ of\ %L
 
 " Display incomplete commands in the status line
 set showcmd
