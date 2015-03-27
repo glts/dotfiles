@@ -178,7 +178,7 @@ nnoremap <silent> Q gwip
 
 " Split line at cursor position, the inverse of J and gJ
 nnoremap <C-J> i<CR><Esc>k$
-nnoremap g<C-J> i<CR><C-\><C-O>d0<Esc>k$
+nnoremap g<C-J> i<CR><Esc>d0<Esc>k$
 
 " Easy buffer switching
 nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
