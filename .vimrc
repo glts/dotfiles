@@ -221,9 +221,6 @@ nnoremap <Leader>d :lcd %:p:h<CR>
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
 
-" Write file as super user
-cnoreabbrev w!! w !sudo tee % >/dev/null
-
 " Expand dirname for current file
 cnoreabbrev <expr> %% expand('%:h')
 
