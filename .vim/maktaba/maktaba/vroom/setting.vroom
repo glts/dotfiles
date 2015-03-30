@@ -1,5 +1,5 @@
 Global plugin settings are a soul-rending, albeit heretofore necessary, evil.
-They're global, for one thing: you've got to remeber to confine them to ad-hoc
+They're global, for one thing: you've got to remember to confine them to ad-hoc
 namespaces. There's no way to enforce consistency in naming: Sooner or later you
 have to set g:SomePluginsCamelCasedSetting, g:inconsistent_under_scores,
 g:too_trse, or g:settings_named_such_that_they_barely_fit_on_one_line.
@@ -18,7 +18,7 @@ variable, right? Well, no. See, your code lives in a plugin/ directory
 somewhere, and the user configures your plugin via their .vimrc file, and their
 vimrc runs before your global setting is defined. They can *override* your list,
 but they cannot extend it. Global settings are hobbled. This makes it difficult
-for plugin authors to provide robust defaults for complex configuraitons, and
+for plugin authors to provide robust defaults for complex configurations, and
 frustrating for users who just want to tweak the defaults.
 
 Last but not least, global settings are opaque to both developers and users.
@@ -141,22 +141,30 @@ return the new value of the flag, for convenience.
 If you apply a setting to a plugin that tries to access an invalid flag, you'll
 get errors.
 
+  :function TryMethod(dict, funcname, ...) abort<CR>
+  |  let l:func = maktaba#function#Method(a:dict, a:funcname)<CR>
+  |  return maktaba#error#Try(maktaba#function#Create(l:func, a:000))<CR>
+  |endfunction
   :let g:setting = maktaba#setting#Create('badflag=hah')
-  :let g:apply = maktaba#function#Method(g:setting, 'Apply')
-  :call maktaba#error#Try(g:apply.WithArgs(g:plugin))
+  :call TryMethod(g:setting, 'Apply', g:plugin)
   ~ ERROR(NotFound): Flag "badflag" not defined in fullplugin.
 
 In fact, you'll get informative error messages for all manner of invalid
 settings.
 
-  :let g:create = maktaba#function#Create('maktaba#setting#Create', [])
-  :call maktaba#error#Try(g:create.WithArgs('bad=flag=yes'))
+  :function Try(funcname, ...) abort<CR>
+  |  return maktaba#error#Try(maktaba#function#Create(a:funcname, a:000))<CR>
+  |endfunction
+  :call Try('maktaba#setting#Create', 'bad=flag=yes')
   ~ ERROR(BadValue): Junk after setting "bad=flag": "=yes".* (glob)
-  :call maktaba#error#Try(g:create.WithArgs('junk=w#!rd'))
+  :call Try('maktaba#setting#Create', 'junk=w#!rd')
   ~ ERROR(BadValue): Junk after setting "junk=w": "#!rd".* (glob)
-  :call maktaba#error#Try(g:create.WithArgs('!!nope'))
+  :call Try('maktaba#setting#Create', 'bad=foo::bar')
+  ~ ERROR(BadValue): Could not parse value on setting "bad=": ":bar" contains
+  | invalid characters. (Did you forget quotes?).
+  :call Try('maktaba#setting#Create', '!!nope')
   ~ ERROR(BadValue): No flag name (or invalid flag prefix) in setting "!!nope".
-  :call maktaba#error#Try(g:create.WithArgs('=3'))
+  :call Try('maktaba#setting#Create', '=3')
   ~ ERROR(BadValue): No flag name (or invalid flag prefix) in setting "=3".
 
 You can also use maktaba#setting#Parse to parse a single setting from a string
@@ -173,7 +181,7 @@ setting and the remainder of the string.
 
 
 
-As a shorcut, you can also use maktaba#setting#ParseAll to parse an entire
+As a shortcut, you can also use maktaba#setting#ParseAll to parse an entire
 whitespace-separated string of settings at once.
 
   :let [g:inc, g:dec] = maktaba#setting#ParseAll('number+=1 number-=1')
@@ -258,7 +266,7 @@ REGARDLESS of the original type of the flag. Observe:
   :call Is(1, Apply('dict'))
   :call Is(1, Apply('function'))
 
-They're all numbers now, despite their names and their orignial types.
+They're all numbers now, despite their names and their original types.
 
 
 
@@ -276,7 +284,7 @@ original type of the flag. Observe:
   :call Is(0, Apply('!dict'))
   :call Is(0, Apply('!function'))
 
-They're all numbers now, despite their names and their orignial types.
+They're all numbers now, despite their names and their original types.
 
 
 

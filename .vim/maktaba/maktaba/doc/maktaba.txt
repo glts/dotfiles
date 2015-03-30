@@ -23,7 +23,7 @@ Maktaba introduces a concept of a |maktaba.Flag| for configuration, and
 recommends users install a configuration plugin like |Glaive|, or a plugin
 manager with configuration support, to manage plugin flags.
 
-Also included are a univesal logging framework, error handling utilities, and
+Also included are a universal logging framework, error handling utilities, and
 a number of tools that make writing vimscript both safer and easier.
 
 ==============================================================================
@@ -71,9 +71,87 @@ Enum.Names()                                                    *Enum.Names()*
 Enum.Value({name})                                              *Enum.Value()*
   Gets the value of the enum at {name}.
   Throws ERROR(NotFound) if no such name exists on the enum.
+  Throws ERROR(BadValue) if {name} is not a valid enum name.
+  Throws ERROR(WrongType) if {name} is not a string.
 
 Enum.Values()                                                  *Enum.Values()*
   Gets all values on the enum, in order.
+
+                                                   *maktaba.ExtensionRegistry*
+A registry for the extensions used by a single plugin.  Extensions are
+dictionaries (usually with some function fields) with a plugin-specific
+interpretation.
+
+Plugins should use |Plugin.GetExtensionRegistry()| to gain access to their own
+extension registry, and |maktaba#extension#GetRegistry()| to gain access to an
+extension registry for another plugin.
+
+For example, a hypothetical code-formatting plugin would use the following to
+retrieve a list of extensions, where each extension represents a formatter for
+a particular filetype:
+>
+  let [s:plugin, s:enter] = maktaba#plugin#Enter(expand('<sfile>:p'))
+  ...
+  let l:registry = s:plugin.GetExtensionRegistry()
+  for l:extension in l:registry.GetExtensions()
+    if &filetype is# l:extension.filetype
+      call maktaba#function#Call(l:extension.FormatBuffer)
+      return
+    endif
+  endfor
+<
+Likewise, a plugin providing another formatter would use the following to
+register a new extension:
+>
+  let l:extension = {
+      \ 'filetype': 'python',
+      \ 'FormatBuffer': function('pyformatter#FormatUsingAutopep8'),
+      \ }
+  let l:codefmt_registry = maktaba#extension#GetRegistry('code-formatting')
+  call l:codefmt_registry.AddExtension(l:extension)
+<
+See the Vroom tests in the Maktaba source tree (pluginextensions.vroom) for
+more examples.
+
+ExtensionRegistry.AddExtension({extension}) *ExtensionRegistry.AddExtension()*
+  Adds the given {extension} to this extension registry.
+
+  The extension must be a dict.  If a validator is registered for this
+  extension registry, this function will call the validator.  Failures will
+  result in the validation error being shouted to the user (and the extension
+  will not be added).
+
+  Throws ERROR(WrongType) if {extension} is not a dict.
+
+ExtensionRegistry.GetExtensions()          *ExtensionRegistry.GetExtensions()*
+  Returns the extensions that have been added to this extension registry.
+
+  Extensions added by the plugin to its own registry are always returned after
+  those added by other plugins.  Otherwise, extensions are returned in the
+  opposite order to which they were added.
+
+  This function is only available to the plugin that the extension registry
+  belongs to.
+  Throws ERROR(NotImplemented) if called by another plugin.
+
+ExtensionRegistry.SetValidator({validator}) *ExtensionRegistry.SetValidator()*
+  Sets {validator} as the validator for this extension registry.
+
+  {validator} can be the name of a function, funcref, or Maktaba funcdict. It
+  should accept an arbitrary dict (the extension) and throw an error if the
+  extension if invalid.
+
+  This function will call the validator for any extensions that have already
+  been registered.  Failures will cause the extension to be removed, and the
+  error shouted to the user.
+
+  This function is only available to the plugin that the extension registry
+  belongs to.
+
+  Throws ERROR(WrongType) if {validator} is not a string, funcref, nor dict.
+  Throws ERROR(BadValue) if {validator} is a dict but does not appear to be a
+      funcdict.
+  Throws ERROR(NotImplemented) if called by another plugin.
 
                                                                 *maktaba.Flag*
 The maktaba flag object. Exposes functions that operate on an individual
@@ -95,6 +173,8 @@ Flag.Get([foci])                                                  *Flag.Get()*
   Flag values are locked. If you need to do complex manipulation on a flag
   value, you must copy it and commit the copied value using |Flag.Set|.
   Throws ERROR(BadValue) if [foci] are invalid.
+  Throws ERROR(WrongType) if [foci] contains the wrong types to index the
+  flag.
 
 Flag.GetCopy([foci])                                          *Flag.GetCopy()*
   Gets a deep copy of the value of the flag. You may give [foci] to focus on
@@ -107,6 +187,8 @@ Flag.GetCopy([foci])                                          *Flag.GetCopy()*
   values are locked. Remember that if you change the copy the flag itself
   won't change until you call |Flag.Set|.
   Throws ERROR(BadValue) if [foci] are invalid.
+  Throws ERROR(WrongType) if [foci] contains the wrong types to index the
+  flag.
 
 Flag.Set({value}, [foci])                                         *Flag.Set()*
   Sets the flag to {value}. If [foci] are given, they target a specific part
@@ -116,6 +198,8 @@ Flag.Set({value}, [foci])                                         *Flag.Set()*
 <
   will set value['a'][0]['b'] to 'leaf'.
   Throws ERROR(BadValue) when an invalid focus is requested.
+  Throws ERROR(WrongType) if [foci] contains the wrong types to index the
+  flag.
 
 Flag.AddCallback({callback}, [fire_immediately])          *Flag.AddCallback()*
   Registers {callback}. It must refer to a function. The function must take
@@ -132,8 +216,8 @@ Flag.AddCallback({callback}, [fire_immediately])          *Flag.AddCallback()*
   If [fire_immediately] is zero, {callback} will only be fired when the
   current value of the flag changes.
   [fire_immediately] is 1 if omitted.
-  Throws ERROR(BadValue) if there's already a callback registered under that
-  name.
+  Throws ERROR(WrongType) if {callback} is not callable.
+  Throws ERROR(BadValue) if {callback} is not a funcdict.
 
 Flag.Callback()                                              *Flag.Callback()*
   Fires all callbacks in order.
@@ -151,8 +235,8 @@ Flag.AddTranslator({translator})                        *Flag.AddTranslator()*
   This function returns a function which, when called, unregisters
   {translator}. Hold on to it if you expect you'll need to remove
   {translator}.
-  Throws ERROR(BadValue) if there's already a translator registered under that
-  name.
+  Throws ERROR(WrongType) if {translator} is not callable.
+  Throws ERROR(BadValue) if {translator} is not a funcdict.
 
 Flag.Translate({value})                                     *Flag.Translate()*
   Returns the value that the flag will have after being set to {value} (after
@@ -182,7 +266,7 @@ itself.
 
 Plugin.Load([file], [optional])                                *Plugin.Load()*
   If [file] is given, the plugin file plugin/<file>.vim will be sourced. An
-  error will  be thrown if [file] does not exist unless [optional] is set. If
+  error will be thrown if [file] does not exist unless [optional] is set. If
   [file] is omitted, then all plugin files that have not yet been sourced will
   be sourced. [file] may also be a list of filenames to source.
   [optional] is 0 if omitted.
@@ -195,11 +279,11 @@ Plugin.GenerateHelpTags()                          *Plugin.GenerateHelpTags()*
 
 Plugin.HasDir({dir})                                         *Plugin.HasDir()*
   Tests whether the plugin has {dir}, either as a direct subdirectory or as a
-  subirectory of the after/ directory. Cached for performance, so new paths
+  subdirectory of the after/ directory. Cached for performance, so new paths
   will not be discovered if they're added to the plugin after the first check.
 
 Plugin.HasFiletypeData()                            *Plugin.HasFiletypeData()*
-  Tests wheter a plugin has a filetype-active directory (ftdetect, ftplugin,
+  Tests whether a plugin has a filetype-active directory (ftdetect, ftplugin,
   indent, or syntax).
 
 Plugin.AddonInfo()                                        *Plugin.AddonInfo()*
@@ -263,7 +347,7 @@ Plugin.MapPrefix({letter}, [throw])                       *Plugin.MapPrefix()*
   [throw] argument to make this function throw errors instead of printing
   them, if you plan to catch them explicitly.
 
-  Mappings should  be defined in the plugin/mappings.vim file. The user
+  Mappings should be defined in the plugin/mappings.vim file. The user
   configures their map prefix preferences via the flag that controls that
   file.
   [throw] is 0 if omitted.
@@ -277,6 +361,13 @@ Plugin.IsLibrary()                                        *Plugin.IsLibrary()*
   ftplugin/, ftdetect/, syntax/, indent/, nor instant/ directories. If it
   contains a plugin/ directory, that directory must contain only a flags.vim
   file.
+
+Plugin.GetExtensionRegistry()                  *Plugin.GetExtensionRegistry()*
+  Returns the |maktaba.ExtensionRegistry| belonging to this plugin.
+
+  This should be used only by the plugin itself; external callers should use
+  |maktaba#extension#GetRegistry()| instead, rather than depend upon the
+  plugin directly.
 
                                                              *maktaba.Setting*
 Parses {text} into a setting object. The setting object can be applied to a
@@ -302,7 +393,7 @@ Valid binary operators are = += -= ^= $= and `=.
   * -= subtracts from numbers and removes from lists and dictionaries.
   * ^= prepends to lists and strings.
   * $= appends to lists and strings.
-  * `= sets a flag to the result of appling the function named by the value.
+  * `= sets a flag to the result of applying the function named by the value.
 
 Values are parsed as follows:
   1. Values in single or double quotes are parsed as strings.
@@ -323,7 +414,7 @@ Setting.Apply({plugin})                                      *Setting.Apply()*
   for convenience.
   Throws ERROR(NotFound) if {plugin} does not define the appropriate flag.
   Throws ERROR(WrongType) if the flag is not of a type the setting requires.
-  Throws ERROR(BadValue) if the flag has a value innapropriate for the
+  Throws ERROR(BadValue) if the flag has a value inappropriate for the
   setting.
 
                                                              *maktaba.Syscall*
@@ -356,20 +447,7 @@ Syscall.Or({cmd})                                               *Syscall.Or()*
 
 Syscall.Call([throw_errors])                                  *Syscall.Call()*
   Executes the system call without showing output to the user. If
-  [throw_errors] is 1, any exit code from the command will cause a ShellError
-  to be thrown. Otherwise, the caller is responsible for checking
-  |v:shell_error| and handling error conditions.
-  [throw_errors] is 1 if omitted.
-  Returns a dictionary with the following fields:
-    * stdout: the shell command's entire stdout string, if available.
-    * stderr: the shell command's entire stderr string, if available.
-  Throws ERROR(WrongType)
-  Throws ERROR(ShellError) if the shell command returns an exit code.
-
-Syscall.CallForeground({pause}, [throw_errors])     *Syscall.CallForeground()*
-  Executes the system call in the foreground, showing the output to the user.
-  If {pause} is 1, output will stay on the screen until the user presses
-  Enter. If [throw_errors] is 1, any exit code from the command will cause a
+  [throw_errors] is 1, any non-zero exit code from the command will cause a
   ShellError to be thrown. Otherwise, the caller is responsible for checking
   |v:shell_error| and handling error conditions.
   [throw_errors] is 1 if omitted.
@@ -377,7 +455,53 @@ Syscall.CallForeground({pause}, [throw_errors])     *Syscall.CallForeground()*
     * stdout: the shell command's entire stdout string, if available.
     * stderr: the shell command's entire stderr string, if available.
   Throws ERROR(WrongType)
-  Throws ERROR(ShellError) if the shell command returns an exit code.
+  Throws ERROR(ShellError) if the shell command returns a non-zero exit code.
+
+Syscall.CallAsync({callback}, {allow_sync_fallback})     *Syscall.CallAsync()*
+  Executes the system call asynchronously and invokes {callback} on
+  completion. {callback} function will be called with the following arguments:
+  {callback}(env_dict, result_dict), where env_dict contains tab, buffer,
+  path, column and line info, and the result_dict contains stdout, stderr and
+  status (code). If {allow_sync_fallback} is 1 and async calls are not
+  available, a synchronous call will be executed and callback called with the
+  result. For example:
+>
+    function Handler(env_dict, result)
+      if a:result.status != 0
+        call maktaba#error#Shout('sleep command failed: %s', a:result.stderr)
+        return
+      endif
+      echomsg 'Success!'
+    endfunction
+    call maktaba#syscall#Create(['sleep', '3']).CallAsync('Handler', 1)
+<
+  WARNING: The caller is responsible for checking result_dict.status and
+  handling unexpected exit codes. Otherwise all failures are silent.
+
+  Asynchronous calls are executed via |--remote-expr| using vim's
+  |clientserver| capabilities, so the preconditions for it are vim being
+  compiled with +clientserver and |v:servername| being set. Vim will try to
+  set it to something when it starts if it is running in X context, e.g.
+  'GVIM1'. Otherwise, the user needs to set it by passing |--servername| $NAME
+  to vim. If the two conditions are not met, asynchronous calls are not
+  possible, and the call will either throw |ERROR(MissingFeature)| or fall
+  back to synchronous calls, depending on the {allow_sync_fallback} parameter.
+  Throws ERROR(WrongType)
+  Throws ERROR(MissingFeature) if neither async execution nor fallback is
+  available.
+
+Syscall.CallForeground({pause}, [throw_errors])     *Syscall.CallForeground()*
+  Executes the system call in the foreground, showing the output to the user.
+  If {pause} is 1, output will stay on the screen until the user presses
+  Enter. If [throw_errors] is 1, any non-zero exit code from the command will
+  cause a ShellError to be thrown. Otherwise, the caller is responsible for
+  checking |v:shell_error| and handling error conditions.
+  [throw_errors] is 1 if omitted.
+  Returns a dictionary with the following fields:
+    * stdout: the shell command's entire stdout string, if available.
+    * stderr: the shell command's entire stderr string, if available.
+  Throws ERROR(WrongType)
+  Throws ERROR(ShellError) if the shell command returns a non-zero exit code.
   Throws ERROR(NotImplemented) if stdin has been specified for this Syscall.
 
 Syscall.GetCommand()                                    *Syscall.GetCommand()*
@@ -401,6 +525,8 @@ maktaba#IsAtLeastVersion({version})               *maktaba#IsAtLeastVersion()*
   designed to prevent unsatisfiable dependencies such as one plugin requiring
   <2.0.0 and another requiring >=2.1.0. Enforcing a maximum version is
   discouraged.
+  Throws ERROR(BadValue) if {version} is not a valid Maktaba version number.
+  Throws ERROR(WrongType)
 
 maktaba#LateLoad([cycle])                                 *maktaba#LateLoad()*
   This function essentially mimics the vim plugin installation phase. All
@@ -462,6 +588,7 @@ maktaba#ensure#IsTrue({condition}, [message], [args...])
   formatted with [args...].
   [message] is "No message given." if omitted.
   Throws ERROR(Failure) if {condition} is zero.
+  Throws ERROR(WrongType) if {condition} is not a number.
 
 maktaba#ensure#IsFalse({condition}, [message], [args...])
                                                     *maktaba#ensure#IsFalse()*
@@ -469,6 +596,7 @@ maktaba#ensure#IsFalse({condition}, [message], [args...])
   formatted with [args...].
   [message] is "No message given." if omitted.
   Throws ERROR(Failure) if {condition} is nonzero.
+  Throws ERROR(WrongType) if {condition} is not a number.
 
 maktaba#ensure#IsEqual({value}, {reference})        *maktaba#ensure#IsEqual()*
   Ensures that {value} is equal to {reference}. Returns {value} for
@@ -482,6 +610,7 @@ maktaba#ensure#IsEqual({value}, {reference})        *maktaba#ensure#IsEqual()*
 maktaba#ensure#IsIn({value}, {values})                 *maktaba#ensure#IsIn()*
   Ensures that {value} is in {values}. Returns {value} for convenience.
   Throws ERROR(BadValue) if {value} is not contained in {values}
+  Throws ERROR(BadValue) if {values} is not a list.
 
 maktaba#ensure#Passes({value}, {predicate})          *maktaba#ensure#Passes()*
   Ensures that {value} passes {predicate}. {predicate} must be something
@@ -489,6 +618,7 @@ maktaba#ensure#Passes({value}, {predicate})          *maktaba#ensure#Passes()*
   should return 1 or 0. On a 1, {value} is returned. On a 0, a BadValue error
   is thrown. Returns {value} for convenience.
   Throws ERROR(BadValue) if {value} does not pass {predicate}.
+  Throws ERROR(WrongType) if {predicate} is not callable.
 
 maktaba#ensure#TypeMatches({value}, {reference})
                                                 *maktaba#ensure#TypeMatches()*
@@ -544,8 +674,8 @@ maktaba#ensure#IsCollection({value})           *maktaba#ensure#IsCollection()*
 maktaba#ensure#IsCallable({value})               *maktaba#ensure#IsCallable()*
   Ensures that {value} is callable (string or funcref). Returns it for
   convenience.  This DOES NOT assert that the function denoted by {value}
-  actually exists. It mereley ensures that {value} is the correct TYPE for
-  |maktaba#function#Call|.
+  actually exists. It merely ensures that {value} is the correct TYPE for
+  |maktaba#function#Call()|.
   Throws ERROR(WrongType) if {value} is not a string, funcref, nor dict.
   Throws ERROR(BadValue) if {value} is a dict but does not appear to be a
   funcdict.
@@ -565,36 +695,43 @@ maktaba#ensure#Matches({value}, {regex})            *maktaba#ensure#Matches()*
 maktaba#ensure#PathExists({path})                *maktaba#ensure#PathExists()*
   Ensures {path} exists on the filesystem. Returns {path} for convenience.
   Throws ERROR(NotFound) otherwise.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#IsDirectory({path})              *maktaba#ensure#IsDirectory()*
   Ensures {path} is an existing directory. Returns {path} for convenience.
   Throws ERROR(NotFound) if {path} does not exist.
   Throws ERROR(BadValue) if {path} is a file.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#IsFile({path})                        *maktaba#ensure#IsFile()*
   Ensures {path} is an existing file. Returns {path} for convenience.
   Throws ERROR(NotFound) if {path} does not exist.
   Throws ERROR(BadValue) if {path} is a directory.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#FileReadable({path})            *maktaba#ensure#FileReadable()*
   Ensures {path} is a readable file. Returns {path} for convenience.
   Throws ERROR(NotFound) if {path} does not exist.
   Throws ERROR(BadValue) if {path} is a directory.
   Throws ERROR(NotAuthorized) if {path} cannot be read.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#FileWritable({path})            *maktaba#ensure#FileWritable()*
   Ensures {path} is a writable file. Returns {path} for convenience.
   Throws ERROR(NotFound) if {path} does not exist.
   Throws ERROR(BadValue) if {path} is a directory.
   Throws ERROR(NotAuthorized) if {path} cannot be written.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#IsAbsolutePath({path})        *maktaba#ensure#IsAbsolutePath()*
   Ensures {path} is an absolute path. Returns {path} for convenience.
   Throws ERROR(BadValue) if {path} is not absolute.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#ensure#IsRelativePath({path})        *maktaba#ensure#IsRelativePath()*
   Ensures {path} is a relative path. Returns {path} for convenience.
   Throws ERROR(BadValue) if {path} is not relative.
+  Throws ERROR(WrongType) if {path} is not a string.
 
 maktaba#enum#Create({names})                           *maktaba#enum#Create()*
   Creates an enum object from {names}. {names} may be a list of names (in
@@ -609,6 +746,9 @@ maktaba#enum#Create({names})                           *maktaba#enum#Create()*
     echomsg g:animals.PIG  " This will echo 1.
 <
   Throws ERROR(BadValue) if {names} is invalid.
+  Throws ERROR(WrongType) if {names} is not a collection, or contains names
+  that are
+      not strings.
 
 maktaba#error#Warn({message}, [args...])                *maktaba#error#Warn()*
   Prints {message} in a red warning bar for the user. {message} will be
@@ -617,7 +757,7 @@ maktaba#error#Warn({message}, [args...])                *maktaba#error#Warn()*
 maktaba#error#Shout({message}, [args...])              *maktaba#error#Shout()*
   Prints {message} in an angry red error bar for the user. Don't use
   |:echoerr|! It doesn't make that red error bar and it prints out the line in
-  the code where the error occured. It's for debugging, not messaging! If
+  the code where the error occurred. It's for debugging, not messaging! If
   [args...] are given they will be used to expand {message} as in |printf()|.
 
 maktaba#error#Exception({type}, {message}, {fmtargs})
@@ -639,6 +779,7 @@ maktaba#error#Exception({type}, {message}, {fmtargs})
 
   {type} must contain only letters, numbers, underscores, and hyphens.
   Throws ERROR(BadValue) if {type} contains invalid characters.
+  Throws ERROR(WrongType) if {type} is not a string.
 
 maktaba#error#Message({type}, {message}, [args...])  *maktaba#error#Message()*
   Makes an error message in the Google vimscript error format. The error
@@ -650,6 +791,7 @@ maktaba#error#Message({type}, {message}, [args...])  *maktaba#error#Message()*
 
   {type} must contain only letters, numbers, underscores, and hyphens.
   Throws ERROR(BadValue) if {type} contains invalid characters.
+  Throws ERROR(WrongType) if {type} is not a string.
 
 maktaba#error#Split({exception})                       *maktaba#error#Split()*
   Breaks {exception} message into the error type and the error message.
@@ -680,11 +822,20 @@ maktaba#error#Try({func}, [exceptions], [default])       *maktaba#error#Try()*
 
   [exceptions] is .* if omitted.
   [default] is 0 if omitted.
+  Throws ERROR(BadValue) if {func} is not a funcdict.
+  Throws ERROR(WrongType) if {func} is not callable, or if [exceptions] is
+  neither a
+      regex nor a list.
 
 maktaba#error#TryCommand({command}, [exceptions]) *maktaba#error#TryCommand()*
   Like |maktaba#error#Try()|, but executes {command} instead of calling a
   function.
   [exceptions] is .* if omitted.
+  Throws ERROR(WrongType) if [exceptions] is neither a regex nor a list.
+
+maktaba#extension#GetRegistry({plugin})      *maktaba#extension#GetRegistry()*
+  Returns an extension registry for the given plugin name.
+  Throws ERROR(WrongType) if {plugin} is not a string.
 
 maktaba#filetype#IsEnabled()                    *maktaba#filetype#IsEnabled()*
   Returns 1 if filetype detection is enabled in vim, 0 otherwise.
@@ -1002,7 +1153,7 @@ maktaba#path#Join({components})                          *maktaba#path#Join()*
   Joins the list {components} together using the system separator character.
   Works like python's os.path.join in that
 >
-    Join('relative', '/absolute')
+    Join(['relative', '/absolute'])
 <
   is '/absolute'
 
@@ -1020,8 +1171,8 @@ maktaba#path#Basename({path})                        *maktaba#path#Basename()*
 maktaba#path#Dirname({path})                          *maktaba#path#Dirname()*
   The dirname of {path}. Trailing slash matters. Consider:
 >
-    :echomsg maktaba#path#Basename('/path/to/file')
-    :echomsg maktaba#path#Basename('/path/to/dir/')
+    :echomsg maktaba#path#Dirname('/path/to/file')
+    :echomsg maktaba#path#Dirname('/path/to/dir/')
 <
   The first echoes '/path/to', the second echoes '/path/to/dir'
 
@@ -1223,7 +1374,7 @@ maktaba#rtp#Join({paths})                                 *maktaba#rtp#Join()*
   including trailing slashes. This is also safer since trailing backslashes on
   Windows are a source of bugs, and it doesn't lead to ambiguity since all
   paths should be dirs. Note that |maktaba#rtp#Split()| converts paths back to
-  canoncial representation, with trailing slashes included.
+  canonical representation, with trailing slashes included.
 
 maktaba#rtp#Add({path})                                    *maktaba#rtp#Add()*
   Adds {path} to the runtimepath.
@@ -1314,11 +1465,11 @@ maktaba#setting#Handle({handle})                    *maktaba#setting#Handle()*
 <
   More specifically, this parses a flag name and a series of foci in square
   brackets. A flag name may contain alphanumeric characters and underscores.
-  Flag names may also contain, BUT NOT END WITH, the following charcaters:
+  Flag names may also contain, BUT NOT END WITH, the following characters:
   . / : #
 
   Foci are kept in square brackets. They are not allowed to contain square
-  brackets. They should describe either dictionary keys or list indicies.
+  brackets. They should describe either dictionary keys or list indices.
 
   You're encouraged to use this function when you're exposing complex flags to
   users. Flag handles are part of the maktaba setting syntax. See
@@ -1374,6 +1525,9 @@ maktaba#string#StartsWith({string}, {prefix})    *maktaba#string#StartsWith()*
 maktaba#string#EndsWith({string}, {suffix})        *maktaba#string#EndsWith()*
   Whether or not {string} ends with {suffix}.
 
+maktaba#syscall#IsAsyncAvailable()        *maktaba#syscall#IsAsyncAvailable()*
+  Returns whether the current vim session supports asynchronous calls.
+
 maktaba#syscall#Create({cmd})                       *maktaba#syscall#Create()*
   Creates a |maktaba.Syscall| object that can be used to execute {cmd} with
   |Syscall.Call()|. {cmd} may be a pre-escaped string, a list of words to be
@@ -1382,8 +1536,8 @@ maktaba#syscall#Create({cmd})                       *maktaba#syscall#Create()*
   Throws ERROR(WrongType)
 
 maktaba#test#Override({target}, {replacement})       *maktaba#test#Override()*
-  Overides the function {target} such that when it is called, {replacement} is
-  called instead. This is particularly useful for overloading autoloaded
+  Overrides the function {target} such that when it is called, {replacement}
+  is called instead. This is particularly useful for overloading autoloaded
   functions, which can only be done in files that are named correctly.
   (name#spaced#Function must be defined in .../name/spaced.vim).
 
@@ -1402,16 +1556,20 @@ maktaba#user#Name()                                      *maktaba#user#Name()*
   Gets the user's name.
 
 maktaba#user#CacheDir()                              *maktaba#user#CacheDir()*
-  Gets a directory that can be used for cache files. Respects $XDG_CACHE_HOME
-  if present.
+  Gets a directory that can be used for cache files, creating it if necessary.
+  Respects $XDG_CACHE_HOME if present.
+  Throws ERROR(NotAuthorized) if the directory does not exist and cannot be
+  created.
 
 maktaba#user#DataDir()                                *maktaba#user#DataDir()*
-  Gets a directory that can be used for data files. Respects $XDG_DATA_HOME if
-  present.
+  Gets a directory that can be used for data files, creating it if necessary.
+  Respects $XDG_DATA_HOME if present.
+  Throws ERROR(NotAuthorized) if the directory does not exist and cannot be
+  created.
 
 maktaba#user#ConfigDir()                            *maktaba#user#ConfigDir()*
-  Gets a directory that can be used for config files. Respects
-  $XDG_CONFIG_HOME if present.
+  Gets a directory that can be used for config files, creating it if
+  necessary. Respects $XDG_CONFIG_HOME if present.
   Throws ERROR(NotAuthorized) if the directory does not exist and cannot be
   created.
 
@@ -1429,6 +1587,7 @@ maktaba#value#IsEqual({a}, {b})                      *maktaba#value#IsEqual()*
 
 maktaba#value#IsIn({value}, {list})                     *maktaba#value#IsIn()*
   Whether {value} is in {list}.
+  Throws ERROR(BadValue) if {list} is not a list.
 
 maktaba#value#EmptyValue({value})                 *maktaba#value#EmptyValue()*
   Returns the empty value for {value}. This is 0, 0.0, '', [], {}, or 'empty',
@@ -1495,6 +1654,8 @@ maktaba#value#Focus({target}, {foci}, [value])         *maktaba#value#Focus()*
   a safe way, throwing exceptions if the implicit assumptions aren't met.
   Throws ERROR(BadValue) if {target} cannot be deconstructed the way {foci}
   expects.
+  Throws ERROR(WrongType) if {foci} contains the wrong types to index
+  {target}.
 
 maktaba#value#Save({variable})                          *maktaba#value#Save()*
   Captures the state of a {variable} into a returned dict. The return value

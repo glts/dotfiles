@@ -75,7 +75,7 @@ endfunction
 ""
 " Prints {message} in an angry red error bar for the user.
 " Don't use |:echoerr|! It doesn't make that red error bar and it prints out the
-" line in the code where the error occured. It's for debugging, not messaging!
+" line in the code where the error occurred. It's for debugging, not messaging!
 " If [args...] are given they will be used to expand {message} as in |printf()|.
 function! maktaba#error#Shout(message, ...) abort
   call call('s:EchoHighlighted', ['ErrorMsg', a:message] + a:000)
@@ -99,6 +99,7 @@ endfunction
 "
 " {type} must contain only letters, numbers, underscores, and hyphens.
 " @throws BadValue if {type} contains invalid characters.
+" @throws WrongType if {type} is not a string.
 function! maktaba#error#Exception(type, message, fmtargs) abort
   call maktaba#ensure#Matches(a:type, s:errortype)
   if empty(a:fmtargs)
@@ -120,6 +121,7 @@ endfunction
 "
 " {type} must contain only letters, numbers, underscores, and hyphens.
 " @throws BadValue if {type} contains invalid characters.
+" @throws WrongType if {type} is not a string.
 function! maktaba#error#Message(type, message, ...) abort
   return maktaba#error#Exception(a:type, a:message, a:000)
 endfunction
@@ -250,6 +252,9 @@ endfunction
 "
 " @default exceptions=.*
 " @default default=0
+" @throws BadValue if {func} is not a funcdict.
+" @throws WrongType if {func} is not callable, or if [exceptions] is neither a
+"     regex nor a list.
 function! maktaba#error#Try(F, ...) abort
   let l:exceptions = maktaba#ensure#TypeMatchesOneOf(get(a:, 1, '.*'), [[], ''])
   if maktaba#value#IsList(l:exceptions)
@@ -272,6 +277,7 @@ endfunction
 ""
 " Like @function(#Try), but executes {command} instead of calling a function.
 " @default exceptions=.*
+" @throws WrongType if [exceptions] is neither a regex nor a list.
 function! maktaba#error#TryCommand(command, ...) abort
   let l:exceptions = maktaba#ensure#TypeMatchesOneOf(get(a:, 1, '.*'), [[], ''])
   if type(l:exceptions) == type([])

@@ -396,10 +396,11 @@ function! maktaba#plugin#Get(name) abort
   endif
 
   " Check if any dir on runtimepath is a plugin that hasn't been detected yet.
-  let l:leafdirs = maktaba#rtp#LeafDirs()
-  if has_key(l:leafdirs, a:name)
-    return maktaba#plugin#GetOrInstall(l:leafdirs[a:name])
-  endif
+  for [l:leafdir, l:leafpath] in items(maktaba#rtp#LeafDirs())
+    if maktaba#plugin#CanonicalName(l:leafdir) is# l:name
+      return maktaba#plugin#GetOrInstall(l:leafpath)
+    endif
+  endfor
 
   throw maktaba#error#NotFound('Plugin %s', a:name)
 endfunction
@@ -469,6 +470,7 @@ function! s:CreatePluginObject(name, location, settings) abort
       \ 'GenerateHelpTags': function('maktaba#plugin#GenerateHelpTags'),
       \ 'MapPrefix': function('maktaba#plugin#MapPrefix'),
       \ 'IsLibrary': function('maktaba#plugin#IsLibrary'),
+      \ 'GetExtensionRegistry': function('maktaba#plugin#GetExtensionRegistry'),
       \ '_entered': l:entrycontroller,
       \ }
   " If plugin has an addon-info.json file with a "name" declared, overwrite the
@@ -657,7 +659,7 @@ endfunction
 ""
 " @dict Plugin
 " If [file] is given, the plugin file plugin/<file>.vim will be sourced.
-" An error will  be thrown if [file] does not exist unless [optional] is set.
+" An error will be thrown if [file] does not exist unless [optional] is set.
 " If [file] is omitted, then all plugin files that have not yet been sourced
 " will be sourced.
 " [file] may also be a list of filenames to source.
@@ -701,7 +703,7 @@ endfunction
 ""
 " @dict Plugin
 " Tests whether the plugin has {dir}, either as a direct subdirectory or as
-" a subirectory of the after/ directory.
+" a subdirectory of the after/ directory.
 " Cached for performance, so new paths will not be discovered if they're added
 " to the plugin after the first check.
 function! maktaba#plugin#HasDir(dir) dict abort
@@ -713,7 +715,7 @@ endfunction
 
 ""
 " @dict Plugin
-" Tests wheter a plugin has a filetype-active directory (ftdetect, ftplugin,
+" Tests whether a plugin has a filetype-active directory (ftdetect, ftplugin,
 " indent, or syntax).
 function! maktaba#plugin#HasFiletypeData() dict abort
   return maktaba#rtp#DirDefinesFiletypes(self.location)
@@ -822,7 +824,7 @@ endfunction
 " [throw] argument to make this function throw errors instead of printing them,
 " if you plan to catch them explicitly.
 "
-" Mappings should  be defined in the plugin/mappings.vim file. The user
+" Mappings should be defined in the plugin/mappings.vim file. The user
 " configures their map prefix preferences via the flag that controls that file.
 " @default throw=0
 " @throws NotFound if plugin/mappings.vim does not exist.
@@ -881,6 +883,18 @@ function! maktaba#plugin#IsLibrary() dict abort
     endif
   endfor
   return self.HasDir('autoload')
+endfunction
+
+
+""
+" @dict Plugin
+" Returns the @dict(ExtensionRegistry) belonging to this plugin.
+"
+" This should be used only by the plugin itself; external callers should use
+" @function(maktaba#extension#GetRegistry) instead, rather than depend upon
+" the plugin directly.
+function! maktaba#plugin#GetExtensionRegistry() dict abort
+  return maktaba#extension#GetInternalRegistry(self.name)
 endfunction
 
 

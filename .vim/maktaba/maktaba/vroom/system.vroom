@@ -236,6 +236,11 @@ This function converts non-zero status codes into ShellError exceptions:
   $ 1 (status)
   ~ ERROR(ShellError): Error running: nothing
 
+  :call maktaba#error#Try(g:syscall_fn.WithArgs(['nothing', '!@#$']))
+  ! nothing '!@#$' 2> /tmp/* (glob)
+  $ 1 (status)
+  ~ ERROR(ShellError): Error running: nothing '!@#$'
+
 You can suppress error messages by passing in a 0 as maktaba#system#Call's third
 argument (throw_errors):
 
@@ -361,5 +366,46 @@ maktaba#system#Or to chain commands.
   |maktaba#system#Or(['false', 'echo FAILURE']), 'foreground')
   ! false || echo FAILURE
   $ FAILURE
+
+To execute system calls asynchronously, use CallAsync.
+
+  :let g:syscall = maktaba#syscall#Create(['echo', 'hi'])
+  :function Callback(env, return_data) abort<CR>
+  |  let g:env = a:env<CR>
+  |  let g:callback_stdout = a:return_data.stdout<CR>
+  |  let g:callback_exit_code = a:return_data.status<CR>
+  |endfunction
+  :call g:syscall.CallAsync('Callback', 0)
+  ! .*echo hi; vim --servername .* --remote-expr "maktaba#syscall#AsyncDone.*
+  :let g:deadline = localtime() + 2 " wait for at most 2 seconds
+  :while !exists('g:callback_exit_code') && localtime() < g:deadline
+  :endwhile
+  :call maktaba#ensure#IsTrue(exists('g:callback_exit_code'),
+  | 'Async callback was expected to complete within 2 seconds')
+  :echomsg g:callback_stdout
+  ~ hi
+
+Asynchronous calls can also take a stdin parameter.
+
+  :unlet g:callback_stdout
+  :unlet g:env
+  :unlet g:callback_exit_code
+  :let g:syscall = maktaba#syscall#Create(['cat']).WithStdin("Hello")
+  :call g:syscall.CallAsync('Callback', 0)
+  ! .*cat; vim --servername .* --remote-expr "maktaba#syscall#AsyncDone.*
+  :let g:deadline = localtime() + 2 " wait for at most 2 seconds
+  :while !exists('g:callback_exit_code') && localtime() < g:deadline
+  :endwhile
+  :call maktaba#ensure#IsTrue(exists('g:callback_exit_code'),
+  | 'Async callback was expected to complete within 2 seconds')
+  :echomsg g:callback_stdout
+  ~ Hello
+
+Async calls fall back to synchronous calls if disabled or not available.
+
+  :call maktaba#syscall#SetAsyncDisabled(1)
+  :let g:syscall = maktaba#syscall#Create(['echo', 'hi'])
+  :call g:syscall.CallAsync('Callback', 1)
+  ! echo hi 2> .*
 
   @system
