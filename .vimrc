@@ -46,7 +46,7 @@ endif
 set autoread
 
 " The new regexp engine isn't ready yet
-if exists('&regexpengine')
+if exists('+regexpengine')
   set regexpengine=1
 endif
 
@@ -66,6 +66,9 @@ if has('unnamedplus')
 else
   set clipboard+=unnamed
 endif
+
+" On by default, but Debian-based platforms may switch it off
+set modeline
 
 set hidden
 
@@ -116,11 +119,9 @@ set listchars=tab:▸\ ,eol:¬,trail:·
 set linebreak
 
 " TODO Work in progress
-" TODO %c do not display if == %v
 " TODO default statusline statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 " TODO check 'fileencoding' and 'encoding' option
-set statusline=%f
-set statusline+=\ \|\ %{&encoding}\ \|\ %{&fileformat}\ %{&filetype\ is\ ''?'':'\|\ '.&filetype.'\ '}
+set statusline=%f\ \|\ %{&encoding}\ \|\ %{&fileformat}\ %{&filetype\ is\ ''?'':'\|\ '.&filetype.'\ '}
 set statusline+=%h              "help file flag
 set statusline+=%w              "preview window flag
 set statusline+=%m              "modified flag
@@ -154,7 +155,7 @@ augroup vimrc
   endif
 
   " Use 'colorcolumn' to create a gutter
-  if exists('&colorcolumn') && has('gui_running')
+  if exists('+colorcolumn') && has('gui_running')
     autocmd FileType * if &textwidth != 0
                    \ |   let &colorcolumn = join(range(&textwidth + 1, 500), ',')
                    \ | endif
