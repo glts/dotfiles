@@ -78,9 +78,6 @@ if v:version > 703 || v:version == 703 && has('patch541')
   set formatoptions+=j
 endif
 
-" Never interpret numbers as octal with CTRL-A/CTRL-X
-set nrformats-=octal
-
 set incsearch
 
 " Don't open folds when moving with } {
