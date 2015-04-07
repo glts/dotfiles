@@ -10,23 +10,10 @@ runtime macros/matchit.vim
 " Maktaba playground below
 source $HOME/.vim/maktaba/maktaba/bootstrap.vim
 let $MAKTABA_HOME = maktaba#path#Join([$HOME, '.vim', 'maktaba'])
-function! LocalLibInstaller(library) abort
-  " Fake an installer that knows how to map a library name to a location
-  let l:fakerepo = {
-      \ 'fictional.vim': maktaba#path#Join([$MAKTABA_HOME, 'i_dont_exist']),
-      \ 'magnum.vim': maktaba#path#Join([$MAKTABA_HOME, 'magnum']),
-      \ }
-  if has_key(l:fakerepo, a:library) && isdirectory(resolve(l:fakerepo[a:library]))
-    return maktaba#plugin#GetOrInstall(l:fakerepo[a:library])
-  endif
-  throw maktaba#error#NotFound(a:library)
-endfunction
-call maktaba#library#AddInstaller('locallibs', 'LocalLibInstaller')
+call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'glaive']))
+call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'magnum']))
+call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
 
-call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'glaive']))
-call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
-
-" Enable file type and syntax support
 filetype plugin indent on
 syntax enable
 
