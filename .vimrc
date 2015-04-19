@@ -108,11 +108,12 @@ set linebreak
 " TODO Work in progress
 " TODO default statusline statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
 " TODO check 'fileencoding' and 'encoding' option
-set statusline=%f\ \|\ %{&encoding}\ \|\ %{&fileformat}\ %{&filetype\ is\ ''?'':'\|\ '.&filetype.'\ '}
+set statusline=%f\ \|\ %{&encoding}\ \|\ %{&fileformat}\ %y
 set statusline+=%h              "help file flag
 set statusline+=%w              "preview window flag
 set statusline+=%m              "modified flag
 set statusline+=%r              "read only flag
+set statusline+=%{fugitive#statusline()}
 set statusline+=%=              "left/right separator
 set statusline+=col\ %v/%c\ ln\ %l\ of\ %L
 
