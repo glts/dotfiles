@@ -110,7 +110,7 @@ endif
 " Wrap screen lines at word boundaries (whitespace)
 set linebreak
 
-set statusline=%f\ %{'['.join(filter([&fileformat,&fileencoding],'!empty(v:val)'),'/').']'}%y%h%w%r%m%{fugitive#statusline()}%=%l:%c%V\ %P
+set statusline=%f\ %{'['.join(filter([&fileformat,&fileencoding],'!empty(v:val)'),',').']'}%y%h%w%r%m%{fugitive#statusline()}%=%l:%c%V\ %P
 
 " Display incomplete commands in the status line
 set showcmd
