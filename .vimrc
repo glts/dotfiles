@@ -121,6 +121,12 @@ set report=1
 " Don't show the intro screen at startup
 set shortmess+=I
 
+set cscopequickfix=s-,c-,d-,i-,t-,e-
+set cscopetag
+nnoremap csa :cscope add cscope.out<CR>
+nnoremap csfs :cscope find s <cword><CR>
+nnoremap csfc :cscope find c <cword><CR>
+
 " Autocommands
 
 augroup vimrc
