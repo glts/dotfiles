@@ -13,9 +13,9 @@ runtime macros/matchit.vim
 " Maktaba playground below
 source $HOME/.vim/maktaba/maktaba/bootstrap.vim
 let $MAKTABA_HOME = maktaba#path#Join([$HOME, '.vim', 'maktaba'])
-call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'glaive']))
-call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'magnum']))
-call maktaba#plugin#Install(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
+call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'glaive']))
+call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'magnum']))
+call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
 
 filetype plugin indent on
 syntax enable
