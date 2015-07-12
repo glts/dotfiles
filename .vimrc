@@ -143,6 +143,11 @@ augroup vimrc
     autocmd FileType * setlocal conceallevel=0
   endif
 
+  " Close the preview window in case completion has made it pop up.
+  if exists('##CompleteDone')
+    autocmd CompleteDone * pclose
+  endif
+
   " Use 'colorcolumn' to create a gutter
   if exists('+colorcolumn') && has('gui_running')
     autocmd FileType * if &textwidth != 0
