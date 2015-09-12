@@ -56,6 +56,8 @@ else
   set clipboard+=unnamed
 endif
 
+setglobal tags-=./tags tags^=./tags;
+
 " On by default, but Debian-based platforms may switch it off.
 set modeline
 
