@@ -110,7 +110,7 @@ endif
 " Wrap screen lines at word boundaries (whitespace)
 set linebreak
 
-set statusline=%f\ %{'['.join(filter([&fileformat,&fileencoding],'!empty(v:val)'),',').']'}%y%h%w%r%m%{fugitive#statusline()}%=%l:%c%V\ %P
+set statusline=%f\ %{'['.join(filter([&fileencoding,&fileformat],'!empty(v:val)'),',').']'}%y%h%w%r%m%{fugitive#statusline()}%=%l:%c%V\ %P
 
 " Display incomplete commands in the status line
 set showcmd
@@ -240,6 +240,8 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ Vivamus vestibulum semper aliquam. Mauris rutrum convallis malesuada.
 
 " Plugin settings
+
+let g:netrw_banner = 0
 
 " operator-replace plugin
 map gr <Plug>(operator-replace)
