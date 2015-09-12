@@ -83,9 +83,6 @@ endif
 
 set incsearch
 
-" Don't open folds when moving with } {
-set foldopen-=block
-
 " Always display status line of the bottom-most window
 set laststatus=2
 
