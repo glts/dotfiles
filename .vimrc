@@ -158,25 +158,13 @@ augroup END
 
 " Mappings
 
-" Quick window size manipulation
-nnoremap <C-Up> <C-W>+
-nnoremap <C-Down> <C-W>-
-nnoremap <C-Left> <C-W><
-nnoremap <C-Right> <C-W>>
+nnoremap <F1> :<C-U>tab help<CR>
 
 nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 
-inoremap <C-U> <C-G>u<C-U>
-
-" Formatting shortcut
-nnoremap <silent> Q gwip
-
-" Split line at cursor position, the inverse of J and gJ
-nnoremap <C-J> i<CR><Esc>k$
-nnoremap g<C-J> i<CR><C-O>d0<Esc>k$
-
-" Easy buffer switching
-nnoremap <Leader>b :<C-U>ls<CR>:b<Space>
+" Easy use of filtered command-line history
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
 
 " Search for Visual selection, from "Practical Vim"
 function! s:VSetSearch(cmdtype) abort
@@ -191,18 +179,35 @@ xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
 xnoremap g* *
 xnoremap g# #
 
-" Easy use of filtered command-line history
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
+inoremap <C-U> <C-G>u<C-U>
+
+" Fix the & command as recommended in "Practical Vim"
+nnoremap & :&&<CR>
+xnoremap & :&&<CR>
 
 " Enable undoing a( a) ab in Visual mode with gv
 xnoremap a( <Esc>gva(
 xnoremap a) <Esc>gva)
 xnoremap ab <Esc>gvab
 
-" Fix the & command as recommended in "Practical Vim"
-nnoremap & :&&<CR>
-xnoremap & :&&<CR>
+" Quick window size manipulation
+nnoremap <C-Up> <C-W>+
+nnoremap <C-Down> <C-W>-
+nnoremap <C-Left> <C-W><
+nnoremap <C-Right> <C-W>>
+
+" Formatting shortcut
+nnoremap <silent> Q gwip
+
+" Split line at cursor position, the inverse of J and gJ
+nnoremap <C-J> i<CR><Esc>k$
+nnoremap g<C-J> i<CR><C-O>d0<Esc>k$
+
+" Expand dirname for current file
+cnoreabbrev <expr> %% expand('%:h')
+
+" Easy buffer switching
+nnoremap <Leader>b :<C-U>ls<CR>:b
 
 " Source current file
 nnoremap <Leader>so :<C-U>source %<CR>
@@ -216,8 +221,8 @@ nnoremap <Leader>d :lcd %:p:h<CR>
 " Generate tags with exuberant ctags
 nnoremap <Leader>ct :!ctags -R<CR>
 
-" Expand dirname for current file
-cnoreabbrev <expr> %% expand('%:h')
+" Edit $MYVIMRC in a separate tab
+nnoremap <Leader>ve :<C-U>tabedit $MYVIMRC<CR>
 
 " Insert current date
 inoreabbrev 2015- <C-R>=strftime('%Y-%m-%d')<CR>
@@ -233,12 +238,6 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   \ placerat neque malesuada non. Aenean auctor, mi in suscipit bibendum, quam
   \ risus tincidunt enim, id pretium leo risus ac lectus. Ut eget nisl nunc.
   \ Vivamus vestibulum semper aliquam. Mauris rutrum convallis malesuada.
-
-" Open help in a separate tab with <F1>
-nnoremap <F1> :<C-U>tab help<CR>
-
-" Edit $MYVIMRC in a separate tab
-nnoremap <Leader>ve :<C-U>tabedit $MYVIMRC<CR>
 
 " Plugin settings
 
