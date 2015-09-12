@@ -242,6 +242,8 @@ nnoremap <Leader>ve :<C-U>tabedit $MYVIMRC<CR>
 
 " Plugin settings
 
+let g:netrw_banner = 0
+
 " operator-replace plugin
 map gr <Plug>(operator-replace)
 
