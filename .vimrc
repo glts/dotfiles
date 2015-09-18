@@ -98,11 +98,11 @@ set display+=lastline
 set wildmenu
 set wildmode=longest,list,full
 
-set listchars=tab:▸\ ,eol:¬
+set listchars=tab:▸\ 
 if v:version > 704 || v:version == 704 && has('patch712')
   set listchars+=space:·
 else
-  set listchars+=trail:·
+  set listchars+=trail:·,eol:¬
 endif
 
 " Wrap screen lines at word boundaries (whitespace).
