@@ -197,10 +197,6 @@ nnoremap <C-Right> <C-W>>
 " Formatting shortcut.
 nnoremap <silent> Q gwip
 
-" Split line at cursor position, the inverse of J and gJ.
-nnoremap <C-J> i<CR><Esc>k$
-nnoremap g<C-J> i<CR><C-O>d0<Esc>k$
-
 " Expand dirname for current file.
 cnoreabbrev <expr> %% expand('%:h')
 
