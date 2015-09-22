@@ -51,9 +51,9 @@ set ttimeoutlen=100
 
 " Always yank and delete into the system clipboard, too.
 if has('unnamedplus')
-  set clipboard+=unnamedplus
+  set clipboard^=unnamedplus
 else
-  set clipboard+=unnamed
+  set clipboard^=unnamed
 endif
 
 setglobal tags-=./tags tags^=./tags;
