@@ -2,9 +2,6 @@
 " Author: glts <676c7473@gmail.com>
 
 set cursorline          " highlight cursor line
-if exists('&colorcolumn')
-  set colorcolumn=+0    " highlight end of text width
-endif
 
 set lines=50
 set columns=100
