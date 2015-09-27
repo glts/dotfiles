@@ -149,7 +149,7 @@ augroup vimrc
   " Use 'colorcolumn' to create a gutter.
   if exists('+colorcolumn') && has('gui_running')
     autocmd FileType * if &textwidth != 0
-                   \ |   let &colorcolumn = join(range(&textwidth + 1, 500), ',')
+                   \ |   let &l:colorcolumn = join(map(range(1, 256), '"+" . v:val'), ',')
                    \ | endif
   endif
 augroup END
