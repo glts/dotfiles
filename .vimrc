@@ -158,7 +158,7 @@ augroup END
 
 nnoremap <F1> :<C-U>tab help<CR>
 
-nnoremap <silent> <C-L> :<C-U>nohlsearch<CR><C-L>
+nnoremap <silent> <C-L> :<C-U>nohlsearch <Bar> diffupdate<CR><C-L>
 
 " Easy use of filtered command-line history.
 cnoremap <C-P> <Up>
