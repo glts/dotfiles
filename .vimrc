@@ -164,16 +164,23 @@ nnoremap <silent> <C-L> :<C-U>nohlsearch <Bar> diffupdate<CR><C-L>
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
-" Search for Visual selection, from "Practical Vim".
-function! s:VSetSearch(cmdtype) abort
-  let l:reg_save = @s
-  normal! gv"sy
-  let @/ = '\V' . substitute(escape(@s, a:cmdtype . '\'), '\n', '\\n', 'g')
-  let @s = l:reg_save
+" Search for the current Visual selection.
+function! s:GetVisualSelectionPattern(searchtype) abort
+  let l:lines = getline(line("'<"), line("'>"))
+  let l:startcol = col("'<") - 1
+  let l:endcol = col("'>") - 1
+  if l:endcol >= strlen(l:lines[-1])
+    call add(l:lines, '')
+  else
+    let l:endcol += strlen(matchstr(l:lines[-1][l:endcol : ], '.')) - 1
+  endif
+  let l:lines[-1] = l:lines[-1][ : l:endcol]
+  let l:lines[0] = l:lines[0][l:startcol : ]
+  return '\V' . join(map(l:lines, 'escape(v:val, a:searchtype . "\\")'), '\n')
 endfunction
 
-xnoremap * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-U>call <SID>VSetSearch('?')<CR>?<C-R>=@/<CR><CR>
+xnoremap * <Esc>/<C-R><C-R>=<SID>GetVisualSelectionPattern('/')<CR><CR>
+xnoremap # <Esc>?<C-R><C-R>=<SID>GetVisualSelectionPattern('?')<CR><CR>
 xnoremap g* *
 xnoremap g# #
 
