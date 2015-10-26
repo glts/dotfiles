@@ -34,11 +34,6 @@ endif
 
 set autoread
 
-" The new regexp engine isn't ready yet.
-if exists('+regexpengine')
-  set regexpengine=1
-endif
-
 if has('mouse')
   set mouse=a
 endif
