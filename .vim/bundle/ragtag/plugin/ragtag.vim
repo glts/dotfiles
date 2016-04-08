@@ -28,6 +28,7 @@ augroup ragtag
   autocmd FileType *html*,wml,jsp,gsp,mustache,smarty         call s:Init()
   autocmd FileType php,asp*,cf,mason,eruby,liquid,jst,eelixir call s:Init()
   autocmd FileType xml,xslt,xsd,docbk                         call s:Init()
+  autocmd FileType javascript.jsx,jsx                         call s:Init()
   autocmd InsertLeave * call s:Leave()
   autocmd CursorHold * if exists("b:loaded_ragtag") | call s:Leave() | endif
 augroup END
@@ -78,8 +79,8 @@ function! s:Init()
   else
     inoremap <silent> <buffer> <C-X>/ <Lt>/><Left>
   endif
-  let g:surround_{char2nr("p")} = "<p>\n\t\r\n</p>"
-  let g:surround_{char2nr("d")} = "<div\1div: \r^[^ ]\r &\1>\n\t\r\n</div>"
+  let b:surround_{char2nr("p")} = "<p>\n\t\r\n</p>"
+  let b:surround_{char2nr("d")} = "<div\1div: \r^[^ ]\r &\1>\n\t\r\n</div>"
   imap <buffer> <C-X><C-_> <C-X>/
   imap <buffer> <SID>ragtagOopen    <C-X><Lt><Space>
   imap <buffer> <SID>ragtagOclose   <Space><C-X>><Left><Left>
@@ -309,7 +310,6 @@ function! s:insertTag(tag)
   let middle = matchstr(tag,'\r\zs.\{-\}\ze\r')
   return before.after.s:repeat("\<Left>",s:length(after))
 endfunction
-
 
 function! s:htmlEn()
   let b:ragtag_omni = &l:omnifunc
