@@ -73,7 +73,7 @@ set smarttab
 
 " Improve auto-formatting of commented lines and overlong lines.
 set formatoptions+=rl
-if v:version > 703 || v:version == 703 && has('patch541')
+if v:version > 703 || v:version is 703 && has('patch541')
   set formatoptions+=j
 endif
 
@@ -94,7 +94,7 @@ set wildmenu
 set wildmode=longest,list,full
 
 set listchars=tab:▸\ 
-if v:version > 704 || v:version == 704 && has('patch712')
+if v:version > 704 || v:version is 704 && has('patch712')
   set listchars+=space:·
 else
   set listchars+=trail:·,eol:¬
@@ -143,7 +143,7 @@ augroup vimrc
 
   " Use 'colorcolumn' to create a gutter.
   if exists('+colorcolumn') && has('gui_running')
-    autocmd FileType * if &textwidth != 0
+    autocmd FileType * if &textwidth isnot 0
                    \ |   let &l:colorcolumn = join(map(range(1, 256), '"+" . v:val'), ',')
                    \ | endif
   endif
