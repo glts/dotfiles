@@ -23,7 +23,6 @@ syntax enable
 " Settings
 
 set encoding=utf-8
-set fileformats+=mac
 
 set directory^=~/.local/share/vim/swap//
 
