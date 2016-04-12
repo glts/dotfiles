@@ -67,7 +67,6 @@ set nostartofline
 " Don't insert two-space sentence punctuation when joining lines.
 set nojoinspaces
 
-set shiftround
 set smarttab
 
 " Improve auto-formatting of commented lines and overlong lines.
