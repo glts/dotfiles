@@ -247,9 +247,6 @@ nnoremap <F3> :<C-U>TagbarToggle<CR>
 let g:tagbar_sort = 0
 let g:tagbar_autofocus = 1
 
-" Gundo.
-nnoremap <F5> :<C-U>GundoToggle<CR>
-
 " cottidie.vim.
 let g:cottidie_no_default_tips = 0
 let g:cottidie_tips_files = ['~/mytips.txt'] ", 'http://glts.github.io/vim-cottidie/tips']
