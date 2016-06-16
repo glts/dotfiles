@@ -220,11 +220,11 @@ nnoremap <Leader>ve :<C-U>tabedit $MYVIMRC<CR>
 
 " Insert current date and time.
 nnoremap <silent> <Leader>td "=strftime('%Y-%m-%d')<CR>p
-nnoremap <silent> <Leader>tz "=substitute(strftime('%Y-%m-%dT%H:%M:%S%z'),'\v(\d\d$)@=',':','')<CR>p
+nnoremap <silent> <Leader>tz "=substitute(strftime('%Y-%m-%dT%H:%M:%S%z'), '\v(\d\d$)@=', ':', '')<CR>p
 nnoremap <silent> <Leader>ts "=localtime()<CR>p
 
 " Insert random signed int64.
-nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(64)).Sub(magnum#Int(2).Pow(63)).String().'L'<CR>p
+nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(64)).Sub(magnum#Int(2).Pow(63)).String() . 'L'<CR>p
 
 " Insert some "Lorem ipsum" text.
 inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
