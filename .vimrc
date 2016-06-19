@@ -14,7 +14,6 @@ runtime macros/matchit.vim
 source $HOME/.vim/maktaba/maktaba/bootstrap.vim
 let $MAKTABA_HOME = maktaba#path#Join([$HOME, '.vim', 'maktaba'])
 call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'magnum']))
-call maktaba#plugin#GetOrInstall(maktaba#path#Join([$MAKTABA_HOME, 'radical'])).Flag('plugin[mappings]', 1)
 
 filetype plugin indent on
 syntax enable
