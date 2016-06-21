@@ -10,10 +10,6 @@ execute pathogen#infect()
 runtime ftplugin/man.vim
 runtime macros/matchit.vim
 
-" Maktaba playground below.
-source $HOME/.vim/maktaba/maktaba/bootstrap.vim
-let $MAKTABA_HOME = maktaba#path#Join([$HOME, '.vim', 'maktaba'])
-
 filetype plugin indent on
 syntax enable
 
