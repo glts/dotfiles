@@ -11,7 +11,7 @@
 	path = .vim/bundle/textobj-comment
 	url = https://github.com/glts/vim-textobj-comment.git
 [submodule ".vim/maktaba/magnum"]
-	path = .vim/maktaba/magnum
+	path = .vim/bundle/magnum
 	url = https://github.com/glts/vim-magnum.git
 [submodule ".vim/maktaba/radical"]
 	path = .vim/bundle/radical
