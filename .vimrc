@@ -232,6 +232,9 @@ inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
 let g:netrw_banner = 0
 
+let g:loaded_logipat = 1
+let g:loaded_LogiPat = 1
+
 " operator-replace.
 map gr <Plug>(operator-replace)
 
