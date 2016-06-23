@@ -1,4 +1,4 @@
-" Indent multi-line definitions of adverbs, conjunctions, verbs
+" Indent multi-line definitions of adverbs, conjunctions, verbs.
 let g:j_indent_definitions = 1
 
 setlocal softtabstop=2
