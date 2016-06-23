@@ -235,6 +235,16 @@ let g:netrw_banner = 0
 let g:loaded_logipat = 1
 let g:loaded_LogiPat = 1
 
+" Use Bash as default shell and preserve 'iskeyword', see ":h ft-sh-syntax".
+let g:is_bash = 1
+let g:sh_noisk = 1
+
+" Only one level of indent after open brackets in Python.
+let g:pyindent_open_paren = '&shiftwidth'
+
+" Indent multi-line definitions of adverbs, conjunctions, verbs in J.
+let g:j_indent_definitions = 1
+
 " operator-replace.
 map gr <Plug>(operator-replace)
 

@@ -1,3 +1,9 @@
-setlocal softtabstop=4
-setlocal shiftwidth=4
 setlocal expandtab
+setlocal shiftwidth=4
+setlocal softtabstop=4
+
+if exists('b:undo_ftplugin')
+  let b:undo_ftplugin .= ' | setlocal softtabstop< shiftwidth< expandtab<'
+else
+  let b:undo_ftplugin = 'setlocal softtabstop< shiftwidth< expandtab<'
+endif
