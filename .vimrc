@@ -202,9 +202,6 @@ nnoremap <Leader>so :<C-U>source %<CR>
 " Remove all trailing whitespace.
 nnoremap <Leader>sd :%s/\s\+$<CR>
 
-" Change directory to where current file is.
-nnoremap <Leader>d :lcd %:p:h<CR>
-
 " Generate tags with exuberant ctags.
 nnoremap <Leader>ct :!ctags -R<CR>
 
