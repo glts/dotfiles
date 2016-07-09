@@ -8,3 +8,7 @@
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
+
+(require 'ido)
+(ido-mode t)
+(setq ido-enable-flex-matching t)
