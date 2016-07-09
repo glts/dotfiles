@@ -4,3 +4,7 @@
 (tool-bar-mode -1)
 
 (setq inhibit-startup-message t)
+
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
