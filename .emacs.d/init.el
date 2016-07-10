@@ -9,6 +9,10 @@
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
 
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
