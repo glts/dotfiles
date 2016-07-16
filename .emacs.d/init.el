@@ -39,6 +39,9 @@
 (when (memq window-system '(mac ns))
   (exec-path-from-shell-initialize))
 
+(require 'saveplace)
+(setq-default save-place t)
+
 (require 'org)
 (setq org-log-done t)
 (setq org-directory "~/org")
@@ -52,6 +55,8 @@
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
+
+(load-theme 'leuven t)
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
