@@ -52,3 +52,7 @@
 (require 'ido)
 (ido-mode t)
 (setq ido-enable-flex-matching t)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
