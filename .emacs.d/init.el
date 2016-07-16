@@ -10,6 +10,12 @@
                  (concat user-emacs-directory "backups")))))
 
 (setq sentence-end-double-space nil)
+(setq fill-column 80)
+;; TODO or: (set-default 'fill-column 80) ?
+
+(show-paren-mode 1)
+(setq-default indent-tabs-mode nil)
+;; TODO or: (set-default 'indent-tabs-mode nil) ?
 
 (require 'package)
 (add-to-list 'package-archives
