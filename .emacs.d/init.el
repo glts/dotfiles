@@ -10,8 +10,7 @@
                  (concat user-emacs-directory "backups")))))
 
 (setq sentence-end-double-space nil)
-(setq fill-column 80)
-;; TODO or: (set-default 'fill-column 80) ?
+(setq-default fill-column 80)
 
 (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)
@@ -56,8 +55,8 @@
 (ido-mode t)
 (setq ido-enable-flex-matching t)
 
-(load-theme 'leuven t)
-
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+
+(setq epg-gpg-program "gpg2")
