@@ -1,7 +1,9 @@
 (global-linum-mode 1)
-(global-hl-line-mode 1)
 
 (tool-bar-mode -1)
+
+(add-to-list 'default-frame-alist '(width  . 110))
+(add-to-list 'default-frame-alist '(height . 50))
 
 (setq inhibit-startup-message t)
 
