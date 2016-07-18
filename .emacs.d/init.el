@@ -44,7 +44,8 @@
 (setq-default save-place t)
 
 (require 'org)
-(setq org-log-done t)
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
 (setq org-directory "~/org")
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (global-set-key "\C-cl" 'org-store-link)
