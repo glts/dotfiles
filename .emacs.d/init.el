@@ -7,12 +7,17 @@
 
 (setq inhibit-startup-message t)
 
+(setq history-length 1000)
+(savehist-mode)
+
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
                  (concat user-emacs-directory "backups")))))
 
 (setq sentence-end-double-space nil)
 (setq-default fill-column 80)
+
+(setq require-final-newline t)
 
 (show-paren-mode 1)
 (setq-default indent-tabs-mode nil)
