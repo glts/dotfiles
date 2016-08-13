@@ -1,4 +1,4 @@
-setlocal textwidth=72
+setlocal textwidth=80
 setlocal expandtab
 setlocal shiftwidth=4
 setlocal softtabstop=4
