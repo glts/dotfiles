@@ -16,3 +16,6 @@
 [submodule ".vim/bundle/radical"]
 	path = .vim/bundle/radical
 	url = https://github.com/glts/vim-radical.git
+[submodule ".vim/bundle/push"]
+	path = .vim/bundle/push
+	url = https://github.com/glts/vim-push.git
