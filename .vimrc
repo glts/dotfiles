@@ -196,13 +196,10 @@ cnoreabbrev <expr> %% expand('%:h')
 " Easy buffer switching.
 nnoremap <Leader>b :<C-U>ls<CR>:b
 
-" Source current file.
-nnoremap <Leader>so :<C-U>source %<CR>
-
 " Remove all trailing whitespace.
 nnoremap <Leader>sd :%s/\s\+$<CR>
 
-" Generate tags with exuberant ctags.
+" Generate tags with Exuberant Ctags.
 nnoremap <Leader>ct :!ctags -R<CR>
 
 " Edit $MYVIMRC in a separate tab.
@@ -214,7 +211,7 @@ nnoremap <silent> <Leader>tz "=substitute(strftime('%Y-%m-%dT%H:%M:%S%z'), '\v(\
 nnoremap <silent> <Leader>ts "=localtime()<CR>p
 
 " Insert random signed int64.
-nnoremap <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(63).Neg(), magnum#Int(2).Pow(63)).String() . 'L'<CR>p
+nnoremap <silent> <Leader>rl "=magnum#random#NextInt(magnum#Int(2).Pow(63).Neg(), magnum#Int(2).Pow(63)).String() . 'L'<CR>p
 
 " Insert some "Lorem ipsum" text.
 inoreabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipiscing elit.
