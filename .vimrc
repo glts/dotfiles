@@ -241,7 +241,3 @@ let g:j_indent_definitions = 1
 
 " operator-replace.
 map gr <Plug>(operator-replace)
-
-" cottidie.vim.
-let g:cottidie_no_default_tips = 0
-let g:cottidie_tips_files = ['~/mytips.txt'] ", 'http://glts.github.io/vim-cottidie/tips']
