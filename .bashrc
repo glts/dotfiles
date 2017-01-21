@@ -38,7 +38,7 @@ then
     alias egrep='egrep --color=auto'
 fi
 
-alias la='ls -alF'
+alias la='ls -al'
 alias lr='ls -alrt'
 
 # Enable Bash's programmable completion.
