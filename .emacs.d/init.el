@@ -40,11 +40,6 @@
 (global-set-key (kbd "<f9>") (kbd "–"))
 ;; ... more generally, C-x 8 RET, then type Unicode name.
 
-;; Need this on OS X only
-(require 'exec-path-from-shell)
-(when (memq window-system '(mac ns))
-  (exec-path-from-shell-initialize))
-
 (require 'saveplace)
 (setq-default save-place t)
 
