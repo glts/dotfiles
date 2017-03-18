@@ -1,0 +1,9 @@
+# ctags
+/tags
+
+# Vim help tags
+/doc/tags
+
+# IntelliJ IDEA
+/.idea/
+*.iml

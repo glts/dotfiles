@@ -3,12 +3,13 @@ README
 Some configuration files for my own use. (They're public only so that I can
 download them from anywhere.)
 
-    export DOTFILES_DIR=~/src/dotfiles
-    cd
-    ln -s "${DOTFILES_DIR}/.vim" .vim
-    ln -s "${DOTFILES_DIR}/.vimrc" .vimrc
-    ln -s "${DOTFILES_DIR}/.gvimrc" .gvimrc
-    ln -s "${DOTFILES_DIR}/.emacs.d" .emacs.d
-    ln -s "${DOTFILES_DIR}/.tmux.conf" .tmux.conf
-    ln -s "${DOTFILES_DIR}/.bashrc" .bashrc
-    ln -s "${DOTFILES_DIR}/.ctags" .ctags
+export DOTFILES_DIR=~/src/dotfiles
+cd
+ln -s "${DOTFILES_DIR}/.vim" .vim
+ln -s "${DOTFILES_DIR}/.vimrc" .vimrc
+ln -s "${DOTFILES_DIR}/.gvimrc" .gvimrc
+ln -s "${DOTFILES_DIR}/.emacs.d" .emacs.d
+ln -s "${DOTFILES_DIR}/.tmux.conf" .tmux.conf
+ln -s "${DOTFILES_DIR}/.bashrc" .bashrc
+ln -s "${DOTFILES_DIR}/.ctags" .ctags
+ln -s "${DOTFILES_DIR}/.cvsignore" .cvsignore
