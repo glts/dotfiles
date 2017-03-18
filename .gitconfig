@@ -1,0 +1,14 @@
+[user]
+	name = David Bürgin
+	email = 676c7473@gmail.com
+[core]
+	excludesFile = ~/.cvsignore
+[alias]
+	st = status
+	co = checkout
+	br = branch
+	ci = commit
+[push]
+	default = simple
+[rebase]
+	autoSquash = true

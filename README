@@ -13,3 +13,4 @@ ln -s "${DOTFILES_DIR}/.tmux.conf" .tmux.conf
 ln -s "${DOTFILES_DIR}/.bashrc" .bashrc
 ln -s "${DOTFILES_DIR}/.ctags" .ctags
 ln -s "${DOTFILES_DIR}/.cvsignore" .cvsignore
+ln -s "${DOTFILES_DIR}/.gitconfig" .gitconfig
