@@ -13,4 +13,5 @@ tags
 /.emacs.d/history
 /.emacs.d/ido.last
 /.emacs.d/places
+/.emacs.d/recentf
 /.emacs.d/url/
