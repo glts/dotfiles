@@ -6,8 +6,7 @@
 stty -ixon
 
 HISTCONTROL=ignoreboth:erasedups
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=2000
 
 shopt -s histappend
 shopt -s checkwinsize
