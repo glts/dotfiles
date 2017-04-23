@@ -45,6 +45,7 @@
 (setq org-log-done 'time)
 (setq org-log-into-drawer t)
 (setq org-directory "~/org")
+(setq org-agenda-files '("~/org"))
 (setq org-default-notes-file (concat org-directory "/notes.org"))
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cc" 'org-capture)
@@ -81,7 +82,9 @@
   (which-key-mode))
 (use-package emojify
   :init
+  (setq emojify-emoji-styles '(unicode))
   (add-hook 'after-init-hook 'global-emojify-mode))
+
 ;; (use-package org)
 
 ;; Suggestions:
