@@ -5,14 +5,16 @@ download them from anywhere.)
 
 export DOTFILES_DIR=~/src/dotfiles
 cd
-ln -sb "${DOTFILES_DIR}/.vim" .vim
-ln -sb "${DOTFILES_DIR}/.vimrc" .vimrc
-ln -sb "${DOTFILES_DIR}/.gvimrc" .gvimrc
-ln -sb "${DOTFILES_DIR}/.emacs.d" .emacs.d
-ln -sb "${DOTFILES_DIR}/.tmux.conf" .tmux.conf
-ln -sb "${DOTFILES_DIR}/.bashrc" .bashrc
-ln -sb "${DOTFILES_DIR}/.bash_logout" .bash_logout
-ln -sb "${DOTFILES_DIR}/.bash_profile" .bash_profile
-ln -sb "${DOTFILES_DIR}/.ctags" .ctags
-ln -sb "${DOTFILES_DIR}/.cvsignore" .cvsignore
-ln -sb "${DOTFILES_DIR}/.gitconfig" .gitconfig
+ln -sb "$DOTFILES_DIR/.vim" .vim
+ln -sb "$DOTFILES_DIR/.vimrc" .vimrc
+ln -sb "$DOTFILES_DIR/.gvimrc" .gvimrc
+ln -sb "$DOTFILES_DIR/.emacs.d" .emacs.d
+ln -sb "$DOTFILES_DIR/.tmux.conf" .tmux.conf
+ln -sb "$DOTFILES_DIR/.bashrc" .bashrc
+ln -sb "$DOTFILES_DIR/.bash_logout" .bash_logout
+ln -sb "$DOTFILES_DIR/.bash_profile" .bash_profile
+ln -sb "$DOTFILES_DIR/.profile" .profile
+ln -sb "$DOTFILES_DIR/.ctags" .ctags
+ln -sb "$DOTFILES_DIR/.cvsignore" .cvsignore
+ln -sb "$DOTFILES_DIR/.gitconfig" .gitconfig
+ls -ald .*~
