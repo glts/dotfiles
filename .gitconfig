@@ -1,6 +1,6 @@
 [user]
 	name = David Bürgin
-	email = 676c7473@gmail.com
+	email = dbuergin@gluet.ch
 [core]
 	excludesFile = ~/.cvsignore
 [alias]
