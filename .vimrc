@@ -1,6 +1,3 @@
-" My vim configuration.
-" Author: glts <676c7473@gmail.com>
-
 " Runtime path and file types setup
 
 " Let pathogen.vim be our plugin manager.
