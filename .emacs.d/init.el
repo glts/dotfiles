@@ -1,3 +1,9 @@
+;; My init.el
+;;
+;; ‘Installation’
+;; - Make sure use-package is installed
+;; - Then all packages will be downloaded and installed automatically
+
 (tool-bar-mode -1)
 
 (add-to-list 'default-frame-alist '(width  . 110))
@@ -28,6 +34,33 @@
 
 (line-number-mode t)
 (column-number-mode t)
+
+;; (global-linum-mode)
+
+(define-minor-mode sensitive-mode
+  "Sensitive mode to prevent backups and auto-save in sensitive files.
+
+See:
+- ‘Disabling Backup and Auto-save in Emacs’, http://anirudhsasikumar.net/blog/2005.01.21.html
+- http://stackoverflow.com/a/18330742"
+  nil
+  " Sensitive"
+  nil
+  (if (symbol-value sensitive-mode)
+      (progn
+        (set (make-local-variable 'backup-inhibited) t)
+        (if auto-save-default
+            (auto-save-mode -1)))
+    (kill-local-variable 'backup-inhibited)
+    (if auto-save-default
+        (auto-save-mode 1))))
+
+(setq auto-mode-alist
+      (append '(("\\.gpg$" . sensitive-mode))
+              auto-mode-alist))
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(load-theme 'blackboard t)
 
 (setq woman-fill-column 80)
 
@@ -72,14 +105,42 @@
 ;; TODO When to use :config, when :init?
 (use-package magit
   :bind ("C-x g" . magit-status))
-(use-package cider)
-(use-package clojure-mode)
+
+(use-package clojure-mode
+  :init
+  (setq clojure-indent-style :align-arguments)
+  :config
+  (define-clojure-indent
+    (s/fdef 1)
+    (for-all 1)))
+
+(use-package cider
+  :init
+  (setq cider-connection-message-fn nil)
+  (setq cider-cljs-lein-repl
+      "(do (require 'figwheel-sidecar.repl-api)
+           (figwheel-sidecar.repl-api/start-figwheel!)
+           (figwheel-sidecar.repl-api/cljs-repl))"))
+
+(use-package clj-refactor
+  :config
+  (defun my-clojure-mode-hook ()
+    (paredit-mode 1)
+    (clj-refactor-mode 1)
+    (yas-minor-mode 1))
+  (add-hook 'clojure-mode-hook 'my-clojure-mode-hook))
+
+(use-package markdown-mode)
+
 (use-package adoc-mode
   :mode "\\.adoc\\'")
+
 (use-package yaml-mode)
+
 (use-package which-key
   :config
   (which-key-mode))
+
 (use-package emojify
   :init
   (setq emojify-emoji-styles '(unicode))
