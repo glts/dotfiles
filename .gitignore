@@ -9,9 +9,11 @@ tags
 /.emacs.d/backups/
 /.emacs.d/bookmarks
 /.emacs.d/elpa/
+/.emacs.d/emojis/
 /.emacs.d/games/
 /.emacs.d/history
 /.emacs.d/ido.last
 /.emacs.d/places
 /.emacs.d/recentf
 /.emacs.d/url/
+/.emacs.d/themes/
