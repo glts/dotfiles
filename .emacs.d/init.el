@@ -112,11 +112,13 @@ See:
   :config
   (define-clojure-indent
     (s/fdef 1)
-    (for-all 1)))
+    (for-all 1)
+    (dom/div 1)))
 
 (use-package cider
   :init
   (setq cider-connection-message-fn nil)
+  (setq cider-repl-pop-to-buffer-on-connect 'display-only)
   (setq cider-cljs-lein-repl
       "(do (require 'figwheel-sidecar.repl-api)
            (figwheel-sidecar.repl-api/start-figwheel!)
@@ -131,6 +133,8 @@ See:
   (add-hook 'clojure-mode-hook 'my-clojure-mode-hook))
 
 (use-package markdown-mode)
+
+(use-package ess)
 
 (use-package adoc-mode
   :mode "\\.adoc\\'")
